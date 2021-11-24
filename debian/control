@@ -1,0 +1,11 @@
+Source: movai-studio
+Maintainer: Maintainer <maintainer@mov.ai>
+Section: unknown
+Priority: optional
+Build-Depends: unzip, debhelper (>= 7.4.3)
+Standards-Version: 3.9.1
+
+Package: movai-studio
+Architecture: all
+Depends: ${misc:Depends}
+Description: Movai development studio
