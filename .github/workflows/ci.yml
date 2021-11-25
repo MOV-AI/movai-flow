@@ -1,0 +1,37 @@
+name: Tests
+
+on:
+  # Trigger the workflow on push or pull request
+  # but only for the main branch
+  # or on tag of type v*.*.*
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - main
+jobs:
+  tests:
+    timeout-minutes: 30
+    name: "Static checks"
+    runs-on: ubuntu-20.04
+    container:
+      image: registry.cloud.mov.ai/devops/py-buildserver:latest
+      credentials:
+        username: ${{secrets.PORTUS_APP_USER}}
+        password: ${{secrets.PORTUS_APP_TOKEN}}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: install static-checks-requirements
+      run: python3 -m pip install docker-compose
+    - name: run docker-compose lint
+      run: |
+        docker-compose -f docker-compose.yml config
+    - name: run docker-compose
+      uses: isbang/compose-action@v1.0.0
+      with:
+        compose-file: './docker-compose.yml'
+        down-flags: '--volumes'
