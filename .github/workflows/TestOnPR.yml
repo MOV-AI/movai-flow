@@ -36,7 +36,7 @@ jobs:
         PACKAGE_VERSION=${{ steps.vars.outputs.npm_pkg_version }}
         main_version=${PACKAGE_VERSION%-*}
         build_id="${PACKAGE_VERSION#*-}"
-        raised_buildid$(($build_id+1))
+        raised_buildid=$(($build_id+1))
         RAISED_PACKAGE_VERSION="$main_version-$raised_buildid"
         echo ::set-output name=npm_pkg_version::$RAISED_PACKAGE_VERSION
       
