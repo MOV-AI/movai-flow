@@ -5,6 +5,7 @@ on:
       - dev
       - main
       - 'releases/**'
+      - 'feat/**'
     paths-ignore:
       - 'CHANGELOG.md' 
 jobs:
