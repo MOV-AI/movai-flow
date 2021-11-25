@@ -1,8 +1,41 @@
-version: "2.1"
+# Basic MOVAI Studio cluster configuration with Redis and Redis local databases.
+#
+# WARNING: This configuration is for local development. Do not use it in a production deployment.
+#
+# This configuration supports basic configuration using environment variables or an .env file
+# The following variables are supported:
+#
+# MOVAI_REGISTRY               - Docker images registry
+#                                Default: registry.cloud.mov.ai
+# MOVAI_UID                    - User ID in MOVAI containers
+#                                Default: 1000
+# MOVAI_DEVICE_NAME            - Docker containers identifier
+#                                Default: Studio
+#
+# Those configurations are useful mostly in case of standalone testing/running MOVAI Studio in test/try-out mode
+#
+# STUDIO_USER_USERNAME   - Username for the administrator account (if requested).
+#                          Default: movai
+# STUDIO_USER_PASSWORD   - Password for the administrator account (if requested).
+#                          Default: movai
+#
+# STUDIO_DB_PACKAGES     - List of packages initializing the DB.
+#                          Default: movai-baseline
+#
+# STUDIO_APP_PACKAGES    - List of packages initializing the web apps.
+#                          Default: movai-launched movai-ide
+#
+# SPAWNER_PIP_ADDITIONAL_REQUIREMENTS - Additional PIP requirements to add when starting ROS spawner.
+#                                Default: ''
+#
+
+# Feel free to modify this file to suit your needs.
+---
+version: "3.7"
 services:
     redis-master:
-        image: registry.cloud.mov.ai/qa/redis:latest
-        container_name: redis-master-$DEVICE_NAME
+        image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/redis:latest
+        container_name: redis-master-$MOVAI_DEVICE_NAME
         networks:
             - private
         ports:
@@ -11,21 +44,19 @@ services:
             health-node:
                 condition: service_healthy
         healthcheck:
-            test: [ "CMD", "echo", ">", "/dev/tcp/localhost/6379" ]
-            interval: 10s
-            timeout: 2s
-            retries: 30
+            #test: [ "CMD", "echo", ">", "/dev/tcp/localhost/6379" ]
+            test: "apt-get update && apt-get install -y movai-baseline $STUDIO_DB_PACKAGES"
+            interval: 5s
+            timeout: 20s
+            retries: 1
         volumes:
             - redis-master-studio-volume:/data
-        command: ""
-        #     - bash
-        #     - -c
-        #     - /usr/local/bin/initial_setup.sh
-        #     - /usr/local/bin/update_database.sh
+        environment:
+            - STUDIO_DB_PACKAGES=$STUDIO_DB_PACKAGES
 
     redis-local:
-        image: registry.cloud.mov.ai/qa/redis:latest
-        container_name: redis-local-$DEVICE_NAME
+        image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/redis:latest
+        container_name: redis-local-$MOVAI_DEVICE_NAME
         networks:
             - private
         depends_on:
@@ -35,15 +66,15 @@ services:
             - "6380:6379"
         healthcheck:
             test: [ "CMD", "echo", ">", "/dev/tcp/localhost/6380" ]
-            interval: 10s
+            interval: 5s
             timeout: 2s
-            retries: 30
+            retries: 3
         volumes:
             - redis-local-studio-volume:/data
 
     backend:
-        image: registry.cloud.mov.ai/qa/backend:latest
-        container_name: backend-$DEVICE_NAME
+        image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/backend:latest
+        container_name: backend-$MOVAI_DEVICE_NAME
         #network_mode: "host"
         networks:
             - private
@@ -56,116 +87,86 @@ services:
                 condition: service_healthy
         ports:
             - "5004:5004"
-        #extra_hosts:
-#            backend: 127.0.0.1
-#            spawner: 127.0.0.1
-#            redis-master: 127.0.0.1
-#            redis-local: 127.0.0.1
-#            influxdb: 127.0.0.1
-#            haproxy: 127.0.0.1
-#            health-node: 127.0.0.1
-#            ros-master: 127.0.0.1
-
+        entrypoint: /bin/bash
         environment:
-            - ROS_MASTER_URI=http://ros-master:11311
-            - MOVAI_USERSPACE=/opt/mov.ai/user
-            - DEVICE_NAME=$DEVICE_NAME
-            - FLEET_NAME=$FLEET_NAME
-            - FLEET_TOKEN=$FLEET_TOKEN
-            - REDIS_LOCAL_PORT=6380
-            - MOVAI_MANAGER_URI=$MANAGER_URI
-            - IGNITION_MOVAI=true
+          - STUDIO_APP_PACKAGES=$STUDIO_APP_PACKAGES
+          - ROS_MASTER_URI=http://ros-master:11311
+          - MOVAI_USERSPACE=/opt/mov.ai/user
+          - DEVICE_NAME=$MOVAI_DEVICE_NAME
+          - FLEET_NAME=$FLEET_NAME
+          - FLEET_TOKEN=$FLEET_TOKEN
+          - REDIS_LOCAL_PORT=6379
+          - MOVAI_MANAGER_URI=$MANAGER_URI
+          - IGNITION_MOVAI=true
+        command:
+         - -ic
+         - |
+           rm -f /opt/mov.ai/app/movai.{log,err}
+           touch /opt/mov.ai/app/movai.{log,err}
+           sudo apt-get update
+           sudo apt-get install -y $STUDIO_APP_PACKAGES
+           python3 -m tools.new_user -u ${STUDIO_USER_USERNAME:-movai} -p ${STUDIO_USER_USERNAME:-movai} -s
+           exec docker-entrypoint.sh
+
         healthcheck:
             test: [ "CMD", "echo", ">", "/dev/tcp/localhost/5004" ]
-            interval: 10s
+            interval: 5s
             timeout: 2s
-            retries: 30
+            retries: 3
         # ports:
         #     - "11411:11411"
         #     - "9090:9090"
 
     influxdb:
-        image: registry.cloud.mov.ai/devops/influxdb:main
-        container_name: influxdb-$DEVICE_NAME
+        image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/influxdb:main
+        container_name: influxdb-$MOVAI_DEVICE_NAME
         networks:
             - private
-        #network_mode: "host"
-        #extra_hosts:
-#            backend: 127.0.0.1
-#            spawner: 127.0.0.1
-#            redis-master: 127.0.0.1
-#            redis-local: 127.0.0.1
-#            influxdb: 127.0.0.1
-#            haproxy: 127.0.0.1
-#            health-node: 127.0.0.1
-#            ros-master: 127.0.0.1
-
         healthcheck:
             test: [ "CMD", "echo", ">", "/dev/tcp/localhost/8086" ]
-            interval: 10s
+            interval: 5s
             timeout: 2s
-            retries: 30
+            retries: 3
         volumes:
             - influxdb-studio-volume:/var/lib/influxdb
 
     health-node:
-        image: registry.cloud.mov.ai/qa/health-node:latest
-        container_name: health-node-$DEVICE_NAME
+        image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/health-node:latest
+        container_name: health-node-$MOVAI_DEVICE_NAME
         networks:
             - private
-        #network_mode: "host"
         depends_on:
             influxdb:
                 condition: service_healthy
         healthcheck:
             test: [ "CMD", "echo", ">", "/dev/tcp/localhost/8081" ]
-            interval: 10s
+            interval: 5s
             timeout: 2s
-            retries: 30
-        #extra_hosts:
-#            backend: 127.0.0.1
-#            spawner: 127.0.0.1
-#            redis-master: 127.0.0.1
-#            redis-local: 127.0.0.1
-#            influxdb: 127.0.0.1
-#            haproxy: 127.0.0.1
-#            health-node: 127.0.0.1
-#            ros-master: 127.0.0.1
-
+            retries: 3
         environment:
-            - DEVICE_NAME=$DEVICE_NAME
+            - MOVAI_DEVICE_NAME=$MOVAI_DEVICE_NAME
             - FLEET_NAME=$FLEET_NAME
             - SPAWNER_GROUPS=$SPAWNER_GROUPS
             - PUBLIC_IP=$PUBLIC_IP
             - HOST_PROC=/hostfs/proc
 
     ros-master:
-        image: registry.cloud.mov.ai/devops/ros-master-noetic:main
+        image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-master-noetic:main
         privileged: true
         networks:
             - private
         depends_on:
             backend:
                 condition: service_healthy
-        container_name: ros-master-$DEVICE_NAME
-        #network_mode: "host"
-        #extra_hosts:
-#            backend: 127.0.0.1
-#            spawner: 127.0.0.1
-#            redis-master: 127.0.0.1
-#            redis-local: 127.0.0.1
-#            influxdb: 127.0.0.1
-#            haproxy: 127.0.0.1
-#            health-node: 127.0.0.1
-#            ros-master: 127.0.0.1
+        container_name: ros-master-$MOVAI_DEVICE_NAME
         healthcheck:
             test: [ "CMD", "echo", ">", "/dev/tcp/localhost/11311" ]
-            interval: 10s
+            interval: 5s
             timeout: 2s
-            retries: 30
+            retries: 3
 
     spawner:
-        image: registry.cloud.mov.ai/devops/spawner-base-noetic:main
+        image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-base-noetic:main
         privileged: true
         networks:
             - private
@@ -178,18 +179,11 @@ services:
                 condition: service_healthy
             redis-local:
                 condition: service_healthy
+            # studio-init:
+            #     condition: service_completed_successfully
         #network_mode: "host"
-        #extra_hosts:
-#            backend: 127.0.0.1
-#            spawner: 127.0.0.1
-#            redis-master: 127.0.0.1
-#            redis-local: 127.0.0.1
-#            influxdb: 127.0.0.1
-#            haproxy: 127.0.0.1
-#            health-node: 127.0.0.1
-#            ros-master: 127.0.0.1
 
-        container_name: spawner-$DEVICE_NAME
+        container_name: spawner-$MOVAI_DEVICE_NAME
         volumes:
             - /dev:/dev
             - /sys/devices:/sys/devices
@@ -197,7 +191,7 @@ services:
             - /run/movai:/var/run/movai
         environment:
             - PUBLIC_IP=$PUBLIC_IP
-            - DEVICE_NAME=$DEVICE_NAME
+            - DEVICE_NAME=$MOVAI_DEVICE_NAME
             - FLEET_NAME=$FLEET_NAME
             - FLEET_TOKEN=$FLEET_TOKEN
             - MOVAI_MANAGER_URI=$MANAGER_URI
@@ -212,22 +206,35 @@ services:
             - LOG_HTTP_HOST=http://health-node:8081
 
     movai-cli:
-        build:
-            context: ./cli
-            dockerfile: Dockerfile
+        image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/movai-service:latest
         depends_on:
             - spawner
         privileged: true
-        container_name: movai-cli-service
+        container_name: movai-cli-$MOVAI_DEVICE_NAME
         restart: "no"
         volumes:
             - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
-            - ./robots:/robots
+            - ./robots:/etc/movai/robots
             - /var/run/docker.sock:/var/run/docker.sock
 
+    # movai-init:
+    #     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-base-noetic:main
+    #     depends_on:
+    #         - spawner
+    #     networks:
+    #         - private
+    #     environment:
+    #         - MOVAI_BASELINES=$STUDIO_DB_PACKAGES
+    #     command:
+    #       - -c
+    #       - |
+
+
+
+
     # haproxy:
-    #     image: registry.cloud.mov.ai/qa/haproxy:latest
-    #     container_name: haproxy-$DEVICE_NAME
+    #     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/haproxy:latest
+    #     container_name: haproxy-$MOVAI_DEVICE_NAME
     #     networks:
     #         - proxy
     #         - private
