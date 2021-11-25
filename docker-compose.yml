@@ -1,6 +1,7 @@
 # Basic MOVAI Studio cluster configuration with Redis and Redis local databases.
 #
-# WARNING: This configuration is for local development. Do not use it in a production deployment.
+# WARNING:
+#   This configuration is for local development. Do not use it in a production deployment.
 #
 # This configuration supports basic configuration using environment variables or an .env file
 # The following variables are supported:
@@ -44,7 +45,7 @@ services:
             health-node:
                 condition: service_healthy
         healthcheck:
-            #test: [ "CMD", "echo", ">", "/dev/tcp/localhost/6379" ]
+            # test: [ "CMD", "echo", ">", "/dev/tcp/localhost/6379" ]
             test: "apt-get update && apt-get install -y movai-baseline $STUDIO_DB_PACKAGES"
             interval: 5s
             timeout: 20s
@@ -65,7 +66,7 @@ services:
         ports:
             - "6380:6379"
         healthcheck:
-            test: [ "CMD", "echo", ">", "/dev/tcp/localhost/6380" ]
+            test: ["CMD", "echo", ">", "/dev/tcp/localhost/6380"]
             interval: 5s
             timeout: 2s
             retries: 3
@@ -75,7 +76,6 @@ services:
     backend:
         image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/backend:latest
         container_name: backend-$MOVAI_DEVICE_NAME
-        #network_mode: "host"
         networks:
             - private
         depends_on:
@@ -89,33 +89,30 @@ services:
             - "5004:5004"
         entrypoint: /bin/bash
         environment:
-          - STUDIO_APP_PACKAGES=$STUDIO_APP_PACKAGES
-          - ROS_MASTER_URI=http://ros-master:11311
-          - MOVAI_USERSPACE=/opt/mov.ai/user
-          - DEVICE_NAME=$MOVAI_DEVICE_NAME
-          - FLEET_NAME=$FLEET_NAME
-          - FLEET_TOKEN=$FLEET_TOKEN
-          - REDIS_LOCAL_PORT=6379
-          - MOVAI_MANAGER_URI=$MANAGER_URI
-          - IGNITION_MOVAI=true
+            - STUDIO_APP_PACKAGES=$STUDIO_APP_PACKAGES
+            - ROS_MASTER_URI=http://ros-master:11311
+            - MOVAI_USERSPACE=/opt/mov.ai/user
+            - DEVICE_NAME=$MOVAI_DEVICE_NAME
+            - FLEET_NAME=$FLEET_NAME
+            - FLEET_TOKEN=$FLEET_TOKEN
+            - REDIS_LOCAL_PORT=6379
+            - MOVAI_MANAGER_URI=$MANAGER_URI
+            - IGNITION_MOVAI=true
         command:
-         - -ic
-         - |
-           rm -f /opt/mov.ai/app/movai.{log,err}
-           touch /opt/mov.ai/app/movai.{log,err}
-           sudo apt-get update
-           sudo apt-get install -y $STUDIO_APP_PACKAGES
-           python3 -m tools.new_user -u ${STUDIO_USER_USERNAME:-movai} -p ${STUDIO_USER_USERNAME:-movai} -s
-           exec docker-entrypoint.sh
+            - -ic
+            - |
+              rm -f /opt/mov.ai/app/movai.{log,err}
+              touch /opt/mov.ai/app/movai.{log,err}
+              sudo apt-get update
+              sudo apt-get install -y $STUDIO_APP_PACKAGES
+              python3 -m tools.new_user -u ${STUDIO_USER_USERNAME:-movai} -p ${STUDIO_USER_USERNAME:-movai} -s
+              exec docker-entrypoint.sh
 
         healthcheck:
-            test: [ "CMD", "echo", ">", "/dev/tcp/localhost/5004" ]
+            test: ["CMD", "echo", ">", "/dev/tcp/localhost/5004"]
             interval: 5s
             timeout: 2s
             retries: 3
-        # ports:
-        #     - "11411:11411"
-        #     - "9090:9090"
 
     influxdb:
         image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/influxdb:main
@@ -123,7 +120,7 @@ services:
         networks:
             - private
         healthcheck:
-            test: [ "CMD", "echo", ">", "/dev/tcp/localhost/8086" ]
+            test: ["CMD", "echo", ">", "/dev/tcp/localhost/8086"]
             interval: 5s
             timeout: 2s
             retries: 3
@@ -139,7 +136,7 @@ services:
             influxdb:
                 condition: service_healthy
         healthcheck:
-            test: [ "CMD", "echo", ">", "/dev/tcp/localhost/8081" ]
+            test: ["CMD", "echo", ">", "/dev/tcp/localhost/8081"]
             interval: 5s
             timeout: 2s
             retries: 3
@@ -160,7 +157,7 @@ services:
                 condition: service_healthy
         container_name: ros-master-$MOVAI_DEVICE_NAME
         healthcheck:
-            test: [ "CMD", "echo", ">", "/dev/tcp/localhost/11311" ]
+            test: ["CMD", "echo", ">", "/dev/tcp/localhost/11311"]
             interval: 5s
             timeout: 2s
             retries: 3
@@ -179,9 +176,11 @@ services:
                 condition: service_healthy
             redis-local:
                 condition: service_healthy
-            # studio-init:
-            #     condition: service_completed_successfully
-        #network_mode: "host"
+        # studio-init:
+        #     condition: service_completed_successfully
+        # ports:
+        #     - "11411:11411"
+        #     - "9090:9090"
 
         container_name: spawner-$MOVAI_DEVICE_NAME
         volumes:
@@ -229,42 +228,39 @@ services:
     #       - -c
     #       - |
 
-
-
-
-    # haproxy:
-    #     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/haproxy:latest
-    #     container_name: haproxy-$MOVAI_DEVICE_NAME
-    #     networks:
-    #         - proxy
-    #         - private
-    #     volumes:
-    #       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:rw
-    #     expose:
-    #       - 11411/tcp
-    #       - 2000/tcp
-    #       - 443/tcp
-    #       - 6379/tcp
-    #       - 80/tcp
-    #       - 8901/tcp
-    #       - 9090/tcp
-    #       - 3000/tcp
-    #     # ports:
-    #     #   - "$LOCAL_IP:11411:11411"
-    #     #   - "$LOCAL_IP:2000:2000"
-    #     #   - "$LOCAL_IP:443:443"
-    #     #   - "$LOCAL_IP:6379:6379"
-    #     #   - "$LOCAL_IP:8901:8901"
-    #     #   - "$LOCAL_IP:9090:9090"
-    #     environment:
-    #       - SPAWNER_PORTS="bind :11411\\n\\tbind :9090"
-
+    haproxy:
+        image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/haproxy:latest
+        container_name: haproxy-$MOVAI_DEVICE_NAME
+        networks:
+            - proxy
+            - private
+        volumes:
+            - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:rw
+        expose:
+            - 11411/tcp
+            - 2000/tcp
+            - 443/tcp
+            - 6379/tcp
+            - 80/tcp
+            - 8901/tcp
+            - 9090/tcp
+            - 3000/tcp
+        # ports:
+        #   - "$LOCAL_IP:11411:11411"
+        #   - "$LOCAL_IP:2000:2000"
+        #   - "$LOCAL_IP:443:443"
+        #   - "$LOCAL_IP:6379:6379"
+        #   - "$LOCAL_IP:8901:8901"
+        #   - "$LOCAL_IP:9090:9090"
+        environment:
+            - SPAWNER_PORTS="bind :11411\\n\\tbind :9090"
 
 volumes:
-    redis-master-studio-volume:
-    redis-local-studio-volume:
+    redis-master-studio-volume: null
+    redis-local-studio-volume: null
     influxdb-studio-volume:
 
+        null
 networks:
     proxy:
         name: studio-proxy
