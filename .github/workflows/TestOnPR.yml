@@ -12,11 +12,10 @@ jobs:
     runs-on: ubuntu-20.04
     container:
       image: registry.cloud.mov.ai/devops/ros-buildtools-melodic:main
+      options: --user root
       credentials:
         username: ${{secrets.PORTUS_APP_USER}} 
         password: ${{secrets.PORTUS_APP_TOKEN}}
-    env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     steps:
     - name: Checkout    
