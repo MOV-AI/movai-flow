@@ -25,7 +25,7 @@ jobs:
       id: vars
       run: |
         PACKAGE_VERSION=$(dpkg-parsechangelog --show-field Version)
-        PACKAGE_NAME=$(pkg-parsechangelog --show-field Source)
+        PACKAGE_NAME=$(dpkg-parsechangelog --show-field Source)
         
         echo ::set-output name=npm_pkg_name::$PACKAGE_NAME
         echo ::set-output name=npm_pkg_version::$PACKAGE_VERSION
