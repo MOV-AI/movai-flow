@@ -26,8 +26,27 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+
     - name: install static-checks-requirements
-      run: python3 -m pip install docker-compose
+      run: python3 -m pip install docker-compose yamllint
+
+    - name: Yamllint
+      uses: karancode/yamllint-github-action@master
+      with:
+        yamllint_file_or_dir: docker-compose.yml
+        yamllint_strict: false
+        yamllint_comment: true
+      env:
+        GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Validate json
+      uses: anyone-developer/anyone-validate-json@main
+      with:
+        file-extension: '.json'
+        ignore-files: ''
+        ignore-directories: '.git'
+        read-path: 'robots'
+
     - name: run docker-compose lint
       run: |
         docker-compose -f docker-compose.yml config
