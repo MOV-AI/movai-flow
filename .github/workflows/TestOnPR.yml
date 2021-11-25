@@ -6,7 +6,7 @@ on:
       - main
       - 'releases/**'
     paths-ignore:
-      - 'CHANGELOG.md' 
+      - 'debian/changelog' 
 jobs:
   Test-Project:
     runs-on: ubuntu-20.04
@@ -39,7 +39,7 @@ jobs:
         raised_buildid=$(($build_id+1))
         RAISED_PACKAGE_VERSION="$main_version-$raised_buildid"
         echo ::set-output name=npm_pkg_version::$RAISED_PACKAGE_VERSION
-      
+
     - name: Pack debian
       run: |
         dch -v ${{ steps.vars-after-raise.outputs.npm_pkg_version }} -D "UNRELEASED" "bump version"

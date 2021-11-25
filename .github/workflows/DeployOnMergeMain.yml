@@ -1,19 +1,15 @@
 name: "Deploy - On branch main/release Push"
 on:
-  pull_request:
-    types: [ closed ]
+  push:
     branches:
       - main
       - 'releases/**'
 
     paths-ignore:
-      - 'package.json'
-      - 'package-lock.json'
-      - 'CHANGELOG.md' 
+      - 'debian/changelog' 
 
 jobs:
   Deploy-App-Internal-Release:
-    if: github.event.pull_request.merged == true
     runs-on: ubuntu-20.04
     container:
       image: registry.cloud.mov.ai/devops/npm-buildserver:latest
@@ -26,71 +22,41 @@ jobs:
     steps:
     - name: Checkout    
       uses: actions/checkout@v2
-      with:
-        token: ${{ secrets.NPM_TOKEN }}
+
+    - name: Find Package details
+      id: vars
+      run: |
+        PACKAGE_VERSION=$(dpkg-parsechangelog --show-field Version)
+        PACKAGE_NAME=$(dpkg-parsechangelog --show-field Source)
+        
+        echo ::set-output name=npm_pkg_name::$PACKAGE_NAME
+        echo ::set-output name=npm_pkg_version::$PACKAGE_VERSION
+    
+    - name: Raise Version
+      id: vars-after-raise
+      run: | 
+        PACKAGE_VERSION=${{ steps.vars.outputs.npm_pkg_version }}
+        main_version=${PACKAGE_VERSION%-*}
+        build_id="${PACKAGE_VERSION#*-}"
+        raised_buildid=$(($build_id+1))
+        RAISED_PACKAGE_VERSION="$main_version-$raised_buildid"
+        echo ::set-output name=npm_pkg_version::$RAISED_PACKAGE_VERSION
+      
+    - name: Pack debian
+      run: |
+        dch -v ${{ steps.vars-after-raise.outputs.npm_pkg_version }} -D "UNRELEASED" "bump version"
+        dpkg-buildpackage
+        mkdir artifacts && \
+        cp ../*.deb artifacts
 
     - name: Raise App version
       run: |
         git config --global user.name '${{ secrets.RAISE_BOT_COMMIT_USER }}'
         git config --global user.email '${{ secrets.RAISE_BOT_COMMIT_MAIL }}'
-        npm version prerelease -m "Automatic Bump of build version"
         git pull
-        git add package.*
+        git add debian/changelog
         git push
 
-
-    - name: Setup Github as proxy Registry 
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16.x'
-        registry-url: 'https://npm.pkg.github.com/mov-ai'
-
-    - name: Find Package details
-      id: vars
-      run: |
-        PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')
-        PACKAGE_NAME=$(cat package.json | grep name |head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')
-        
-        echo ::set-output name=npm_pkg_name::$PACKAGE_NAME
-        echo ::set-output name=npm_pkg_version::$PACKAGE_VERSION
-
-    
-    - name: Bump package.json metadata Version
-      uses: deef0000dragon1/json-edit-action/@v1
-      env:
-        KEY: movai.Version
-        VALUE: ${{steps.vars.outputs.npm_pkg_version}}
-        FILE: package.json
-        
-    - name: Install dependencies
-      run: npm ci --loglevel verbose
-
-    - name: Build
-      run: npm run build
-
-    - name: Check NPM log on failure
-      if: ${{ failure() }}
-      run: cat /github/home/.npm/_logs/*.log
-    # Skip tests for now
-    #- name: Run tests
-    #  run: npm run test
-
-    - name: Bump manifest.json metadata Version
-      uses: deef0000dragon1/json-edit-action/@v1
-      env:
-        KEY: version
-        VALUE: ${{steps.vars.outputs.npm_pkg_version}}
-        FILE: build/manifest.json
-
-    - name: Pack debian
-      run: |
-        dch -v ${{ steps.vars.outputs.npm_pkg_version }} -D "UNRELEASED" "bump version"
-        dpkg-buildpackage && \
-        mkdir artifacts && \
-        cp ../*.deb artifacts
-
-    - name: Publish
-      run: npm publish
 
     - name: Publish to Nexus ppa-dev
       run: |
@@ -114,36 +80,13 @@ jobs:
 
     - name: Create Github Release
       shell: bash
-      run: |
-        # contains more than one release ?
-        if (( $(grep -o '# v' CHANGELOG.md | wc -l) > 1 )); then
-          # use the latest release notes
-          body=$(grep -m2 -A 9999 "# v" CHANGELOG.md | grep -B 9999 -m2 "# v" |sed '$ d')
-        else
-          body=$(cat CHANGELOG.md)
-        fi
+      run: |      
+        title="Release of ${{ steps.vars-after-raise.outputs.npm_pkg_version  }}" 
         
-        title="Release of ${{ steps.vars.outputs.npm_pkg_version }}" 
-        
-        gh release create -p -t "$title" -n "$body" ${{ steps.vars.outputs.npm_pkg_version }}
+        gh release create -p -t "$title" -n "Please fill the release notes" ${{ steps.vars-after-raise.outputs.npm_pkg_version }}
 
         # add all files in the artifacts folder
         ls -la artifacts
-        find artifacts -type f -exec gh release upload ${{ steps.vars.outputs.npm_pkg_version }} {} \;
-        
-
+        find artifacts -type f -exec gh release upload ${{ steps.vars-after-raise.outputs.npm_pkg_version }} {} \;
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        
-  # [On Pull request merge] Since the pipeline will run, have a nice communication that is not doing anything.
-  Skipped:
-    if: github.event.pull_request.merged == false
-    runs-on: ubuntu-20.04
-    container:
-      image: registry.cloud.mov.ai/devops/tf-buildserver:latest
-      credentials:
-        username: ${{secrets.PORTUS_APP_USER}} 
-        password: ${{secrets.PORTUS_APP_TOKEN}} 
-    steps:
-    - run: |
-        echo PR #${{ github.event.number }} has been skipped since the pull request was not approved.
