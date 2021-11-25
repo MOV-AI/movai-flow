@@ -1,0 +1,24 @@
+#!/bin/bash
+# post install script
+
+SERVICENAME=movai-studio
+APP_PATH=/opt/$SERVICENAME
+
+if [ "$1" == "configure" ]; then
+
+    
+    echo "Enabling & starting $SERVICENAME"
+    # Autostart systemd service
+    sudo systemctl enable $SERVICENAME.service
+    # Start systemd service now
+    sudo systemctl start $SERVICENAME.service
+
+elif [ "$1" == "abort-remove" ]; then
+    systemctl stop $SERVICENAME || true
+    systemctl disable $SERVICENAME || true
+    rm /etc/systemd/system/$SERVICENAME || true
+    rm -r $APP_PATH || true
+
+    systemctl daemon-reload || true
+    systemctl reset-failed || true
+fi

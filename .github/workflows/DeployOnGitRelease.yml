@@ -1,0 +1,41 @@
+name: "Deploy - To Nexus On Github Release"
+on:
+  release:
+    types: [released]
+
+jobs:
+  Deploy-App-General-Avaiability:
+    runs-on: ubuntu-20.04
+    container:
+      image: registry.cloud.mov.ai/devops/npm-buildserver:latest
+      credentials:
+        username: ${{secrets.PORTUS_APP_USER}} 
+        password: ${{secrets.PORTUS_APP_TOKEN}} 
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+    steps:
+    - name: Checkout    
+      uses: actions/checkout@v2
+
+    - name: Set tag output
+      id: vars
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+
+    - name: Fetch artifact from github release
+      run: | 
+        mkdir artifacts
+        cd artifacts
+        gh release download ${{ steps.vars.outputs.tag}} -p *.deb
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Publish to Nexus ppa-main
+      run: |
+          NEXUS_ENDPOINT="artifacts.cloud.mov.ai"
+          NEXUS_REPO="ppa-main"
+          FILE_LOCATION=$(find artifacts/*.deb)
+          curl -u "${{ secrets.NEXUS_PUBLISHER_USR }}:${{ secrets.NEXUS_PUBLISHER_PWD }}" \
+          -H "Content-Type: multipart/form-data" \
+          --data-binary "@$FILE_LOCATION" \
+          "https://$NEXUS_ENDPOINT/repository/$NEXUS_REPO/"

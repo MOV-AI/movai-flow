@@ -1,0 +1,5 @@
+./haproxy /etc/movai-studio/launch
+./.env /etc/movai-studio/launch
+./robots /etc/movai-studio/launch
+./docker-compose.yml /etc/movai-studio/launch
+./movai-studio.service /var/lib/systemd/system

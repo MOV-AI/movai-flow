@@ -1,0 +1,9 @@
+movai-studio (0.0.0-1) UNRELEASED; urgency=medium
+
+  [ Alex Fernandes ]
+  * Initial release. (Closes: #XXXXXX)
+
+  [ Duarte ]
+  * bump version
+
+ -- Duarte <duarte@duarte-OMEN-Laptop-15-ek0xxx>  Mon, 08 Nov 2021 09:19:51 +0000

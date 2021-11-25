@@ -1,0 +1,14 @@
+#!/bin/bash
+# pre remove actions
+# clean unziped files
+
+SERVICENAME=movai-studio
+APP_PATH=/opt/$SERVICENAME
+
+systemctl stop $SERVICENAME
+systemctl disable $SERVICENAME
+rm /etc/systemd/system/$SERVICENAME
+rm -r $APP_PATH
+
+systemctl daemon-reload
+systemctl reset-failed
