@@ -256,11 +256,10 @@ services:
             - SPAWNER_PORTS="bind :11411\\n\\tbind :9090"
 
 volumes:
-    redis-master-studio-volume: null
-    redis-local-studio-volume: null
+    redis-master-studio-volume:
+    redis-local-studio-volume:
     influxdb-studio-volume:
 
-        null
 networks:
     proxy:
         name: studio-proxy
