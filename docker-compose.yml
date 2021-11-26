@@ -12,6 +12,8 @@
 #                                Default: 1000
 # MOVAI_DEVICE_NAME            - Docker containers identifier
 #                                Default: Studio
+# MOVAI_ENV                    - Docker containers environment (develop/qa/release)
+#                                Default: qa
 #
 # Those configurations are useful mostly in case of standalone testing/running MOVAI Studio in test/try-out mode
 #
@@ -26,6 +28,9 @@
 # STUDIO_APP_PACKAGES    - List of packages initializing the web apps.
 #                          Default: movai-launched movai-ide
 #
+# STUDIO_SPAWNER_PACKAGES - List of packages initializing the spawner.
+#                          Default: libgflags-dev ros-noetic-mav-msgs ros-noetic-movai-ign ignition-fortress
+#
 # SPAWNER_PIP_ADDITIONAL_REQUIREMENTS - Additional PIP requirements to add when starting ROS spawner.
 #                                Default: ''
 #
@@ -37,7 +42,9 @@ x-movai-common:
   &movai-common
   environment:
     &movai-common-env
+    MOVAI_ENV: qa
     MOVAI_USERSPACE: /opt/mov.ai/user
+    MOVAI_MANAGER_URI: $MANAGER_URI
     DEVICE_NAME: $MOVAI_DEVICE_NAME
     FLEET_NAME: $FLEET_NAME
     FLEET_TOKEN: $FLEET_TOKEN
@@ -45,12 +52,13 @@ x-movai-common:
     REDIS_LOCAL_HOST: redis-local
     REDIS_MASTER_PORT: 6379
     REDIS_MASTER_HOST: redis-master
-    MOVAI_MANAGER_URI: $MANAGER_URI
-    IGNITION_MOVAI: "true"
-    PUBLIC_IP: $PUBLIC_IP
     ROS_MASTER_URI: http://ros-master:11311/
     ROS_IP: $EXTERNAL_HOST_IP
+    PUBLIC_IP: $PUBLIC_IP
     LOG_HTTP_HOST: http://health-node:8081
+    IGNITION_MOVAI: "true"
+    IGN_PARTITION: "TODO_RANDOMIZE_ME"
+    IGNITION_VERSION: fortress
   volumes:
     - ./userspace:/opt/mov.ai/user
     - ./shared:/opt/mov.ai/shared
@@ -80,7 +88,7 @@ services:
       # test: [ "CMD", "echo", ">", "/dev/tcp/localhost/6379" ]
       test: "apt-get update && apt-get install -y movai-baseline $STUDIO_DB_PACKAGES"
       interval: 5s
-      timeout: 20s
+      timeout: 60s
       retries: 1
     volumes:
       - redis-master-studio-volume:/data
@@ -190,11 +198,14 @@ services:
       <<: *movai-common-depend
       backend:
         condition: service_healthy
-    # studio-init:
-    #     condition: service_completed_successfully
-    # ports:
-    #     - "11411:11411"
-    #     - "9090:9090"
+    entrypoint: /bin/bash
+    command:
+      - -ic
+      - |
+        curl -fsSL http://packages.osrfoundation.org/gazebo.key | apt-key add -
+        sudo add-apt-repository "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main"
+        sudo apt-get install -y $STUDIO_SPAWNER_PACKAGES
+        exec docker-entrypoint.sh
     container_name: spawner-$MOVAI_DEVICE_NAME
     volumes:
       - /dev:/dev
@@ -205,6 +216,28 @@ services:
       <<: *movai-common-env
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       APP_NAME: spawner
+      STUDIO_SPAWNER_PACKAGES: $STUDIO_SPAWNER_PACKAGES
+
+  simulator:
+    <<: *movai-common
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/ignition-gazebo:latest
+    container_name: simulator-$MOVAI_DEVICE_NAME
+    environment:
+      <<: *movai-common-env
+      DISPLAY: "$DISPLAY"
+      QT_X11_NO_MITSHM: "1"
+      XAUTHORITY: "$XAUTH"
+      IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /models_database/tugbot_models/plugins/system
+      IGN_GUI_PLUGIN_PATH: /models_database/tugbot_models/plugins/gui
+      IGN_GAZEBO_RESOURCE_PATH: /models_database/rpm_models/worlds:/models_database/rpm_models:/models_database/tugbot_models/worlds:/models_database/tugbot_models:/models_database/husky_models/worlds:/models_database/husky_models:/models_database/movai_models/worlds:/models_database/movai_models/models
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $XAUTH:$XAUTH
+      - ./models_database:/models_database
+    runtime: nvidia
+    network_mode: host
+    privileged: true
+    command: ign gazebo tugbot_movai_lab.sdf -r
 
   movai-cli:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/movai-service:latest
@@ -233,9 +266,7 @@ services:
   haproxy:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/haproxy:latest
     container_name: haproxy-$MOVAI_DEVICE_NAME
-    networks:
-      - proxy
-      - private
+    network_mode: host
     volumes:
       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:rw
     expose:

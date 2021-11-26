@@ -18,11 +18,6 @@ jobs:
     timeout-minutes: 30
     name: "Sanity checks"
     runs-on: ubuntu-20.04
-    container:
-      image: registry.cloud.mov.ai/devops/py-buildserver:latest
-      credentials:
-        username: ${{secrets.PORTUS_APP_USER}}
-        password: ${{secrets.PORTUS_APP_TOKEN}}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -30,9 +25,6 @@ jobs:
     - name: install static-checks-requirements
       run: |
         python3 -m pip install docker-compose yamllint
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-        sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-        sudo apt-get install docker-ce
 
     - name: Yamllint
       uses: karancode/yamllint-github-action@master
