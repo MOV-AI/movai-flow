@@ -28,7 +28,11 @@ jobs:
       uses: actions/checkout@v2
 
     - name: install static-checks-requirements
-      run: python3 -m pip install docker-compose yamllint
+      run: |
+        python3 -m pip install docker-compose yamllint
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+        sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+        sudo apt-get install docker-ce
 
     - name: Yamllint
       uses: karancode/yamllint-github-action@master
