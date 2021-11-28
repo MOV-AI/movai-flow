@@ -3,11 +3,11 @@
 # clean unziped files
 
 SERVICENAME=movai-studio
-APP_PATH=/opt/$SERVICENAME
+APP_PATH=/etc/$SERVICENAME/launch
 
 systemctl stop $SERVICENAME
 systemctl disable $SERVICENAME
-rm /etc/systemd/system/$SERVICENAME
+rm /etc/systemd/system/$SERVICENAME.service
 rm -r $APP_PATH
 
 systemctl daemon-reload

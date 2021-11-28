@@ -1,11 +1,16 @@
 Source: movai-studio
 Maintainer: Maintainer <maintainer@mov.ai>
-Section: unknown
+Section: programming
 Priority: optional
+Homepage: https://mov.ai
 Build-Depends: unzip, debhelper (>= 7.4.3)
 Standards-Version: 3.9.1
+Description: MOV.AI development studio (src)
 
 Package: movai-studio
 Architecture: all
+Section: programming
+Homepage: https://mov.ai
+Priority: optional
 Depends: ${misc:Depends}, docker-ce (>= 20.10.8), docker-ce-cli
-Description: Movai development studio
+Description: MOV.AI development studio

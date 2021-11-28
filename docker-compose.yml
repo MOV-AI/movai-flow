@@ -37,7 +37,7 @@
 
 # Feel free to modify this file to suit your needs.
 ---
-version: "3.7"
+version: "3.9"
 x-movai-common:
   &movai-common
   environment:
@@ -222,6 +222,7 @@ services:
     <<: *movai-common
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/ignition-gazebo:latest
     container_name: simulator-$MOVAI_DEVICE_NAME
+    profiles: ["simulator"]
     environment:
       <<: *movai-common-env
       DISPLAY: "$DISPLAY"
@@ -244,6 +245,7 @@ services:
     depends_on:
       - spawner
     privileged: true
+    profiles: ["service"]
     container_name: movai-cli-$MOVAI_DEVICE_NAME
     restart: "no"
     volumes:
@@ -267,6 +269,7 @@ services:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/haproxy:latest
     container_name: haproxy-$MOVAI_DEVICE_NAME
     network_mode: host
+    profiles: ["proxy"]
     volumes:
       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:rw
     expose:
