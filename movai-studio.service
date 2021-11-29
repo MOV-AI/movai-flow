@@ -2,9 +2,10 @@
     Description=movai-studio
     Requires=docker.service
     After=docker.service
+    StartLimitIntervalSec=60
 
     [Service]
-    Restart=always
+    Type=simple
     User=root
     Group=docker
     WorkingDirectory=/etc/movai-studio/launch

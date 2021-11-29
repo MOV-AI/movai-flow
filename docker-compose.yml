@@ -190,7 +190,7 @@ services:
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-base-noetic:main
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-base-noetic:v2.2.0-alpha
     privileged: true
     networks:
       - private
@@ -202,7 +202,7 @@ services:
     command:
       - -ic
       - |
-        curl -fsSL http://packages.osrfoundation.org/gazebo.key | apt-key add -
+        curl -fsSL http://packages.osrfoundation.org/gazebo.key | sudo apt-key add -
         sudo add-apt-repository "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main"
         sudo apt-get install -y $STUDIO_SPAWNER_PACKAGES
         exec docker-entrypoint.sh
