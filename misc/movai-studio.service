@@ -8,13 +8,13 @@
     Type=simple
     User=root
     Group=docker
-    WorkingDirectory=/etc/movai-studio/launch
+    WorkingDirectory=/usr/share/movai-studio/launch
     # Shutdown container (if running) when unit is started
-    ExecStartPre=/usr/local/bin/docker-compose -f docker-compose.yml down
+    ExecStartPre=/usr/local/bin/docker-compose -f /usr/share/movai-studio/launch/docker-compose.yml down
     # Start container when unit is started
-    ExecStart=/usr/local/bin/docker-compose -f docker-compose.yml up
+    ExecStart=/usr/local/bin/docker-compose -f /usr/share/movai-studio/launch/docker-compose.yml up
     # Stop container when unit is stopped
-    ExecStop=/usr/local/bin/docker-compose -f docker-compose.yml down
+    ExecStop=/usr/local/bin/docker-compose -f /usr/share/movai-studio/launch/docker-compose.yml down
 
     [Install]
     WantedBy=multi-user.target

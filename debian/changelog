@@ -1,9 +1,33 @@
-movai-studio (0.0.0-1) UNRELEASED; urgency=medium
+movai-studio (1.0.0) UNRELEASED; urgency=medium
 
   [ Alex Fernandes ]
-  * Initial release. (Closes: #XXXXXX)
+  *
+  * review doc and compose
+  * remove cli build
+  * add ci
 
-  [ Duarte ]
-  * bump version
+  [ duartecoelho ]
+  * init pr pipeline
+  * temporarily add feat branch
+  * clean
+  * use root
+  * fix typo
+  * fixed typo
+  * change the arithmetic syntax
+  * change the arithmetic syntax
+  * fix pipelines
 
- -- Duarte <duarte@duarte-OMEN-Laptop-15-ek0xxx>  Mon, 08 Nov 2021 09:19:51 +0000
+  [ Alex Fernandes ]
+  * align ci test on push
+  * add yaml and json lint
+  * fix syntax
+  * fix and config yamllint
+  * fix syntax and enable haproxy
+  * fix docker login
+  * remove null
+  * rework compose
+  * fixes and simulator
+  * fix service init
+  * bump and fixes
+
+ -- Alex Fernandes <devops@mov.ai>  Mon, 29 Nov 2021 22:43:07 +0000

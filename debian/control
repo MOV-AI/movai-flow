@@ -1,16 +1,17 @@
 Source: movai-studio
 Maintainer: Maintainer <maintainer@mov.ai>
-Section: programming
+Section: devel
 Priority: optional
 Homepage: https://mov.ai
 Build-Depends: unzip, debhelper (>= 7.4.3)
-Standards-Version: 3.9.1
-Description: MOV.AI development studio (src)
+Standards-Version: 4.5.1
+
 
 Package: movai-studio
 Architecture: all
-Section: programming
+Section: devel
 Homepage: https://mov.ai
 Priority: optional
 Depends: ${misc:Depends}, docker-ce (>= 20.10.8), docker-ce-cli
-Description: MOV.AI development studio
+Description: MOV.AI Development Studio
+    The Robotics Engine Platform enhancing ROS

@@ -9,7 +9,6 @@
 #
 #   Note: Blank lines (Null text strings "") are not written to the system log.  There is no need to waste that space.
 Output() {
-
   # Prepare base message
   Message="MOV.AI Studio install: $1"
 
@@ -22,7 +21,7 @@ Output() {
   fi
 
   # Output to log
-  if which journalctl
+  if which journalctl > /dev/null 2>&1
   then
     echo MESSAGE="$Message" | logger --journald
   else
@@ -31,22 +30,33 @@ Output() {
 }
 
 SERVICENAME=movai-studio
-APP_PATH=/etc/$SERVICENAME/launch
+APP_PATH=/usr/share/$SERVICENAME/launch
+
+. /usr/share/debconf/confmodule
 
 if [ "$1" == "configure" ]; then
     Output "Reloading systemd config"
     systemctl daemon-reload || true
-    Output "Enabling & starting $SERVICENAME"
-    # Autostart systemd service
-    sudo systemctl enable $SERVICENAME.service
-    # Start systemd service now
-    sudo systemctl start $SERVICENAME.service
+
+    Output "Enabling $SERVICENAME"
+    systemctl enable $SERVICENAME.service
+
+    sudo chown 1000:1000 $APP_PATH/{logs,shared,userspace,models_database} -R
+
+    Output "Starting $SERVICENAME"
+    systemctl start $SERVICENAME.service
 elif [ "$1" == "abort-remove" ]; then
+    Output "Stopping $SERVICENAME"
     systemctl stop $SERVICENAME.service || true
+
+    Output "Disabling $SERVICENAME"
     systemctl disable $SERVICENAME.service || true
-    rm /etc/systemd/system/$SERVICENAME.service || true
+
+    Output "Removing $SERVICENAME"
+    rm /usr/lib/systemd/system/$SERVICENAME.service || true
     rm -r $APP_PATH || true
 
+    Output "Reloading systemd config"
     systemctl daemon-reload || true
     systemctl reset-failed || true
 fi
