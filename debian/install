@@ -5,3 +5,5 @@ models_database usr/share/movai-studio/launch
 shared usr/share/movai-studio/launch
 userspace usr/share/movai-studio/launch
 warning_resources.sh usr/share/movai-studio/launch
+misc/movai-studio.desktop usr/share/applications
+misc/movai-studio.png usr/share/pixmaps

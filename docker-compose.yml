@@ -238,7 +238,8 @@ services:
     runtime: nvidia
     network_mode: host
     privileged: true
-    command: ign gazebo tugbot_movai_lab.sdf -r
+    tty: true
+    command: ign gazebo
 
   movai-cli:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/movai-service:latest

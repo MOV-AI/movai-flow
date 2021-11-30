@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=MOV.AI Studio
+GenericName=MOV.AI Studio
+Comment=MOV.AI Development Studio
+Exec=x-www-browser http://localhost:5004/
+Icon=movai-studio
+Terminal=false
+StartupWMClass=MOV.AI Studio
+MimeType=application/octet-stream;application/zip;text/xml;text/xml;x-scheme-handler/movai;
+Type=Application
+Categories=Development;
