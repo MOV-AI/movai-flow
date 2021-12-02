@@ -22,6 +22,8 @@
 # STUDIO_USER_PASSWORD   - Password for the administrator account (if requested).
 #                          Default: movai
 #
+# STUDIO_SIMU_MAP        - Default Simulation map: tugbot_urban_story.sdf
+#
 # STUDIO_DB_PACKAGES     - List of packages initializing the DB.
 #                          Default: movai-baseline
 #
@@ -132,8 +134,9 @@ services:
       - |
         rm -f /opt/mov.ai/app/movai.{log,err}
         touch /opt/mov.ai/app/movai.{log,err}
-        sudo apt-get update
-        sudo apt-get install -y $STUDIO_APP_PACKAGES
+        if [ -n "$STUDIO_APP_PACKAGES" ]; then
+          sudo apt-get update && sudo apt-get install -y $STUDIO_APP_PACKAGES
+        fi
         python3 -m tools.new_user -u ${STUDIO_USER_USERNAME:-movai} -p ${STUDIO_USER_USERNAME:-movai} -s
         exec docker-entrypoint.sh
     healthcheck:
@@ -190,7 +193,7 @@ services:
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-base-noetic:v2.2.0-alpha
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-ign-noetic:main
     privileged: true
     networks:
       - private
@@ -202,9 +205,9 @@ services:
     command:
       - -ic
       - |
-        curl -fsSL http://packages.osrfoundation.org/gazebo.key | sudo apt-key add -
-        sudo add-apt-repository "deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main"
-        sudo apt-get install -y $STUDIO_SPAWNER_PACKAGES
+        if [ -n "$STUDIO_SPAWNER_PACKAGES" ]; then
+          sudo apt-get update && sudo apt-get install -y $STUDIO_SPAWNER_PACKAGES
+        fi
         exec docker-entrypoint.sh
     container_name: spawner-$MOVAI_DEVICE_NAME
     volumes:
@@ -239,7 +242,7 @@ services:
     network_mode: host
     privileged: true
     tty: true
-    command: ign gazebo
+    command: ign gazebo $STUDIO_SIMU_MAP -r
 
   movai-cli:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/movai-service:latest
@@ -253,6 +256,7 @@ services:
       - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
       - ./robots:/etc/movai/robots
       - /var/run/docker.sock:/var/run/docker.sock
+      - /run/movai/movai.sock:/run/movai/movai.sock:rw
 
   # movai-init:
   #     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-base-noetic:main
