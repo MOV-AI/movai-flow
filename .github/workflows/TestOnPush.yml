@@ -55,8 +55,14 @@ jobs:
         username: ${{secrets.PORTUS_APP_USER}}
         password: ${{secrets.PORTUS_APP_TOKEN}}
 
-    - name: run docker-compose cluster
+    - name: prepare docker-compose cluster
       run: |
         mkdir -p ./{logs,shared,userspace,models_database} || true
         sudo chown 1000:1000 ./{logs,shared,userspace,models_database} -R
-        timeout 90 docker-compose -f docker-compose.yml up
+        #timeout 90 docker-compose -f docker-compose.yml up
+
+    - name: run docker-compose cluster
+      uses: isbang/compose-action@v1.0.0
+      with:
+        compose-file: './docker-compose.yml'
+        down-flags: '--volumes'
