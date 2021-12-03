@@ -8,6 +8,10 @@
 #   $2 =  Optional "0" or "1" flag.   "1" adds "(extracted from Preferences.xml)" message
 #
 #   Note: Blank lines (Null text strings "") are not written to the system log.  There is no need to waste that space.
+
+SERVICENAME=movai-studio
+APP_PATH=/usr/share/$SERVICENAME/launch
+
 Output() {
   # Prepare base message
   Message="MOV.AI Studio install: $1"
@@ -29,10 +33,26 @@ Output() {
   fi
 }
 
-SERVICENAME=movai-studio
-APP_PATH=/usr/share/$SERVICENAME/launch
+# Load configuration variable values from configuration transfer file as needed
+GetConfig() {
+  RetVal=""
+  InstConfig=/tmp/movai-studio-installer.log
+  RetVal="$(grep ^$1= $InstConfig | sed -e 's/^.*=//'| tr -d '"')"
+  echo "$RetVal"
+}
 
-. /usr/share/debconf/confmodule
+# exit on major error
+set -e
+HaveNvidia="$(GetConfig HaveNvidia)"
+HaveResources="$(GetConfig HaveResources)"
+#NeedUser="$(GetConfig NeedUser)"
+
+if [ $HaveResources -gt 0 ]; then
+  Output "Enough RAM,CPU, DISK resources found"
+else
+  Output "Not Enough RAM,CPU, DISK resources found"
+  exit 1
+fi
 
 if [ "$1" == "configure" ]; then
     Output "Reloading systemd config"
@@ -41,6 +61,7 @@ if [ "$1" == "configure" ]; then
     Output "Enabling $SERVICENAME"
     systemctl enable $SERVICENAME.service
 
+    mkdir -p $APP_PATH/{logs,shared,userspace,models_database}
     sudo chown 1000:1000 $APP_PATH/{logs,shared,userspace,models_database} -R
 
     Output "Starting $SERVICENAME"
@@ -54,7 +75,6 @@ elif [ "$1" == "abort-remove" ]; then
 
     Output "Removing $SERVICENAME"
     rm /usr/lib/systemd/system/$SERVICENAME.service || true
-    rm -r $APP_PATH || true
 
     Output "Reloading systemd config"
     systemctl daemon-reload || true

@@ -6,7 +6,7 @@ on:
       - main
       - 'releases/**'
     paths-ignore:
-      - 'debian/changelog' 
+      - 'debian/changelog'
 jobs:
   Test-Project:
     runs-on: ubuntu-20.04
@@ -14,11 +14,11 @@ jobs:
       image: registry.cloud.mov.ai/devops/ros-buildtools-melodic:main
       options: --user root
       credentials:
-        username: ${{secrets.PORTUS_APP_USER}} 
+        username: ${{secrets.PORTUS_APP_USER}}
         password: ${{secrets.PORTUS_APP_TOKEN}}
 
     steps:
-    - name: Checkout    
+    - name: Checkout
       uses: actions/checkout@v2
 
     - name: Find Package details
@@ -26,13 +26,13 @@ jobs:
       run: |
         PACKAGE_VERSION=$(dpkg-parsechangelog --show-field Version)
         PACKAGE_NAME=$(dpkg-parsechangelog --show-field Source)
-        
+
         echo ::set-output name=npm_pkg_name::$PACKAGE_NAME
         echo ::set-output name=npm_pkg_version::$PACKAGE_VERSION
-    
+
     - name: Raise Version
       id: vars-after-raise
-      run: | 
+      run: |
         PACKAGE_VERSION=${{ steps.vars.outputs.npm_pkg_version }}
         main_version=${PACKAGE_VERSION%-*}
         build_id="${PACKAGE_VERSION#*-}"
@@ -43,4 +43,4 @@ jobs:
     - name: Pack debian
       run: |
         dch -v ${{ steps.vars-after-raise.outputs.npm_pkg_version }} -D "UNRELEASED" "bump version"
-        dpkg-buildpackage
+        dpkg-buildpackage -b

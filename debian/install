@@ -1,9 +1,8 @@
 haproxy usr/share/movai-studio/launch
 robots usr/share/movai-studio/launch
-logs usr/share/movai-studio/launch
 models_database usr/share/movai-studio/launch
-shared usr/share/movai-studio/launch
-userspace usr/share/movai-studio/launch
-warning_resources.sh usr/share/movai-studio/launch
+scripts/movai-studio-simulator usr/bin/
 misc/movai-studio.desktop usr/share/applications
+misc/movai-studio-sim.desktop usr/share/applications
 misc/movai-studio.png usr/share/pixmaps
+misc/ignition_logo.svg usr/share/pixmaps

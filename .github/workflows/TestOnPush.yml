@@ -66,3 +66,11 @@ jobs:
       with:
         compose-file: './docker-compose.yml'
         down-flags: '--volumes'
+
+    - name: test cluster frontend
+      run: |
+        curl --cookie-jar cookies --header "Content-Type: application/json" \
+        --request POST --data '{"username":"movai","password":"movai", "remember":true}'\
+         -s -o /dev/null -w "%{http_code}" http://localhost:5004/token-auth/
+
+

@@ -1,12 +1,11 @@
 [Desktop Entry]
-Name=MOV.AI Studio
-GenericName=ROS Studio
-Comment=MOV.AI Development Studio
-Exec=x-www-browser http://localhost:5004/
-Icon=movai-studio
+Name=MOV.AI Studio Simulator
+GenericName=ROS Simulator
+Comment=MOV.AI Development Studio Simulator
+Exec=/usr/bin/movai-studio-simulator
+Icon=ignition_logo
 Terminal=false
 StartupWMClass=MOV.AI Studio
 MimeType=application/octet-stream;application/zip;text/xml;text/xml;x-scheme-handler/movai;
 Type=Application
 Categories=Development;
-PrefersNonDefaultGPU=true
