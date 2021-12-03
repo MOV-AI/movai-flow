@@ -57,6 +57,8 @@ jobs:
 
     - name: run docker-compose cluster
       run: |
+        mkdir -p ./{logs,shared,userspace,models_database} || true
+        sudo chown 1000:1000 ./{logs,shared,userspace,models_database} -R
         docker-compose -f docker-compose.yml up -d
         curl --cookie-jar cookies --header "Content-Type: application/json" --request POST --data '{"username":"movai","password":"movai", "remember":true}' -s -o /dev/null -w "%{http_code}" http://localhost:5004/token-auth/
         docker-compose down --volumes --remove-orphans
