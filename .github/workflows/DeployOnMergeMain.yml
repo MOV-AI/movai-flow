@@ -1,0 +1,92 @@
+name: "Deploy - On branch main/release Push"
+on:
+  push:
+    branches:
+      - main
+      - 'releases/**'
+
+    paths-ignore:
+      - 'debian/changelog'
+
+jobs:
+  Deploy-App-Internal-Release:
+    runs-on: ubuntu-20.04
+    container:
+      image: registry.cloud.mov.ai/devops/npm-buildserver:latest
+      credentials:
+        username: ${{secrets.PORTUS_APP_USER}}
+        password: ${{secrets.PORTUS_APP_TOKEN}}
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Find Package details
+      id: vars
+      run: |
+        PACKAGE_VERSION=$(dpkg-parsechangelog --show-field Version)
+        PACKAGE_NAME=$(dpkg-parsechangelog --show-field Source)
+
+        echo ::set-output name=npm_pkg_name::$PACKAGE_NAME
+        echo ::set-output name=npm_pkg_version::$PACKAGE_VERSION
+
+    - name: Raise Version
+      id: vars-after-raise
+      run: |
+        PACKAGE_VERSION=${{ steps.vars.outputs.npm_pkg_version }}
+        main_version=${PACKAGE_VERSION%-*}
+        build_id="${PACKAGE_VERSION#*-}"
+        raised_buildid=$(($build_id+1))
+        RAISED_PACKAGE_VERSION="$main_version-$raised_buildid"
+        echo ::set-output name=npm_pkg_version::$RAISED_PACKAGE_VERSION
+
+    - name: Pack debian
+      run: |
+        dch -v ${{ steps.vars-after-raise.outputs.npm_pkg_version }} -D "UNRELEASED" "bump version"
+        dpkg-buildpackage -b
+        mkdir artifacts && \
+        cp ../*.deb artifacts
+
+    - name: Raise App version
+      run: |
+        git config --global user.name '${{ secrets.RAISE_BOT_COMMIT_USER }}'
+        git config --global user.email '${{ secrets.RAISE_BOT_COMMIT_MAIL }}'
+        git pull
+        git add debian/changelog
+        git push
+
+
+    - name: Publish to Nexus ppa-dev
+      run: |
+          NEXUS_ENDPOINT="artifacts.cloud.mov.ai"
+          NEXUS_REPO="ppa-dev"
+          FILE_LOCATION=$(find artifacts/*.deb)
+          curl -u "${{ secrets.NEXUS_PUBLISHER_USR }}:${{ secrets.NEXUS_PUBLISHER_PWD }}" \
+          -H "Content-Type: multipart/form-data" \
+          --data-binary "@$FILE_LOCATION" \
+          "https://$NEXUS_ENDPOINT/repository/$NEXUS_REPO/"
+
+    - name: Publish to Nexus ppa-testing
+      run: |
+          NEXUS_ENDPOINT="artifacts.cloud.mov.ai"
+          NEXUS_REPO="ppa-testing"
+          FILE_LOCATION=$(find artifacts/*.deb)
+          curl -u "${{ secrets.NEXUS_PUBLISHER_USR }}:${{ secrets.NEXUS_PUBLISHER_PWD }}" \
+          -H "Content-Type: multipart/form-data" \
+          --data-binary "@$FILE_LOCATION" \
+          "https://$NEXUS_ENDPOINT/repository/$NEXUS_REPO/"
+
+    - name: Create Github Release
+      shell: bash
+      run: |
+        title="Release of ${{ steps.vars-after-raise.outputs.npm_pkg_version  }}"
+
+        gh release create -p -t "$title" -n "Please fill the release notes" ${{ steps.vars-after-raise.outputs.npm_pkg_version }}
+
+        # add all files in the artifacts folder
+        ls -la artifacts
+        find artifacts -type f -exec gh release upload ${{ steps.vars-after-raise.outputs.npm_pkg_version }} {} \;
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

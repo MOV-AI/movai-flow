@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "env": "qa",
+  "registry": "registry.cloud.mov.ai",
+  "robot": {
+    "name": "studio",
+    "fleet": {
+      "name": "movai",
+      "manager": "http://localhost",
+      "token": "WEBNaEsxRjhKam5DN1VvQWokZENaNGl4diVQOTQlb3JkI0YwbGpmdmQjTEQyQ0h3YkxzUk93Nk5AeTdwdnhDbwo="
+    },
+    "local-ip": "0.0.0.0",
+    "public-ip": "127.0.0.1",
+    "auto-start": true,
+    "self-provision": true
+  },
+  "spawner": {
+    "image": "tugbot-simulator",
+    "version": "latest",
+    "ports": [
+      11411,
+      9090
+    ],
+    "groups": [
+      "dialout",
+      "video",
+      "audio",
+      "users"
+    ],
+    "userspace": "/home/afe/workspace/noetic/userspace",
+    "enable": true,
+    "firmware": [
+      "movai-spawner",
+      "ignition-fortress",
+      "libgflags-dev",
+      "ros-melodic-mav-msgs",
+      "ros-melodic-joy",
+      "ros-melodic-pid",
+      "ros-melodic-image-transport",
+      "ros-melodic-movai-ign"
+    ]
+  },
+  "backend": {
+    "image": "backend",
+    "version": "latest",
+    "nodes": [],
+    "enable": true,
+    "firmware": [],
+    "extra-env": []
+  },
+  "frontend": {
+    "firmware": [
+      "movai-launcher",
+      "movai-ide"
+    ],
+    "image": "nodejs",
+    "version": "latest",
+    "enable": false,
+    "extra-env": []
+  },
+  "redis": {
+    "master": null,
+    "port": 6379,
+    "ssl": true,
+    "image": "redis",
+    "version": "latest",
+    "firmware": [
+      "movai-baseline",
+      "movai-tugbot-baseline",
+      "movai-rpm-sim-baseline",
+      "movai-ign-sim-baseline",
+      "movai-husky-sim-baseline",
+      "movai-tugbot-ign-sim-baseline"
+    ],
+    "enable": true
+  },
+  "health-node": {
+    "image": "health-node",
+    "version": "latest",
+    "firmware": [
+      "movai-health-node"
+    ],
+    "enable": true,
+    "extra-env": []
+  },
+  "haproxy": {
+    "image": "haproxy",
+    "version": "latest",
+    "enable": true
+  },
+  "telegraf": {
+    "image": "telegraf",
+    "version": "latest",
+    "enable": true
+  },
+  "monitoring": {
+    "enable": true,
+    "image": "monitoring",
+    "version": "latest"
+  },
+  "ros-tools": {
+    "enable": true,
+    "image": "ros-tools",
+    "version": "latest"
+  },
+  "influxdb": {
+    "image": "influxdb",
+    "version": "latest",
+    "enable": true
+  },
+  "ros-master": {
+    "image": "ros-master",
+    "version": "latest",
+    "enable": true
+  },
+  "simulator": {
+    "image": "ignition-gazebo",
+    "version": "latest",
+    "enable": true,
+    "xauth": "/tmp/.docker.xauth",
+    "source": "/home/afe/simulator/models_database/",
+    "display": ":1",
+    "runtime": "nvidia",
+    "partition": "movai-service-test",
+    "command": "",
+    "extra-env": []
+  },
+  "commands": {
+    "provision": {
+      "service": "spawner",
+      "command": "provision.sh"
+    },
+    "sim_movai_lab": {
+      "service": "simulator",
+      "command": "ign gazebo tugbot_movai_lab.sdf -r"
+    },
+    "sim_empty_world": {
+      "service": "simulator",
+      "command": "ign gazebo tugbot_empty.sdf -r"
+    },
+    "sim_urban_story": {
+      "service": "simulator",
+      "command": "ign gazebo tugbot_urban_story.sdf -r"
+    }
+  }
+}

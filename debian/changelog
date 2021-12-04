@@ -1,0 +1,33 @@
+movai-studio (1.0.0-0) UNRELEASED; urgency=medium
+
+  [ Alex Fernandes ]
+  *
+  * review doc and compose
+  * remove cli build
+  * add ci
+
+  [ duartecoelho ]
+  * init pr pipeline
+  * temporarily add feat branch
+  * clean
+  * use root
+  * fix typo
+  * fixed typo
+  * change the arithmetic syntax
+  * change the arithmetic syntax
+  * fix pipelines
+
+  [ Alex Fernandes ]
+  * align ci test on push
+  * add yaml and json lint
+  * fix syntax
+  * fix and config yamllint
+  * fix syntax and enable haproxy
+  * fix docker login
+  * remove null
+  * rework compose
+  * fixes and simulator
+  * fix service init
+  * bump and fixes
+
+ -- Alex Fernandes <devops@mov.ai>  Mon, 29 Nov 2021 22:43:07 +0000

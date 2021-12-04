@@ -1,0 +1,13 @@
+#!/usr/bin/make -f
+export DH_VERBOSE = 1
+
+%:
+	dh $@
+
+override_dh_auto_install:
+	install -d debian/movai-studio/usr/share/movai-studio/launch
+	install -d debian/movai-studio/usr/lib/systemd/system
+	install -m 0644 misc/movai-studio.service debian/movai-studio/usr/lib/systemd/system
+	install -m 0644 docker-compose.yml debian/movai-studio/usr/share/movai-studio/launch
+	install -m 0644 .env debian/movai-studio/usr/share/movai-studio/launch
+	dh_auto_install

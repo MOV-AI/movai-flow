@@ -1,0 +1,6 @@
+[submodule "models_database/tugbot_models"]
+	path = models_database/tugbot_models
+	url = git@bitbucket.org:robosavvy/tugbot_models.git
+[submodule "models_database/movai_models"]
+	path = models_database/movai_models
+	url = git@bitbucket.org:robosavvy/movai_models.git
