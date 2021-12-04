@@ -4,5 +4,6 @@ models_database usr/share/movai-studio/launch
 scripts/movai-studio-simulator usr/bin/
 misc/movai-studio.desktop usr/share/applications
 misc/movai-studio-sim.desktop usr/share/applications
+misc/movai-studio-cli.desktop usr/share/applications
 misc/movai-studio.png usr/share/pixmaps
 misc/ignition_logo.svg usr/share/pixmaps
