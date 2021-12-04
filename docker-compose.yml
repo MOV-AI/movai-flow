@@ -1,0 +1,307 @@
+# Basic MOVAI Studio cluster configuration with Redis and Redis local databases.
+#
+# WARNING:
+#   This configuration is for local development. Do not use it in a production deployment.
+#
+# This configuration supports basic configuration using environment variables or an .env file
+# The following variables are supported:
+#
+# MOVAI_REGISTRY               - Docker images registry
+#                                Default: registry.cloud.mov.ai
+# MOVAI_UID                    - User ID in MOVAI containers
+#                                Default: 1000
+# MOVAI_DEVICE_NAME            - Docker containers identifier
+#                                Default: Studio
+# MOVAI_ENV                    - Docker containers environment (develop/qa/release)
+#                                Default: qa
+#
+# Those configurations are useful mostly in case of standalone testing/running MOVAI Studio in test/try-out mode
+#
+# STUDIO_USER_USERNAME   - Username for the administrator account (if requested).
+#                          Default: movai
+# STUDIO_USER_PASSWORD   - Password for the administrator account (if requested).
+#                          Default: movai
+#
+# STUDIO_SIMU_MAP        - Default Simulation map: tugbot_urban_story.sdf
+#
+# STUDIO_DB_PACKAGES     - List of packages initializing the DB.
+#                          Default: movai-baseline
+#
+# STUDIO_APP_PACKAGES    - List of packages initializing the web apps.
+#                          Default: movai-launched movai-ide
+#
+# STUDIO_SPAWNER_PACKAGES - List of packages initializing the spawner.
+#                          Default: libgflags-dev ros-noetic-mav-msgs ros-noetic-movai-ign ignition-fortress
+#
+# SPAWNER_PIP_ADDITIONAL_REQUIREMENTS - Additional PIP requirements to add when starting ROS spawner.
+#                                Default: ''
+#
+
+# Feel free to modify this file to suit your needs.
+---
+version: "3.9"
+x-movai-common:
+  &movai-common
+  environment:
+    &movai-common-env
+    MOVAI_ENV: qa
+    MOVAI_USERSPACE: /opt/mov.ai/user
+    MOVAI_MANAGER_URI: $MANAGER_URI
+    DEVICE_NAME: $MOVAI_DEVICE_NAME
+    FLEET_NAME: $FLEET_NAME
+    FLEET_TOKEN: $FLEET_TOKEN
+    REDIS_LOCAL_PORT: 6379
+    REDIS_LOCAL_HOST: redis-local
+    REDIS_MASTER_PORT: 6379
+    REDIS_MASTER_HOST: redis-master
+    ROS_MASTER_URI: http://ros-master:11311/
+    ROS_IP: $EXTERNAL_HOST_IP
+    PUBLIC_IP: $PUBLIC_IP
+    LOG_HTTP_HOST: http://health-node:8081
+    IGNITION_MOVAI: "true"
+    IGN_PARTITION: "TODO_RANDOMIZE_ME"
+    IGNITION_VERSION: fortress
+  volumes:
+    - ./userspace:/opt/mov.ai/user
+    - ./shared:/opt/mov.ai/shared
+    - ./logs:/opt/mov.ai/logs
+  # user: "${MOVAI_UID:-1000}:0"
+  depends_on:
+    &movai-common-depend
+    redis-local:
+      condition: service_healthy
+    redis-master:
+      condition: service_healthy
+    influxdb:
+      condition: service_healthy
+
+services:
+  redis-master:
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/redis:latest
+    container_name: redis-master-$MOVAI_DEVICE_NAME
+    networks:
+      - private
+    ports:
+      - "6379:6379"
+    depends_on:
+      health-node:
+        condition: service_healthy
+    healthcheck:
+      # test: [ "CMD", "echo", ">", "/dev/tcp/localhost/6379" ]
+      test: "apt-get update && apt-get install -y movai-baseline $STUDIO_DB_PACKAGES"
+      interval: 5s
+      timeout: 60s
+      retries: 1
+    volumes:
+      - redis-master-studio-volume:/data
+    environment:
+      - STUDIO_DB_PACKAGES=$STUDIO_DB_PACKAGES
+
+  redis-local:
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/redis:latest
+    container_name: redis-local-$MOVAI_DEVICE_NAME
+    networks:
+      - private
+    depends_on:
+      health-node:
+        condition: service_healthy
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/6380"]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+    volumes:
+      - redis-local-studio-volume:/data
+
+  backend:
+    <<: *movai-common
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/backend:latest
+    container_name: backend-$MOVAI_DEVICE_NAME
+    networks:
+      - private
+    depends_on:
+      <<: *movai-common-depend
+    ports:
+      - "${STUDIO_WEB_PORT:-8080}:5004"
+    entrypoint: /bin/bash
+    environment:
+      <<: *movai-common-env
+      STUDIO_APP_PACKAGES: $STUDIO_APP_PACKAGES
+    command:
+      - -ic
+      - |
+        rm -f /opt/mov.ai/app/movai.{log,err}
+        touch /opt/mov.ai/app/movai.{log,err}
+        if [ -n "$STUDIO_APP_PACKAGES" ]; then
+          sudo apt-get update && sudo apt-get install -y $STUDIO_APP_PACKAGES
+        fi
+        python3 -m tools.new_user -u ${STUDIO_USER_USERNAME:-movai} -p ${STUDIO_USER_USERNAME:-movai} -s
+        exec docker-entrypoint.sh
+    healthcheck:
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/5004"]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+
+  influxdb:
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/influxdb:main
+    container_name: influxdb-$MOVAI_DEVICE_NAME
+    networks:
+      - private
+    healthcheck:
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/8086"]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+    volumes:
+      - influxdb-studio-volume:/var/lib/influxdb
+
+  health-node:
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/health-node:latest
+    container_name: health-node-$MOVAI_DEVICE_NAME
+    networks:
+      - private
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/8081"]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+    environment:
+      <<: *movai-common-env
+      SPAWNER_GROUPS: $SPAWNER_GROUPS
+      HOST_PROC: /hostfs/proc
+
+  ros-master:
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-master-noetic:main
+    privileged: true
+    networks:
+      - private
+    depends_on:
+      backend:
+        condition: service_healthy
+    container_name: ros-master-$MOVAI_DEVICE_NAME
+    healthcheck:
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/11311"]
+      interval: 5s
+      timeout: 2s
+      retries: 3
+
+  spawner:
+    <<: *movai-common
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-ign-noetic:main
+    privileged: true
+    networks:
+      - private
+    depends_on:
+      <<: *movai-common-depend
+      backend:
+        condition: service_healthy
+    entrypoint: /bin/bash
+    command:
+      - -ic
+      - |
+        if [ -n "$STUDIO_SPAWNER_PACKAGES" ]; then
+          sudo apt-get update && sudo apt-get install -y $STUDIO_SPAWNER_PACKAGES
+        fi
+        exec docker-entrypoint.sh
+    container_name: spawner-$MOVAI_DEVICE_NAME
+    volumes:
+      - /dev:/dev
+      - /sys/devices:/sys/devices
+      - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
+      - /run/movai:/var/run/movai
+    environment:
+      <<: *movai-common-env
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      APP_NAME: spawner
+      STUDIO_SPAWNER_PACKAGES: $STUDIO_SPAWNER_PACKAGES
+
+  simulator:
+    <<: *movai-common
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/ignition-gazebo:latest
+    container_name: simulator-$MOVAI_DEVICE_NAME
+    profiles: ["simulator"]
+    environment:
+      <<: *movai-common-env
+      DISPLAY: "$DISPLAY"
+      QT_X11_NO_MITSHM: "1"
+      XAUTHORITY: "$XAUTH"
+      IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /models_database/tugbot_models/plugins/system
+      IGN_GUI_PLUGIN_PATH: /models_database/tugbot_models/plugins/gui
+      IGN_GAZEBO_RESOURCE_PATH: /models_database/rpm_models/worlds:/models_database/rpm_models:/models_database/tugbot_models/worlds:/models_database/tugbot_models:/models_database/husky_models/worlds:/models_database/husky_models:/models_database/movai_models/worlds:/models_database/movai_models/models
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $XAUTH:$XAUTH
+      - ./models_database:/models_database
+    runtime: nvidia
+    network_mode: host
+    privileged: true
+    tty: true
+    command: ign gazebo $STUDIO_SIMU_MAP -r
+
+  movai-cli:
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/movai-service:latest
+    depends_on:
+      - spawner
+    privileged: true
+    profiles: ["service"]
+    container_name: movai-cli-$MOVAI_DEVICE_NAME
+    restart: "no"
+    volumes:
+      - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
+      - ./robots:/etc/movai/robots
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  # movai-init:
+  #     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-base-noetic:main
+  #     depends_on:
+  #     - spawner
+  #     networks:
+  #     - private
+  #     environment:
+  #     - MOVAI_BASELINES=$STUDIO_DB_PACKAGES
+  #     command:
+  #       - -c
+  #       - |
+
+  haproxy:
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/haproxy:latest
+    container_name: haproxy-$MOVAI_DEVICE_NAME
+    network_mode: host
+    profiles: ["proxy"]
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:rw
+    expose:
+      - 11411/tcp
+      - 2000/tcp
+      - 443/tcp
+      - 6379/tcp
+      - 80/tcp
+      - 8901/tcp
+      - 9090/tcp
+      - 3000/tcp
+    # ports:
+    #   - "$LOCAL_IP:11411:11411"
+    #   - "$LOCAL_IP:2000:2000"
+    #   - "$LOCAL_IP:443:443"
+    #   - "$LOCAL_IP:6379:6379"
+    #   - "$LOCAL_IP:8901:8901"
+    #   - "$LOCAL_IP:9090:9090"
+    environment:
+      - SPAWNER_PORTS="bind :11411\\n\\tbind :9090"
+
+volumes:
+  redis-master-studio-volume:
+  redis-local-studio-volume:
+  influxdb-studio-volume:
+
+networks:
+  proxy:
+    name: studio-proxy
+  private:
+    name: studio-private

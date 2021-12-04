@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=MOV.AI Studio
+GenericName=ROS Studio
+Comment=MOV.AI Development Studio
+Exec=x-www-browser --app=http://localhost:5004/ http://localhost:5004/
+Icon=movai-studio
+Terminal=false
+StartupWMClass=MOV.AI Studio
+MimeType=application/octet-stream;application/zip;text/xml;text/xml;x-scheme-handler/movai;
+Type=Application
+Categories=Development;
+PrefersNonDefaultGPU=true
