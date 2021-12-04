@@ -9,3 +9,4 @@ StartupWMClass=MOV.AI Studio
 MimeType=application/octet-stream;application/zip;text/xml;text/xml;x-scheme-handler/movai;
 Type=Application
 Categories=Development;
+PrefersNonDefaultGPU=true

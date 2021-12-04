@@ -124,7 +124,7 @@ services:
     depends_on:
       <<: *movai-common-depend
     ports:
-      - "5004:5004"
+      - "${STUDIO_WEB_PORT:-8080}:5004"
     entrypoint: /bin/bash
     environment:
       <<: *movai-common-env
@@ -256,7 +256,6 @@ services:
       - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
       - ./robots:/etc/movai/robots
       - /var/run/docker.sock:/var/run/docker.sock
-      - /run/movai/movai.sock:/run/movai/movai.sock:rw
 
   # movai-init:
   #     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-base-noetic:main

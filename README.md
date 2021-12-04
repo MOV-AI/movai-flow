@@ -10,6 +10,13 @@ Follow these steps to install the necessary tools:
 
 > Older versions of `docker-compose` do not support all the features required by `docker-compose.yml` file, so double check that your version meets the minimum version requirements.
 
+- Login to MOV.AI Docker registry:
+
+    ```shell
+    docker login registry.cloud.mov.ai -u username
+    ```
+
+
 ## docker-compose.yml
 This file contains several service definitions:
  - redis-master
@@ -21,27 +28,27 @@ This file contains several service definitions:
  - spawner
  - haproxy
  - movai-cli
+ - simulator
 
 > Some directories in the container are mounted, which means that their contents are synchronized between your computer and the container.
 
 ## Initializing Environment
 Before starting MOVAI Studio for the first time, You need to prepare your environment, i.e. create the necessary files, directories and initialize the database.
 
-To do it, run:
+To do it, edit .env file and customize variables values:
 
-    docker-compose up movai-init
+    gedit .env
+
+## Running MOVAI Studio
+Now you can start all services:
+
+    docker-compose up
 
 After initialization is complete, you should see a message like below:
 
     ...
 
 > The account created has the login `movai` and the password `movai`.
-
-
-## Running MOVAI Studio
-Now you can start all services:
-
-    docker-compose up
 
 
 ## Cleaning-up the environment
@@ -66,10 +73,17 @@ After starting MOVAI Studio, you can interact with it in 3 ways:
 
  - using the REST API.
 
-### Running the CLI commands
-You can also run CLI commands, but you have to do it in one of the defined movai-cli services. For example, to run `movai-cli list`, run the following command:
+ ## Accessing the Simulator
+After starting MOVAI Studio, you can launch Ignition Fortress:
 
-    docker-compose run movai-cli movai-cli list
+    docker-compose up simulator
+
+### Running the CLI commands
+You can also run CLI commands, but you have to do it in one of the defined docker-compose services.
+
+For example, to run `movai-cli list`, run the following command:
+
+    docker-compose exec movai-cli movai-cli list
 
 ### Accessing the web interface
 Once the cluster has started up, you can log in to the web interface and try to run some tasks.

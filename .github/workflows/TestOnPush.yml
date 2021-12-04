@@ -69,8 +69,20 @@ jobs:
 
     - name: test cluster frontend
       run: |
-        curl --cookie-jar cookies --header "Content-Type: application/json" \
-        --request POST --data '{"username":"movai","password":"movai", "remember":true}'\
-         -s -o /dev/null -w "%{http_code}" http://localhost:5004/token-auth/
+        export url=http://localhost:5004/token-auth/
+        # retry for 1 minute
+        count=10
+        for i in $(seq $count); do
+          status_code=$(curl -s -o /dev/null --cookie-jar cookies --header 'Content-Type: application/json' -X POST --data '{"username":"movai","password":"movai","remember":true}' -w "%{http_code}" $url)
+          if [ $status_code == 200 ]; then
+            break
+          fi
+          echo "Waiting for MOVAI Studio availability (ret:$status_code)"
+          sleep 10
+        done
+        [ $status_code == 200 ] && exit 0
+
+
+
 
 
