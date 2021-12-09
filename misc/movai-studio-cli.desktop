@@ -2,7 +2,7 @@
 Name=MOV.AI Studio CLI
 GenericName=MOV.AI CLI
 Comment=MOV.AI Development Studio CLI
-Exec=/usr/local/bin/docker-compose -f /usr/share/movai-studio/launch/docker-compose.yml up movai-cli
+Exec=/usr/bin/movai-studio-cli
 Icon=xterm
 Terminal=true
 StartupWMClass=MOV.AI Studio
