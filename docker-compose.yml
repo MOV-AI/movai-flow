@@ -44,21 +44,22 @@ x-movai-common:
   &movai-common
   environment:
     &movai-common-env
-    MOVAI_ENV: develop
+    MOVAI_ENV: ${MOVAI_ENV:-qa}
+    LOGLEVEL: WARNING
     MOVAI_USERSPACE: /opt/mov.ai/user
-    MOVAI_MANAGER_URI: $MANAGER_URI
-    DEVICE_NAME: $MOVAI_DEVICE_NAME
-    FLEET_NAME: $FLEET_NAME
-    FLEET_TOKEN: $FLEET_TOKEN
+    MOVAI_MANAGER_URI: ${MANAGER_URI:-http://localhost}
+    DEVICE_NAME: ${MOVAI_DEVICE_NAME:-studio}
+    FLEET_NAME: ${FLEET_NAME:?missing FLEET_NAME ENV var}
+    FLEET_TOKEN: ${FLEET_TOKEN:?missing FLEET_TOKEN ENV var}
     REDIS_LOCAL_PORT: 6379
     REDIS_LOCAL_HOST: redis-local
     REDIS_MASTER_PORT: 6379
     REDIS_MASTER_HOST: redis-master
     ROS_MASTER_URI: http://ros-master:11311/
-    PUBLIC_IP: $PUBLIC_IP
+    PUBLIC_IP: ${PUBLIC_IP:-127.0.0.1}
     LOG_HTTP_HOST: http://health-node:8081
     IGNITION_MOVAI: "true"
-    IGN_PARTITION: "TODO_RANDOMIZE_ME"
+    IGN_PARTITION: ${IGN_PARTITION:?missing IGN_PARTITION ENV var}
     IGNITION_VERSION: fortress
   volumes:
     - ./userspace:/opt/mov.ai/user
@@ -88,7 +89,7 @@ services:
     healthcheck:
       # test: [ "CMD", "echo", ">", "/dev/tcp/localhost/6379" ]
       test: "apt-get update && apt-get install -y movai-baseline $STUDIO_DB_PACKAGES"
-      interval: 5s
+      interval: 3s
       timeout: 60s
       retries: 1
     volumes:
@@ -108,7 +109,7 @@ services:
       - "6380:6379"
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/6380"]
-      interval: 5s
+      interval: 3s
       timeout: 2s
       retries: 3
     volumes:
@@ -151,7 +152,7 @@ services:
       - private
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/8086"]
-      interval: 5s
+      interval: 3s
       timeout: 2s
       retries: 3
     volumes:
@@ -167,7 +168,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/8081"]
-      interval: 5s
+      interval: 3s
       timeout: 2s
       retries: 3
     environment:
@@ -188,7 +189,7 @@ services:
       - "${STUDIO_ROS_MASTER_PORT:-11311}:11311"
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/11311"]
-      interval: 5s
+      interval: 3s
       timeout: 2s
       retries: 3
 
@@ -247,7 +248,7 @@ services:
 
   ros-tools:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/ignition-gazebo:latest
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-tools-noetic:main
     container_name: ros-tools-$MOVAI_DEVICE_NAME
     profiles: ["tools"]
     environment:
@@ -255,10 +256,12 @@ services:
       DISPLAY: "$DISPLAY"
       QT_X11_NO_MITSHM: "1"
       XAUTHORITY: "$XAUTH"
+      NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
+      NVIDIA_DRIVER_CAPABILITIES: ${NVIDIA_DRIVER_CAPABILITIES:-graphics}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
-      - ./rviz/default.rviz:/root/.rviz/default.rviz
+      - ./rviz/default.rviz:/opt/ros/noetic/share/rviz/default.rviz:rw
     runtime: nvidia
     networks:
       - private
@@ -268,8 +271,7 @@ services:
     command:
       - -ic
       - |
-        apt install -y rviz
-        exec /usr/bin/rviz
+        exec /usr/local/bin/rviz.sh
 
   movai-cli:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/movai-service:latest

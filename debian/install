@@ -1,9 +1,13 @@
 haproxy usr/share/movai-studio/launch
+rviz usr/share/movai-studio/launch
 robots usr/share/movai-studio/launch
 models_database usr/share/movai-studio/launch
 scripts/movai-studio-simulator usr/bin/
+scripts/movai-studio-rviz usr/bin/
 misc/movai-studio.desktop usr/share/applications
 misc/movai-studio-sim.desktop usr/share/applications
 misc/movai-studio-cli.desktop usr/share/applications
+misc/movai-studio-rviz.desktop usr/share/applications
 misc/movai-studio.png usr/share/pixmaps
 misc/ignition_logo.svg usr/share/pixmaps
+misc/rviz-package.png usr/share/pixmaps
