@@ -4,6 +4,7 @@ robots usr/share/movai-studio/launch
 models_database usr/share/movai-studio/launch
 scripts/movai-studio-simulator usr/bin/
 scripts/movai-studio-rviz usr/bin/
+scripts/movai-studio-cli usr/bin/
 misc/movai-studio.desktop usr/share/applications
 misc/movai-studio-sim.desktop usr/share/applications
 misc/movai-studio-cli.desktop usr/share/applications
