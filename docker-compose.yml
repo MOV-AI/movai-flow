@@ -44,7 +44,7 @@ x-movai-common:
   &movai-common
   environment:
     &movai-common-env
-    MOVAI_ENV: qa
+    MOVAI_ENV: develop
     MOVAI_USERSPACE: /opt/mov.ai/user
     MOVAI_MANAGER_URI: $MANAGER_URI
     DEVICE_NAME: $MOVAI_DEVICE_NAME
@@ -55,7 +55,6 @@ x-movai-common:
     REDIS_MASTER_PORT: 6379
     REDIS_MASTER_HOST: redis-master
     ROS_MASTER_URI: http://ros-master:11311/
-    ROS_IP: $EXTERNAL_HOST_IP
     PUBLIC_IP: $PUBLIC_IP
     LOG_HTTP_HOST: http://health-node:8081
     IGNITION_MOVAI: "true"
@@ -185,6 +184,8 @@ services:
       backend:
         condition: service_healthy
     container_name: ros-master-$MOVAI_DEVICE_NAME
+    ports:
+      - "${STUDIO_ROS_MASTER_PORT:-11311}:11311"
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/11311"]
       interval: 5s
@@ -243,6 +244,31 @@ services:
     privileged: true
     tty: true
     command: ign gazebo $STUDIO_SIMU_MAP -r
+
+  ros-tools:
+    <<: *movai-common
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/ignition-gazebo:latest
+    container_name: ros-tools-$MOVAI_DEVICE_NAME
+    profiles: ["tools"]
+    environment:
+      <<: *movai-common-env
+      DISPLAY: "$DISPLAY"
+      QT_X11_NO_MITSHM: "1"
+      XAUTHORITY: "$XAUTH"
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $XAUTH:$XAUTH
+    runtime: nvidia
+    networks:
+      - private
+    privileged: true
+    tty: true
+    entrypoint: /bin/bash
+    command:
+      - -ic
+      - |
+        apt install -y rviz
+        exec /usr/bin/rviz
 
   movai-cli:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/movai-service:latest
