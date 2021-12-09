@@ -39,6 +39,8 @@ To do it, edit .env file and customize variables values:
 
     gedit .env
 
+> Values present in the environment at runtime always override those defined inside the .env file. Similarly, values passed via command-line arguments take precedence as well.
+
 ## Running MOVAI Studio
 Now you can start all services:
 

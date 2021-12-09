@@ -7,8 +7,9 @@
 set -e
 
 # Vars to store infos
-HaveNvidia=0    # True if Nvidia GPU found
-HaveResources=0    # True if enough RAM,CPU,DISK found
+HaveNvidia=0        # True if Nvidia GPU found
+HaveDockerNvidia=0  # True if Docker Nvidia runtime found
+HaveResources=0     # True if enough RAM,CPU,DISK found
 
 # File to store infos
 InstConfig=/tmp/movai-studio-installer.log
@@ -20,11 +21,24 @@ Architecture="$(uname -m)"
 if [ "$Architecture" = "x86_64" ]; then
   # Is there a Nvidia card present (possible HW enhanced graphical rendering)
   [ "$(echo /sys/module/nvidia/drivers/pci:nvidia/*:*:*.*)" != "/sys/module/nvidia/drivers/pci:nvidia/*:*:*.*" ] && HaveNvidia=1
+  # Is there NVIDIA Container Toolkit to build and run GPU accelerated Docker containers
+  [ "$(dpkg -l | grep ^ii | grep -iw nvidia-docker2)" != "" ] && HaveDockerNvidia=1
 fi
 if [ $HaveNvidia -gt 0 ]; then
     echo "  Nvidia GPU card found"
 else
     echo "  Nvidia GPU card not found"
+fi
+
+if [ $HaveDockerNvidia -gt 0 ]; then
+    echo "  NVIDIA Container Toolkit found"
+else
+    echo "  NVIDIA Container Toolkit not found"
+    if [ $HaveNvidia -gt 0 ]; then
+      echo -e "\033[1;33mWARNING: NVIDIA GPU found but no NVIDIA Container Toolkit\e[0m"
+      echo "Follow instructions on getting started with the NVIDIA Container Toolkit"
+      echo -e "\thttps://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker"
+    fi
 fi
 
 # Check resources
@@ -75,5 +89,6 @@ fi
 
 {
     echo "HaveNvidia=$HaveNvidia"
+    echo "HaveDockerNvidia=$HaveDockerNvidia"
     echo "HaveResources=$HaveResources"
 } > "$InstConfig"
