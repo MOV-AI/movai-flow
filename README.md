@@ -93,6 +93,11 @@ After starting MOVAI Studio, you can launch Ignition Fortress:
     xhost +local:docker
     docker-compose up simulator
 
+## Accessing ROS tools rviz
+
+    xhost +local:docker
+    docker-compose up ros-tools
+
 ### Running the CLI commands
 You can also run CLI commands, but you have to do it in one of the defined docker-compose services.
 

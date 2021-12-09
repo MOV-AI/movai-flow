@@ -258,6 +258,7 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
+      - ./rviz/default.rviz:/root/.rviz/default.rviz
     runtime: nvidia
     networks:
       - private
