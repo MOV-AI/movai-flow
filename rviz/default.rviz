@@ -6,10 +6,10 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /TF1/Frames1
         - /TF1/Tree1
         - /Visualize Map1/Map1
-      Splitter Ratio: 0.5995315909385681
+        - /Husky sensors1/FrontLaserScan1/Status1
+      Splitter Ratio: 0.75
     Tree Height: 687
   - Class: rviz/Selection
     Name: Selection
@@ -59,20 +59,52 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: false
+        All Enabled: true
         base_link:
           Value: true
         gripper:
           Value: true
         gripper_hand:
           Value: true
+        husky/base_link/imu_sensor:
+          Value: true
+        husky/camera_front:
+          Value: true
+        husky/camera_front/camera_front:
+          Value: true
+        husky/front_laser:
+          Value: true
+        husky/front_laser/front_laser:
+          Value: true
+        husky/front_left_wheel_link:
+          Value: true
+        husky/front_right_wheel_link:
+          Value: true
+        husky/pan_gimbal_link:
+          Value: true
+        husky/planar_laser:
+          Value: true
+        husky/planar_laser/planar_laser:
+          Value: true
+        husky/rear_left_wheel_link:
+          Value: true
+        husky/rear_right_wheel_link:
+          Value: true
+        husky/tilt_gimbal_link:
+          Value: true
+        husky/tilt_gimbal_link/camera_pan_tilt:
+          Value: true
         map:
           Value: true
         odom:
           Value: true
+        pan_gimbal_link:
+          Value: true
         tag_0:
           Value: true
         tf_generated:
+          Value: true
+        tilt_gimbal_link:
           Value: true
         tugbot/base_link/imu:
           Value: true
@@ -124,45 +156,37 @@ Visualization Manager:
       Tree:
         map:
           base_link:
+            husky/base_link/imu_sensor:
+              {}
+            husky/camera_front:
+              husky/camera_front/camera_front:
+                {}
+            husky/front_laser:
+              husky/front_laser/front_laser:
+                {}
+            husky/front_left_wheel_link:
+              {}
+            husky/front_right_wheel_link:
+              {}
+            husky/pan_gimbal_link:
+              pan_gimbal_link:
+                {}
+            husky/planar_laser:
+              husky/planar_laser/planar_laser:
+                {}
+            husky/rear_left_wheel_link:
+              {}
+            husky/rear_right_wheel_link:
+              {}
+            husky/tilt_gimbal_link:
+              husky/tilt_gimbal_link/camera_pan_tilt:
+                {}
+              tilt_gimbal_link:
+                {}
             tugbot/base_link/imu:
               {}
-            tugbot/camera_back:
-              tugbot/camera_back/color:
-                {}
-              tugbot/camera_back/depth:
-                {}
-            tugbot/camera_front:
-              tugbot/camera_front/color:
-                {}
-              tugbot/camera_front/depth:
-                {}
-            tugbot/gripper:
-              gripper:
-                {}
-              tugbot/gripper/sensor_contact:
-                {}
-            tugbot/gripper_hand:
-              gripper_hand:
-                {}
-            tugbot/scan_back:
-              tugbot/scan_back/scan_back:
-                {}
-            tugbot/scan_front:
-              tugbot/scan_front/scan_front:
-                {}
-            tugbot/scan_omni:
-              tugbot/scan_omni/scan_omni:
-                {}
-            tugbot/warnign_light:
-              {}
-            tugbot/wheel_back:
-              {}
-            tugbot/wheel_front:
-              {}
-            tugbot/wheel_left:
-              {}
-            tugbot/wheel_right:
-              {}
+          odom:
+            {}
       Update Interval: 0
       Value: true
     - Class: rviz/Group
@@ -673,6 +697,30 @@ Visualization Manager:
           Transport Hint: raw
           Unreliable: false
           Value: false
+        - Class: rviz/Image
+          Enabled: false
+          Image Topic: /camera_back/depth/depth_image
+          Max Value: 1
+          Median window: 5
+          Min Value: 0
+          Name: BackCameraDepthImage
+          Normalize Range: true
+          Queue Size: 2
+          Transport Hint: raw
+          Unreliable: false
+          Value: false
+        - Class: rviz/Image
+          Enabled: false
+          Image Topic: /camera_front/depth/depth_image
+          Max Value: 1
+          Median window: 5
+          Min Value: 0
+          Name: FrontCameraDepthImage
+          Normalize Range: true
+          Queue Size: 2
+          Transport Hint: raw
+          Unreliable: false
+          Value: false
         - Alpha: 1
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
@@ -841,30 +889,6 @@ Visualization Manager:
           Use Fixed Frame: true
           Use rainbow: true
           Value: false
-        - Class: rviz/Image
-          Enabled: false
-          Image Topic: /camera_back/depth/depth_image
-          Max Value: 1
-          Median window: 5
-          Min Value: 0
-          Name: BackCameraDepthImage
-          Normalize Range: true
-          Queue Size: 2
-          Transport Hint: raw
-          Unreliable: false
-          Value: false
-        - Class: rviz/Image
-          Enabled: false
-          Image Topic: /camera_front/depth/depth_image
-          Max Value: 1
-          Median window: 5
-          Min Value: 0
-          Name: FrontCameraDepthImage
-          Normalize Range: true
-          Queue Size: 2
-          Transport Hint: raw
-          Unreliable: false
-          Value: false
         - Angle Tolerance: 0.10000000149011612
           Class: rviz/Odometry
           Covariance:
@@ -912,6 +936,70 @@ Visualization Manager:
       Name: Tugbot sensors
     - Class: rviz/Group
       Displays:
+        - Class: rviz/Image
+          Enabled: false
+          Image Topic: /camera_front/image_raw
+          Max Value: 1
+          Median window: 5
+          Min Value: 0
+          Name: FrontCamera
+          Normalize Range: true
+          Queue Size: 2
+          Transport Hint: raw
+          Unreliable: false
+          Value: false
+        - Class: rviz/Image
+          Enabled: false
+          Image Topic: /camera_pan_tilt/image_raw
+          Max Value: 1
+          Median window: 5
+          Min Value: 0
+          Name: PanTiltCamera
+          Normalize Range: true
+          Queue Size: 2
+          Transport Hint: raw
+          Unreliable: false
+          Value: false
+        - Class: rviz/Image
+          Enabled: false
+          Image Topic: /camera_pan_tilt/depth_image
+          Max Value: 1
+          Median window: 5
+          Min Value: 0
+          Name: PanTiltCameraDepthImage
+          Normalize Range: true
+          Queue Size: 2
+          Transport Hint: raw
+          Unreliable: false
+          Value: false
+        - Alpha: 1
+          Autocompute Intensity Bounds: true
+          Autocompute Value Bounds:
+            Max Value: 4.902854919433594
+            Min Value: -0.02716478705406189
+            Value: true
+          Axis: Z
+          Channel Name: intensity
+          Class: rviz/PointCloud2
+          Color: 255; 255; 255
+          Color Transformer: RGB8
+          Decay Time: 0
+          Enabled: false
+          Invert Rainbow: false
+          Max Color: 255; 255; 255
+          Min Color: 0; 0; 0
+          Name: PanTiltCameraDepthCloud
+          Position Transformer: XYZ
+          Queue Size: 10
+          Selectable: true
+          Size (Pixels): 3
+          Size (m): 0.009999999776482582
+          Style: Flat Squares
+          Topic: /camera_pan_tilt/points
+          Unreliable: false
+          Use Fixed Frame: true
+          Use rainbow: true
+          Value: false
         - Alpha: 1
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
@@ -922,23 +1010,23 @@ Visualization Manager:
           Channel Name: intensity
           Class: rviz/LaserScan
           Color: 255; 255; 255
-          Color Transformer: FlatColor
+          Color Transformer: Intensity
           Decay Time: 0
           Enabled: false
           Invert Rainbow: false
           Max Color: 255; 255; 255
-          Min Color: 0; 0; 0
+          Min Color: 255; 0; 4
           Name: FrontLaserScan
           Position Transformer: XYZ
           Queue Size: 10
           Selectable: true
           Size (Pixels): 3
-          Size (m): 0.10000000149011612
+          Size (m): 0.07000000029802322
           Style: Flat Squares
           Topic: /planar_laser/scan
           Unreliable: false
           Use Fixed Frame: true
-          Use rainbow: true
+          Use rainbow: false
           Value: false
         - Alpha: 1
           Autocompute Intensity Bounds: true
@@ -961,7 +1049,7 @@ Visualization Manager:
           Queue Size: 10
           Selectable: true
           Size (Pixels): 3
-          Size (m): 0.10000000149011612
+          Size (m): 0.07000000029802322
           Style: Flat Squares
           Topic: /scan_omni/scan
           Unreliable: false
@@ -971,8 +1059,8 @@ Visualization Manager:
         - Alpha: 1
           Autocompute Intensity Bounds: true
           Autocompute Value Bounds:
-            Max Value: 5.404797077178955
-            Min Value: -0.15094336867332458
+            Max Value: 10
+            Min Value: -10
             Value: true
           Axis: Z
           Channel Name: intensity
@@ -996,13 +1084,56 @@ Visualization Manager:
           Use Fixed Frame: true
           Use rainbow: true
           Value: false
+        - Angle Tolerance: 0.10000000149011612
+          Class: rviz/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.30000001192092896
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: true
+          Enabled: false
+          Keep: 10
+          Name: Odometry
+          Position Tolerance: 0.10000000149011612
+          Shape:
+            Alpha: 1
+            Axes Length: 1
+            Axes Radius: 0.10000000149011612
+            Color: 255; 25; 0
+            Head Length: 0.30000001192092896
+            Head Radius: 0.10000000149011612
+            Shaft Length: 1
+            Shaft Radius: 0.05000000074505806
+            Value: Arrow
+          Topic: /wheels_controller/odom
+          Unreliable: false
+          Value: false
+        - Alpha: 1
+          Class: rviz_plugin_tutorials/Imu
+          Color: 204; 51; 204
+          Enabled: false
+          History Length: 1
+          Name: Imu
+          Topic: /imu/imu
+          Unreliable: false
+          Value: false
       Enabled: false
       Name: Husky sensors
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
     Default Light: true
-    Fixed Frame: base_link
+    Fixed Frame: map
     Frame Rate: 30
   Name: root
   Tools:
@@ -1026,25 +1157,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 83.50794219970703
+      Distance: 63.79860305786133
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: -0.5249765515327454
-        Y: 0.4186197817325592
-        Z: -0.000457763671875
+        X: 0.18191185593605042
+        Y: -2.737291097640991
+        Z: 0.08611579239368439
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5447968244552612
+      Pitch: 1.1747967004776
       Target Frame: map
       Value: Orbit (rviz)
-      Yaw: 6.133183479309082
+      Yaw: 3.124998092651367
     Saved: ~
 Window Geometry:
   BackCamera:
@@ -1059,8 +1190,12 @@ Window Geometry:
     collapsed: false
   Height: 978
   Hide Left Dock: false
-  Hide Right Dock: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000001cf00000338fc0200000028fb000000100044006900730070006c006100790073010000003b00000338000000c700fffffffb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d0061006700650100000261000001120000000000000000fb0000001600460072006f006e007400430061006d00650072006100000002800000006c0000000000000000fb00000014004200610063006b00430061006d00650072006100000002df0000004f0000000000000000fb00000028004200610063006b00430061006d006500720061004400650070007400680049006d006100670065000000032d000000220000000000000000fb0000002a00460072006f006e007400430061006d006500720061004400650070007400680049006d0061006700650000000353000000200000000000000000fb00000014004200610063006b00430061006d006500720061000000022d000000350000000000000000fb0000001600460072006f006e007400430061006d0065007200610000000268000000870000000000000000fb00000028004200610063006b00430061006d006500720061004400650070007400680049006d00610067006500000002f5000000460000000000000000fb0000002a00460072006f006e007400430061006d006500720061004400650070007400680049006d0061006700650000000341000000320000000000000000fb0000002a00460072006f006e007400430061006d006500720061004400650070007400680049006d006100670065020000000a00000270000001bb0000013ffb0000001600460072006f006e007400430061006d006500720061000000020a000000730000000000000000fb00000014004200610063006b00430061006d006500720061000000025a000000a50000000000000000fb00000028004200610063006b00430061006d006500720061004400650070007400680049006d00610067006500000002e80000008b0000000000000000fb0000001600460072006f006e007400430061006d0065007200610000000147000000540000000000000000fb00000014004200610063006b00430061006d00650072006100000001680000007c0000000000000000fb0000002a00460072006f006e007400430061006d006500720061004400650070007400680049006d00610067006500000001a0000000c60000000000000000fb00000028004200610063006b00430061006d006500720061004400650070007400680049006d00610067006500000002150000015e0000000000000000fb00000014004200610063006b00430061006d0065007200610000000147000000540000000000000000fb0000002a00460072006f006e007400430061006d006500720061004400650070007400680049006d00610067006500000001680000007c0000000000000000fb0000001600460072006f006e007400430061006d00650072006100000001a0000000c60000000000000000fb00000028004200610063006b00430061006d006500720061004400650070007400680049006d00610067006500000002150000015e0000000000000000fb0000001600460072006f006e007400430061006d006500720061000000011c000000c50000000000000000fb00000028004200610063006b00430061006d006500720061004400650070007400680049006d0061006700650000000166000000850000000000000000fb0000002a00460072006f006e007400430061006d006500720061004400650070007400680049006d00610067006500000001a3000000940000000000000000fb00000014004200610063006b00430061006d00650072006100000001f50000017e0000000000000000fb0000002200430061006d0065007200610020004200610063006b00200049006d0061006700650000000000ffffffff0000000000000000fb0000002400430061006d006500720061002000460072006f006e007400200049006d0061006700650000000000ffffffff0000000000000000fb0000001600460072006f006e007400430061006d0065007200610000000146000000790000001600fffffffb00000028004200610063006b00430061006d006500720061004400650070007400680049006d00610067006500000002cf000000a40000001600fffffffb0000002a00460072006f006e007400430061006d006500720061004400650070007400680049006d00610067006500000001c9000000ce0000001600fffffffb00000014004200610063006b00430061006d0065007200610000000252000001210000001600fffffffb00000014004200610063006b00430061006d00650072006100000002ae000000c50000001600ffffff000000010000010f00000338fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073010000003b00000338000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000005000000003efc0100000002fb0000000800540069006d00650100000000000005000000024400fffffffb0000000800540069006d00650100000000000004500000000000000000000002160000033800000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Hide Right Dock: true
+  PanTiltCamera:
+    collapsed: false
+  PanTiltCameraDepthImage:
+    collapsed: false
+  QMainWindow State: 000000ff00000000fd00000004000000000000015600000338fc020000002efb000000100044006900730070006c006100790073010000003b00000338000000c700fffffffb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000a0049006d0061006700650100000261000001120000000000000000fb0000001600460072006f006e007400430061006d00650072006100000002800000006c0000000000000000fb00000014004200610063006b00430061006d00650072006100000002df0000004f0000000000000000fb00000028004200610063006b00430061006d006500720061004400650070007400680049006d006100670065000000032d000000220000000000000000fb0000002a00460072006f006e007400430061006d006500720061004400650070007400680049006d0061006700650000000353000000200000000000000000fb00000014004200610063006b00430061006d006500720061000000022d000000350000000000000000fb0000001600460072006f006e007400430061006d0065007200610000000268000000870000000000000000fb00000028004200610063006b00430061006d006500720061004400650070007400680049006d00610067006500000002f5000000460000000000000000fb0000002a00460072006f006e007400430061006d006500720061004400650070007400680049006d0061006700650000000341000000320000000000000000fb0000002a00460072006f006e007400430061006d006500720061004400650070007400680049006d006100670065020000000a00000270000001bb0000013ffb0000001600460072006f006e007400430061006d006500720061000000020a000000730000000000000000fb00000014004200610063006b00430061006d006500720061000000025a000000a50000000000000000fb00000028004200610063006b00430061006d006500720061004400650070007400680049006d00610067006500000002e80000008b0000000000000000fb0000001600460072006f006e007400430061006d0065007200610000000147000000540000000000000000fb00000014004200610063006b00430061006d00650072006100000001680000007c0000000000000000fb0000002a00460072006f006e007400430061006d006500720061004400650070007400680049006d00610067006500000001a0000000c60000000000000000fb00000028004200610063006b00430061006d006500720061004400650070007400680049006d00610067006500000002150000015e0000000000000000fb00000014004200610063006b00430061006d0065007200610000000147000000540000000000000000fb0000002a00460072006f006e007400430061006d006500720061004400650070007400680049006d00610067006500000001680000007c0000000000000000fb0000001600460072006f006e007400430061006d00650072006100000001a0000000c60000000000000000fb00000028004200610063006b00430061006d006500720061004400650070007400680049006d00610067006500000002150000015e0000000000000000fb0000001600460072006f006e007400430061006d006500720061000000011c000000c50000000000000000fb00000028004200610063006b00430061006d006500720061004400650070007400680049006d0061006700650000000166000000850000000000000000fb0000002a00460072006f006e007400430061006d006500720061004400650070007400680049006d00610067006500000001a3000000940000000000000000fb00000014004200610063006b00430061006d00650072006100000001f50000017e0000000000000000fb0000002200430061006d0065007200610020004200610063006b00200049006d0061006700650000000000ffffffff0000000000000000fb0000002400430061006d006500720061002000460072006f006e007400200049006d0061006700650000000000ffffffff0000000000000000fb0000001600460072006f006e007400430061006d0065007200610000000146000000790000001600fffffffb00000028004200610063006b00430061006d006500720061004400650070007400680049006d006100670065000000019b000000a40000001600fffffffb0000002a00460072006f006e007400430061006d006500720061004400650070007400680049006d00610067006501000001f1000000ce0000000000000000fb00000014004200610063006b00430061006d0065007200610000000252000001210000001600fffffffb00000014004200610063006b00430061006d00650072006100000002ae000000c50000001600fffffffb00000014004200610063006b00430061006d00650072006101000002dc000000970000000000000000fb0000001600460072006f006e007400430061006d00650072006100000002b9000000ba0000001600fffffffb0000002e00500061006e00540069006c007400430061006d006500720061004400650070007400680049006d0061006700650000000288000000eb0000001600fffffffb00000028004200610063006b00430061006d006500720061004400650070007400680049006d006100670065000000020b000001680000000000000000fb0000001a00500061006e00540069006c007400430061006d00650072006100000002ae000000c50000001600fffffffb0000002a00460072006f006e007400430061006d006500720061004400650070007400680049006d00610067006500000002ae000000c50000001600ffffff000000010000010f00000338fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003b00000338000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000005000000003efc0100000002fb0000000800540069006d00650100000000000005000000024400fffffffb0000000800540069006d00650100000000000004500000000000000000000003a40000033800000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -1068,7 +1203,7 @@ Window Geometry:
   Tool Properties:
     collapsed: false
   Views:
-    collapsed: false
+    collapsed: true
   Width: 1280
   X: -6
   Y: -6
