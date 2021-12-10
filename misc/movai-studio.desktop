@@ -2,7 +2,7 @@
 Name=MOV.AI Studio
 GenericName=ROS Studio
 Comment=MOV.AI Development Studio
-Exec=x-www-browser --app=http://localhost:5004/ http://localhost:5004/
+Exec=x-www-browser --app=http://localhost:8080/ http://localhost:8080/
 Icon=movai-studio
 Terminal=false
 StartupWMClass=MOV.AI Studio
