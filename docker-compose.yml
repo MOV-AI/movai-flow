@@ -301,26 +301,14 @@ services:
   haproxy:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/haproxy:latest
     container_name: haproxy-$MOVAI_DEVICE_NAME
-    network_mode: host
-    profiles: ["proxy"]
+    networks:
+      - private
+      - proxy
     volumes:
       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:rw
-    expose:
-      - 11411/tcp
-      - 2000/tcp
-      - 443/tcp
-      - 6379/tcp
-      - 80/tcp
-      - 8901/tcp
-      - 9090/tcp
-      - 3000/tcp
-    # ports:
-    #   - "$LOCAL_IP:11411:11411"
-    #   - "$LOCAL_IP:2000:2000"
-    #   - "$LOCAL_IP:443:443"
-    #   - "$LOCAL_IP:6379:6379"
-    #   - "$LOCAL_IP:8901:8901"
-    #   - "$LOCAL_IP:9090:9090"
+    ports:
+      - "${STUDIO_HTTP_PORT:-8080}:80"
+      - "${STUDIO_HTTPS_PORT:-8443}:443"
     environment:
       - SPAWNER_PORTS="bind :11411\\n\\tbind :9090"
 
