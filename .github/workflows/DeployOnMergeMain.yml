@@ -55,7 +55,9 @@ jobs:
         git config --global user.email '${{ secrets.RAISE_BOT_COMMIT_MAIL }}'
         git pull
         git add debian/changelog
-        git push
+        git commit -m "Automatic Bump of build version"
+        git pull
+        git push --force-with-lease
 
 
     - name: Publish to Nexus ppa-dev
