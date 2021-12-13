@@ -8,6 +8,7 @@
     Type=simple
     User=root
     Group=docker
+    EnvironmentFile=-/etc/movai-studio/config.env
     WorkingDirectory=/usr/share/movai-studio/launch
     # Shutdown container (if running) when unit is started
     ExecStartPre=/usr/local/bin/docker-compose -f /usr/share/movai-studio/launch/docker-compose.yml down
