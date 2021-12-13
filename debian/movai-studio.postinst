@@ -11,6 +11,7 @@
 
 SERVICENAME=movai-studio
 APP_PATH=/usr/share/$SERVICENAME/launch
+CONFIG_PATH=/etc/$SERVICENAME
 
 Output() {
   # Prepare base message
@@ -55,6 +56,17 @@ else
 fi
 
 if [ "$1" == "configure" ]; then
+    Output "Preparing $SERVICENAME config"
+    mkdir -p $CONFIG_PATH/
+
+    if [ -f $CONFIG_PATH/config.env ]; then
+      Output "Re-using $SERVICENAME config"
+    else
+      FLEET_TOKEN="$(echo movai:ce-studio$RANDOM | base64 -w0)"
+      echo FLEET_TOKEN=$FLEET_TOKEN > $CONFIG_PATH/config.env
+      Output "Created $SERVICENAME fleet token"
+    fi
+
     Output "Reloading systemd config"
     systemctl daemon-reload || true
 
