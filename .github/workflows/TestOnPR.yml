@@ -118,7 +118,8 @@ jobs:
 
     - name: Pack debian
       run: |
-        apt-get install devscripts equivs git-buildpackage
+        apt-get update
+        apt-get install -y devscripts equivs git-buildpackage
 
         # Set the install command to be used by mk-build-deps (use --yes for non-interactive)
         install_tool="apt-get -o Debug::pkgProblemResolver=yes --no-install-recommends --yes"
