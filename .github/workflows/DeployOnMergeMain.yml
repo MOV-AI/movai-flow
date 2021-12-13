@@ -66,8 +66,7 @@ jobs:
 
     - name: Raise App version
       run: |
-        git add debian/changelog
-        git commit -m "Automatic Bump of build version"
+        # commit of debian/changelog previously done
         git pull
         git push --force-with-lease
 
