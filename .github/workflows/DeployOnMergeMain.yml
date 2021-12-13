@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-20.04
     container:
       image: registry.cloud.mov.ai/devops/ros-buildtools-noetic:main
+      options: --user root
       credentials:
         username: ${{secrets.PORTUS_APP_USER}}
         password: ${{secrets.PORTUS_APP_TOKEN}}
