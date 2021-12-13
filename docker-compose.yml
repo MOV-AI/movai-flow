@@ -44,22 +44,22 @@ x-movai-common:
   &movai-common
   environment:
     &movai-common-env
-    MOVAI_ENV: qa
+    MOVAI_ENV: ${MOVAI_ENV:-qa}
+    LOGLEVEL: WARNING
     MOVAI_USERSPACE: /opt/mov.ai/user
-    MOVAI_MANAGER_URI: $MANAGER_URI
-    DEVICE_NAME: $MOVAI_DEVICE_NAME
-    FLEET_NAME: $FLEET_NAME
-    FLEET_TOKEN: $FLEET_TOKEN
+    MOVAI_MANAGER_URI: ${MANAGER_URI:-http://localhost}
+    DEVICE_NAME: ${MOVAI_DEVICE_NAME:-studio}
+    FLEET_NAME: ${FLEET_NAME:?missing FLEET_NAME ENV var}
+    FLEET_TOKEN: ${FLEET_TOKEN:?missing FLEET_TOKEN ENV var}
     REDIS_LOCAL_PORT: 6379
     REDIS_LOCAL_HOST: redis-local
     REDIS_MASTER_PORT: 6379
     REDIS_MASTER_HOST: redis-master
     ROS_MASTER_URI: http://ros-master:11311/
-    ROS_IP: $EXTERNAL_HOST_IP
-    PUBLIC_IP: $PUBLIC_IP
+    PUBLIC_IP: ${PUBLIC_IP:-127.0.0.1}
     LOG_HTTP_HOST: http://health-node:8081
     IGNITION_MOVAI: "true"
-    IGN_PARTITION: "TODO_RANDOMIZE_ME"
+    IGN_PARTITION: ${IGN_PARTITION:?missing IGN_PARTITION ENV var}
     IGNITION_VERSION: fortress
   volumes:
     - ./userspace:/opt/mov.ai/user
@@ -89,7 +89,7 @@ services:
     healthcheck:
       # test: [ "CMD", "echo", ">", "/dev/tcp/localhost/6379" ]
       test: "apt-get update && apt-get install -y movai-baseline $STUDIO_DB_PACKAGES"
-      interval: 5s
+      interval: 3s
       timeout: 60s
       retries: 1
     volumes:
@@ -109,7 +109,7 @@ services:
       - "6380:6379"
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/6380"]
-      interval: 5s
+      interval: 3s
       timeout: 2s
       retries: 3
     volumes:
@@ -152,7 +152,7 @@ services:
       - private
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/8086"]
-      interval: 5s
+      interval: 3s
       timeout: 2s
       retries: 3
     volumes:
@@ -168,7 +168,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/8081"]
-      interval: 5s
+      interval: 3s
       timeout: 2s
       retries: 3
     environment:
@@ -185,9 +185,11 @@ services:
       backend:
         condition: service_healthy
     container_name: ros-master-$MOVAI_DEVICE_NAME
+    ports:
+      - "${STUDIO_ROS_MASTER_PORT:-11311}:11311"
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/11311"]
-      interval: 5s
+      interval: 3s
       timeout: 2s
       retries: 3
 
@@ -244,6 +246,33 @@ services:
     tty: true
     command: ign gazebo $STUDIO_SIMU_MAP -r
 
+  ros-tools:
+    <<: *movai-common
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-tools-noetic:main
+    container_name: ros-tools-$MOVAI_DEVICE_NAME
+    profiles: ["tools"]
+    environment:
+      <<: *movai-common-env
+      DISPLAY: "$DISPLAY"
+      QT_X11_NO_MITSHM: "1"
+      XAUTHORITY: "$XAUTH"
+      NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
+      NVIDIA_DRIVER_CAPABILITIES: ${NVIDIA_DRIVER_CAPABILITIES:-graphics}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - $XAUTH:$XAUTH
+      - ./rviz/default.rviz:/opt/ros/noetic/share/rviz/default.rviz:rw
+    runtime: nvidia
+    networks:
+      - private
+    privileged: true
+    tty: true
+    entrypoint: /bin/bash
+    command:
+      - -ic
+      - |
+        exec /usr/local/bin/rviz.sh
+
   movai-cli:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/movai-service:latest
     depends_on:
@@ -272,26 +301,14 @@ services:
   haproxy:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/haproxy:latest
     container_name: haproxy-$MOVAI_DEVICE_NAME
-    network_mode: host
-    profiles: ["proxy"]
+    networks:
+      - private
+      - proxy
     volumes:
       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:rw
-    expose:
-      - 11411/tcp
-      - 2000/tcp
-      - 443/tcp
-      - 6379/tcp
-      - 80/tcp
-      - 8901/tcp
-      - 9090/tcp
-      - 3000/tcp
-    # ports:
-    #   - "$LOCAL_IP:11411:11411"
-    #   - "$LOCAL_IP:2000:2000"
-    #   - "$LOCAL_IP:443:443"
-    #   - "$LOCAL_IP:6379:6379"
-    #   - "$LOCAL_IP:8901:8901"
-    #   - "$LOCAL_IP:9090:9090"
+    ports:
+      - "${STUDIO_HTTP_PORT:-8080}:80"
+      - "${STUDIO_HTTPS_PORT:-8443}:443"
     environment:
       - SPAWNER_PORTS="bind :11411\\n\\tbind :9090"
 
