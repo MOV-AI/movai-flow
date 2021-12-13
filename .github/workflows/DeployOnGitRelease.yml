@@ -7,15 +7,13 @@ jobs:
   Deploy-App-General-Avaiability:
     runs-on: ubuntu-20.04
     container:
-      image: registry.cloud.mov.ai/devops/npm-buildserver:latest
+      image: registry.cloud.mov.ai/devops/py-buildserver:latest
       credentials:
-        username: ${{secrets.PORTUS_APP_USER}} 
-        password: ${{secrets.PORTUS_APP_TOKEN}} 
-    env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
+        username: ${{secrets.PORTUS_APP_USER}}
+        password: ${{secrets.PORTUS_APP_TOKEN}}
+
     steps:
-    - name: Checkout    
+    - name: Checkout
       uses: actions/checkout@v2
 
     - name: Set tag output
@@ -23,7 +21,7 @@ jobs:
       run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
 
     - name: Fetch artifact from github release
-      run: | 
+      run: |
         mkdir artifacts
         cd artifacts
         gh release download ${{ steps.vars.outputs.tag}} -p *.deb
