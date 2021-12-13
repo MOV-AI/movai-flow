@@ -1,4 +1,4 @@
-movai-studio (1.0.0-0) UNRELEASED; urgency=medium
+movai-studio (1.0.0-1) UNRELEASED; urgency=medium
 
   [ Alex Fernandes ]
   *
@@ -30,4 +30,7 @@ movai-studio (1.0.0-0) UNRELEASED; urgency=medium
   * fix service init
   * bump and fixes
 
- -- Alex Fernandes <devops@mov.ai>  Mon, 29 Nov 2021 22:43:07 +0000
+  [ root ]
+  * bump version
+
+ -- root <root@b637ab3c3806>  Mon, 13 Dec 2021 17:40:54 +0000
