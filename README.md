@@ -44,7 +44,7 @@ To do it, edit .env file and customize variables values:
 ## Running MOVAI Studio
 Now you can start all services:
 
-    docker-compose up
+    docker-compose up -d
 
 After initialization is complete, you should see a message like below:
 
@@ -67,15 +67,40 @@ The best way to do it is to:
  - re-start following the instructions from the very beginning in this guide
 
 ## Accessing the Studio
-After starting MOVAI Studio, you can interact with it in 3 ways:
+After starting MOVAI Studio, you can interact with it in different ways:
 
- - by running CLI commands.
+- via a browser using the web interface.
+- using the REST API.
+- by running CLI commands.
+- by running the Simulator
+- by running the ROS tools rviz
 
- - via a browser using the web interface.
+### Accessing the web interface
+Once the cluster has started up, you can log in to the web interface and try to run some tasks.
 
- - using the REST API.
+The webserver is available at: http://localhost:8080. The default account has the login `movai` and the password `movai`.
 
-## Accessing the Simulator
+### Sending requests to the REST API
+Basic username password authentication is currently supported for the REST API, which means you can use common tools to send requests to the API.
+
+The webserver is available at: http://localhost:8080. The default account has the login `movai` and the password `movai`.
+
+Here is a sample curl command, which sends a request to ...:
+
+    ENDPOINT_URL="http://localhost:8080/"
+    curl -X GET  \
+        --user "movai:movai" \
+        "${ENDPOINT_URL}/api/v1/..."
+
+
+### Running the CLI commands
+You can also run CLI commands, but you have to do it in one of the defined docker-compose services.
+
+For example, to run `movai-cli list`, run the following command:
+
+    docker-compose exec movai-cli movai-cli list
+
+### Accessing the Simulator
 First of all:
 
 Install NVIDIA-DOCKER service to enable GPU resources inside the container:
@@ -95,17 +120,11 @@ After starting MOVAI Studio, you can launch Ignition Fortress:
     xhost +local:docker
     docker-compose up simulator
 
-## Accessing ROS tools rviz
+### Accessing ROS tools rviz
 
     xhost +local:docker
     docker-compose up ros-tools
 
-### Running the CLI commands
-You can also run CLI commands, but you have to do it in one of the defined docker-compose services.
-
-For example, to run `movai-cli list`, run the following command:
-
-    docker-compose exec movai-cli movai-cli list
 
 ### Accessing the web interface
 Once the cluster has started up, you can log in to the web interface and try to run some tasks.
@@ -119,10 +138,10 @@ The webserver is available at: http://localhost:8080. The default account has th
 
 Here is a sample curl command, which sends a request to ...:
 
-ENDPOINT_URL="http://localhost:8080/"
-curl -X GET  \
-    --user "movai:movai" \
-    "${ENDPOINT_URL}/api/v1/..."
+    ENDPOINT_URL="http://localhost:8080/"
+    curl -X GET  \
+        --user "movai:movai" \
+        "${ENDPOINT_URL}/api/v1/..."
 
 
 ### Cleaning up
