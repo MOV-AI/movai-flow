@@ -46,10 +46,6 @@ Now you can start all services:
 
     docker-compose up -d
 
-After initialization is complete, you should see a message like below:
-
-    ...
-
 > The account created has the login `movai` and the password `movai`.
 
 
