@@ -1,4 +1,4 @@
-movai-studio (1.0.2) UNRELEASED; urgency=medium
+movai-studio (1.0.2-1) UNRELEASED; urgency=medium
 
 
   [ Alex Fernandes ]
@@ -38,5 +38,6 @@ movai-studio (1.0.2) UNRELEASED; urgency=medium
   [ Alex Fernandes ]
   * DP-349 : update ce-demos and rviz (#11)
   * Update README.md
+  * fix
 
- -- Alex Fernandes <afe@afe-laptop>  Mon, 13 Dec 2021 23:59:19 +0000
+ -- Alex Fernandes <afe@afe-laptop>  Tue, 14 Dec 2021 00:08:39 +0000
