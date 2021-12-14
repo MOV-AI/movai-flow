@@ -54,8 +54,8 @@ jobs:
         # Install build dependencies automatically
         mk-build-deps --install --tool="${install_tool}" debian/control
 
-        # Add Snapshot version into changelog and commit it
-        gbp dch --ignore-branch -N ${{ steps.vars-after-raise.outputs.pkg_version }} -S -c
+        # Add version into changelog and commit it
+        gbp dch --ignore-branch -N ${{ steps.vars-after-raise.outputs.pkg_version }} -c
 
         # Build .deb with binaries only
         dpkg-buildpackage -b --unsigned-source --unsigned-changes
