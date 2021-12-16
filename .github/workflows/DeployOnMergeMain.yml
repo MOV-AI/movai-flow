@@ -54,8 +54,8 @@ jobs:
         # Install build dependencies automatically
         mk-build-deps --install --tool="${install_tool}" debian/control
 
-        # Add Snapshot version into changelog and commit it
-        gbp dch --ignore-branch -N ${{ steps.vars-after-raise.outputs.pkg_version }} -S -c
+        # Add version into changelog and commit it
+        gbp dch --ignore-branch -N ${{ steps.vars-after-raise.outputs.pkg_version }} -c
 
         # Build .deb with binaries only
         dpkg-buildpackage -b --unsigned-source --unsigned-changes
@@ -98,6 +98,7 @@ jobs:
         name: "Release of ${{ steps.vars-after-raise.outputs.pkg_version  }}"
         generate_release_notes: true
         files: artifacts/*.deb
+        tag_name: ${{ steps.vars-after-raise.outputs.pkg_version  }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

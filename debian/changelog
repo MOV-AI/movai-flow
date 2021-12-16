@@ -1,6 +1,4 @@
-movai-studio (1.0.0-2~1.gbp1652b6) UNRELEASED; urgency=medium
-
-  ** SNAPSHOT build @1652b640ea9d90d4b7f5f96f4ee4ca3f39f7719a **
+movai-studio (1.0.2-4) UNRELEASED; urgency=medium
 
   [ Alex Fernandes ]
   *
@@ -36,4 +34,15 @@ movai-studio (1.0.0-2~1.gbp1652b6) UNRELEASED; urgency=medium
   * bump version
   * UNRELEASED
 
- -- root <root@742d3d0430dd>  Mon, 13 Dec 2021 23:36:53 +0000
+  [ Alex Fernandes ]
+  * DP-349 : update ce-demos and rviz (#11)
+  * Update README.md
+  * fix
+
+  [ root ]
+  * UNRELEASED
+  * UNRELEASED
+  * UNRELEASED
+
+ -- root <root@89de88d11bcc>  Thu, 16 Dec 2021 10:21:13 +0000
+ 
