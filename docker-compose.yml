@@ -124,7 +124,7 @@ services:
     depends_on:
       <<: *movai-common-depend
     ports:
-      - "${STUDIO_WEB_PORT:-8080}:5004"
+      - "${STUDIO_WEB_PORT:-5004}:5004"
     entrypoint: /bin/bash
     environment:
       <<: *movai-common-env
@@ -203,14 +203,14 @@ services:
       <<: *movai-common-depend
       backend:
         condition: service_healthy
-    entrypoint: /bin/bash
-    command:
-      - -ic
-      - |
+    healthcheck:
+      test: |
         if [ -n "$STUDIO_SPAWNER_PACKAGES" ]; then
           sudo apt-get update && sudo apt-get install -y $STUDIO_SPAWNER_PACKAGES
         fi
-        exec docker-entrypoint.sh
+      interval: 20s
+      timeout: 60s
+      retries: 1
     container_name: spawner-$MOVAI_DEVICE_NAME
     volumes:
       - /dev:/dev
