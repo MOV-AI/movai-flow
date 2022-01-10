@@ -248,7 +248,7 @@ services:
 
   ros-tools:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-tools-noetic:main
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-tools-ce:main
     container_name: ros-tools-$MOVAI_DEVICE_NAME
     profiles: ["tools"]
     environment:
@@ -261,7 +261,7 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
-      - ./rviz/default.rviz:/opt/ros/noetic/share/rviz/default.rviz:rw
+      - ./rviz/default.rviz:/headless/.rviz/default.rviz:rw
     runtime: nvidia
     networks:
       - private
@@ -271,7 +271,7 @@ services:
     command:
       - -ic
       - |
-        exec /usr/local/bin/rviz.sh
+        exec /usr/bin/rviz
 
   movai-cli:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/movai-service:latest
