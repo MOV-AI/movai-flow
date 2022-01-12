@@ -16,6 +16,23 @@ Follow these steps to install the necessary tools:
     docker login registry.cloud.mov.ai -u username
     ```
 
+## Install MOVAI Studio
+
+> Important Notes :
+>
+>  - current version is only tested on Ubuntu 20.04 / Debian
+>  - current version is only tested with NVidia GPU
+
+Retrieve the `movai-studio` package by downloading it from GitHub releases and then using Linux package manager.
+
+Or `movai-studio` package is also available from our repository :
+
+```shell
+curl -fsSL https://artifacts.cloud.mov.ai/repository/movai-applications/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=all] https://artifacts.cloud.mov.ai/repository/ppa-main main main"
+sudo apt-get install movai-studio
+```
+
 
 ## docker-compose.yml
 This file contains several service definitions:
