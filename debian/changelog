@@ -1,4 +1,4 @@
-movai-studio (1.0.2-4) UNRELEASED; urgency=medium
+movai-studio (1.0.2-5) UNRELEASED; urgency=medium
 
   [ Alex Fernandes ]
   *
@@ -43,5 +43,6 @@ movai-studio (1.0.2-4) UNRELEASED; urgency=medium
   * UNRELEASED
   * UNRELEASED
   * UNRELEASED
+  * UNRELEASED
 
- -- root <root@89de88d11bcc>  Thu, 16 Dec 2021 10:21:13 +0000
+ -- root <root@506e6a33acd0>  Wed, 12 Jan 2022 21:27:42 +0000
