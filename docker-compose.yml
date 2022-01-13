@@ -22,7 +22,7 @@
 # STUDIO_USER_PASSWORD   - Password for the administrator account (if requested).
 #                          Default: movai
 #
-# STUDIO_SIMU_MAP        - Default Simulation map: tugbot_urban_story.sdf
+# STUDIO_SIMU_GUI        - Default Simulation GUI: WorldLauncher
 #
 # STUDIO_DB_PACKAGES     - List of packages initializing the DB.
 #                          Default: movai-baseline
@@ -233,8 +233,8 @@ services:
       DISPLAY: "$DISPLAY"
       QT_X11_NO_MITSHM: "1"
       XAUTHORITY: "$XAUTH"
-      IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /models_database/tugbot_models/plugins/system
-      IGN_GUI_PLUGIN_PATH: /models_database/tugbot_models/plugins/gui
+      IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /models_database/tugbot_models/plugins/system:/movai_plugins/plugins/system
+      IGN_GUI_PLUGIN_PATH: /models_database/tugbot_models/plugins/gui:/movai_plugins/plugins/gui
       IGN_GAZEBO_RESOURCE_PATH: /models_database/rpm_models/worlds:/models_database/rpm_models:/models_database/tugbot_models/worlds:/models_database/tugbot_models:/models_database/husky_models/worlds:/models_database/husky_models:/models_database/movai_models/worlds:/models_database/movai_models/models
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
@@ -244,7 +244,7 @@ services:
     network_mode: host
     privileged: true
     tty: true
-    command: ign gazebo $STUDIO_SIMU_MAP -r
+    command: ign gui -s $STUDIO_SIMU_GUI
 
   ros-tools:
     <<: *movai-common
