@@ -248,7 +248,7 @@ services:
 
   ros-tools:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-tools-ce:main
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-tools-ce:latest
     container_name: ros-tools-$MOVAI_DEVICE_NAME
     profiles: ["tools"]
     environment:
