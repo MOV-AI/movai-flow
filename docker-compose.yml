@@ -235,8 +235,8 @@ services:
       DISPLAY: "$DISPLAY"
       QT_X11_NO_MITSHM: "1"
       XAUTHORITY: "$XAUTH"
-      IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /models_database/tugbot_models/plugins/system:/movai_ign_plugins/plugins/system
-      IGN_GUI_PLUGIN_PATH: /models_database/tugbot_models/plugins/gui:/movai_ign_plugins/plugins/gui
+      IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /models_database/tugbot_models/plugins/system:/movai_ign_plugins/system
+      IGN_GUI_PLUGIN_PATH: /models_database/tugbot_models/plugins/gui:/movai_ign_plugins/gui
       IGN_GAZEBO_RESOURCE_PATH: /models_database/rpm_models/worlds:/models_database/rpm_models:/models_database/tugbot_models/worlds:/models_database/tugbot_models:/models_database/husky_models/worlds:/models_database/husky_models:/models_database/movai_models/worlds:/models_database/movai_models/models
     healthcheck:
       test: |
