@@ -238,14 +238,6 @@ services:
       IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /models_database/tugbot_models/plugins/system:/movai_ign_plugins/system
       IGN_GUI_PLUGIN_PATH: /models_database/tugbot_models/plugins/gui:/movai_ign_plugins/gui
       IGN_GAZEBO_RESOURCE_PATH: /models_database/rpm_models/worlds:/models_database/rpm_models:/models_database/tugbot_models/worlds:/models_database/tugbot_models:/models_database/husky_models/worlds:/models_database/husky_models:/models_database/movai_models/worlds:/models_database/movai_models/models
-    healthcheck:
-      test: |
-        if [ -n "$STUDIO_SIMU_PLUGIN_PACKAGES" ]; then
-          sudo apt-get update && sudo apt-get install -y $STUDIO_SIMU_PLUGIN_PACKAGES
-        fi
-      interval: 20s
-      timeout: 60s
-      retries: 1
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
@@ -254,7 +246,13 @@ services:
     network_mode: host
     privileged: true
     tty: true
-    command: ign gui -s $STUDIO_SIMU_GUI
+    entrypoint: /bin/bash
+    command:
+      - -ic
+      - |
+        apt-get update
+        apt-get install -y $STUDIO_SIMU_PLUGIN_PACKAGES
+        ign gui -s $STUDIO_SIMU_GUI
 
   ros-tools:
     <<: *movai-common
