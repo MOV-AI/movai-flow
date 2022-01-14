@@ -24,6 +24,8 @@
 #
 # STUDIO_SIMU_GUI        - Default Simulation GUI: WorldLauncher
 #
+# STUDIO_SIMU_PLUGIN_PACKAGES - List of movai ignition plugin packages to be installed.
+#
 # STUDIO_DB_PACKAGES     - List of packages initializing the DB.
 #                          Default: movai-baseline
 #
@@ -236,6 +238,14 @@ services:
       IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /models_database/tugbot_models/plugins/system:/movai_plugins/plugins/system
       IGN_GUI_PLUGIN_PATH: /models_database/tugbot_models/plugins/gui:/movai_plugins/plugins/gui
       IGN_GAZEBO_RESOURCE_PATH: /models_database/rpm_models/worlds:/models_database/rpm_models:/models_database/tugbot_models/worlds:/models_database/tugbot_models:/models_database/husky_models/worlds:/models_database/husky_models:/models_database/movai_models/worlds:/models_database/movai_models/models
+    healthcheck:
+      test: |
+        if [ -n "$STUDIO_SIMU_PLUGIN_PACKAGES" ]; then
+          sudo apt-get update && sudo apt-get install -y $STUDIO_SIMU_PLUGIN_PACKAGES
+        fi
+      interval: 20s
+      timeout: 60s
+      retries: 1
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
