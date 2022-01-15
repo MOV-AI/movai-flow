@@ -169,13 +169,13 @@ The package creates a systemd service that autostarts & manages the MOVAI Studio
 After the service is created, it can be controlled as follow :
 
     ```shell
-    echo "Enabling & starting $SERVICENAME"
+    echo "Enabling & starting $SERVICE_NAME"
     # Autostart systemd service
-    sudo systemctl enable $SERVICENAME.service
+    sudo systemctl enable $SERVICE_NAME.service
     # Start systemd service now
-    sudo systemctl start $SERVICENAME.service
+    sudo systemctl start $SERVICE_NAME.service
     # Stop systemd service now
-    sudo systemctl stop $SERVICENAME.service
+    sudo systemctl stop $SERVICE_NAME.service
     ```
 
 ## Creating a package
