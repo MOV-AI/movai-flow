@@ -62,4 +62,4 @@ while [[ -z $(FilterRunningService spawner) ]]; do
 done
 
 Output "Starting web application"
-x-www-browser --app="$APP_URL" "$APP_URL" > /dev/null 2>&1 && StopServices
+x-www-browser --app="$APP_URL" "$APP_URL" > /dev/null 2>&1
