@@ -9,9 +9,13 @@
 #
 #   Note: Blank lines (Null text strings "") are not written to the system log.  There is no need to waste that space.
 
-SERVICENAME=movai-studio
-APP_PATH=/usr/share/$SERVICENAME/launch
-CONFIG_PATH=/etc/$SERVICENAME
+SERVICE_NAME=movai-studio
+SERVICE_PORTS="8080" #8083
+APP_PATH=/usr/share/$SERVICE_NAME
+CONFIG_PATH=/etc/$SERVICE_NAME
+DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
+DOCKER_COMPOSE_ENV=$APP_PATH/.env
+DOCKER_COMPOSE_BIN=$(which docker-compose)
 
 Output() {
   # Prepare base message
@@ -46,47 +50,71 @@ GetConfig() {
 set -e
 HaveNvidia="$(GetConfig HaveNvidia)"
 HaveResources="$(GetConfig HaveResources)"
+HaveFreePorts="$(GetConfig HaveFreePorts)"
 #NeedUser="$(GetConfig NeedUser)"
 
 if [ $HaveResources -gt 0 ]; then
   Output "Enough RAM,CPU, DISK resources found"
 else
-  Output "Not Enough RAM,CPU, DISK resources found"
+  Output "Error: Not Enough RAM,CPU, DISK resources found"
+  exit 1
+fi
+
+Output "Checking deps for $SERVICE_NAME"
+if [ -x "$DOCKER_COMPOSE_BIN" ]; then
+  Output "Docker Compose binary found"
+else
+  if [ -x /usr/local/bin/docker-compose ]; then
+    Output "Docker Compose binary found"
+    DOCKER_COMPOSE_BIN=/usr/local/bin/docker-compose
+  else
+    Output "Error: Docker Compose binary not found"
+    exit 1
+  fi
+fi
+
+if [ $HaveFreePorts -gt 0 ]; then
+  Output "Needed ports are available"
+else
+  Output "Error: Needed ports are not available"
   exit 1
 fi
 
 if [ "$1" == "configure" ]; then
-    Output "Preparing $SERVICENAME config"
+    Output "Preparing $SERVICE_NAME config"
     mkdir -p $CONFIG_PATH/
 
     if [ -f $CONFIG_PATH/config.env ]; then
-      Output "Re-using $SERVICENAME config"
+      Output "Re-using $SERVICE_NAME config"
     else
       FLEET_TOKEN="$(echo movai:ce-studio$RANDOM | base64 -w0)"
-      echo FLEET_TOKEN=$FLEET_TOKEN > $CONFIG_PATH/config.env
-      Output "Created $SERVICENAME fleet token"
+      echo FLEET_TOKEN="$FLEET_TOKEN" > $CONFIG_PATH/config.env
+      Output "Created $SERVICE_NAME fleet token"
     fi
 
     Output "Reloading systemd config"
     systemctl daemon-reload || true
 
-    Output "Enabling $SERVICENAME"
-    systemctl enable $SERVICENAME.service
+    Output "Enabling $SERVICE_NAME"
+    systemctl enable $SERVICE_NAME.service
 
     mkdir -p $APP_PATH/{logs,shared,userspace,models_database}
     sudo chown 1000:1000 $APP_PATH/{logs,shared,userspace,models_database} -R
 
-    Output "Starting $SERVICENAME"
-    systemctl start $SERVICENAME.service
+    # Output "Starting $SERVICE_NAME"
+    # systemctl start $SERVICE_NAME.service
 elif [ "$1" == "abort-remove" ]; then
-    Output "Stopping $SERVICENAME"
-    systemctl stop $SERVICENAME.service || true
+    Output "Stopping cluster of $SERVICE_NAME"
+    $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF --env-file $DOCKER_COMPOSE_ENV down || true
 
-    Output "Disabling $SERVICENAME"
-    systemctl disable $SERVICENAME.service || true
+    Output "Stopping $SERVICE_NAME"
+    systemctl stop $SERVICE_NAME.service || true
 
-    Output "Removing $SERVICENAME"
-    rm /usr/lib/systemd/system/$SERVICENAME.service || true
+    Output "Disabling $SERVICE_NAME"
+    systemctl disable $SERVICE_NAME.service || true
+
+    Output "Removing $SERVICE_NAME"
+    rm /usr/lib/systemd/system/$SERVICE_NAME.service || true
 
     Output "Reloading systemd config"
     systemctl daemon-reload || true

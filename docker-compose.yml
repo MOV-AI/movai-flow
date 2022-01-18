@@ -217,6 +217,9 @@ services:
       - /sys/devices:/sys/devices
       - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
       - /run/movai:/var/run/movai
+      - ./userspace:/opt/mov.ai/user
+      - ./shared:/opt/mov.ai/shared
+      - ./logs:/opt/mov.ai/logs
     environment:
       <<: *movai-common-env
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
