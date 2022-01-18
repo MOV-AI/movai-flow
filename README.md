@@ -169,15 +169,37 @@ The package creates a systemd service that autostarts & manages the MOVAI Studio
 After the service is created, it can be controlled as follow :
 
     ```shell
-    echo "Enabling & starting $SERVICENAME"
+    echo "Enabling & starting $SERVICE_NAME"
     # Autostart systemd service
-    sudo systemctl enable $SERVICENAME.service
+    sudo systemctl enable $SERVICE_NAME.service
     # Start systemd service now
-    sudo systemctl start $SERVICENAME.service
+    sudo systemctl start $SERVICE_NAME.service
     # Stop systemd service now
-    sudo systemctl stop $SERVICENAME.service
+    sudo systemctl stop $SERVICE_NAME.service
     ```
 
-## Creating a package
+## Creating a debian package
 
     dpkg-buildpackage
+
+## Importing ROS package
+
+A folder configured as a ROS wokspace is shared in between the host and the cluster,
+by default it is located in `/usr/share/movai-studio/userspace/`.
+
+- Place any ROS package in the ROS workspace as follow :
+
+"""
+    mkdir -p /usr/share/movai-studio/userspace/cache/ros/src
+    cd /usr/share/movai-studio/userspace/cache/ros/src
+    git clone git@github.com:ros/resource_retriever.git
+"""
+
+- run compilation script inside the cluster:
+
+"""
+    docker exec -it spawner-studio ros1-workspace-build.sh
+"""
+
+The package generated artifacts should them be available in MOV.AI Studio
+

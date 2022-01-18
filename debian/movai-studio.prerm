@@ -2,17 +2,24 @@
 # pre remove actions
 # clean unziped files
 
-SERVICENAME=movai-studio
-APP_PATH=/usr/share/$SERVICENAME/launch
+SERVICE_NAME=movai-studio
+APP_PATH=/usr/share/$SERVICE_NAME
+DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
+DOCKER_COMPOSE_ENV=$APP_PATH/.env
+DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
 
-systemctl stop $SERVICENAME
-systemctl disable $SERVICENAME
-rm /usr/lib/systemd/system/$SERVICENAME.service
+systemctl stop $SERVICE_NAME
+systemctl disable $SERVICE_NAME
+rm /usr/lib/systemd/system/$SERVICE_NAME.service
 
 systemctl daemon-reload
 systemctl reset-failed
 
 # Remove the package (but not its configuration files)
 if [ "$1" = "remove" ]; then
+    pushd $APP_PATH || echo ""
+    $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF down || true
+    popd || echo ""
+
     rm -r $APP_PATH
 fi
