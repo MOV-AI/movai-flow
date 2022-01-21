@@ -1,10 +1,11 @@
 #!/bin/bash
-SCRIPTNAME=RVIZ
+SCRIPTNAME=Stopper
 SERVICE_NAME=movai-studio
 APP_PATH=/usr/share/$SERVICE_NAME
 CONFIG_PATH=/etc/$SERVICE_NAME
 DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
 DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
+APP_URL="http://localhost:8080/api/v1/apps/mov-fe-app-ide-ce/"
 
 Output() {
   # Prepare base message
@@ -27,9 +28,11 @@ Output() {
   fi
 }
 
-Output "This terminal window will verify all MOVAI Studio services are running and then launch the RVIZ application"
-Output "\n(U) [^_^] (U)\n"
+StopServices() {
+  Output "Stopping services..."
+  Output "\n(U) [^_^] (U)\n"
+  Output "Terminal will close on completion, wait or press CTRL+C on failure"
+  $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF stop
+}
 
-xhost +local:docker
-
-$DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF up ros-tools
+StopServices

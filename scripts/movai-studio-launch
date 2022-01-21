@@ -40,6 +40,7 @@ FilterRunningService() {
 
 Output "This terminal window will verify all MOVAI Studio services are running \
 and then launch the web application"
+Output "\n(U) [^_^] (U)\n"
 
 if [ -f $CONFIG_PATH/config.env ]; then
   Output "Sourcing fleet configuration"
@@ -60,6 +61,13 @@ while [[ -z $(FilterRunningService spawner) ]]; do
   Output "waiting for spawner"
   sleep 5
 done
+
+user_documents_path=$(xdg-user-dir DOCUMENTS)
+Output "Creating user folder"
+if [ ! -e "${user_documents_path}/MovaiStudio" ]; then
+  ln -sf "$APP_PATH/userspace" "${user_documents_path}/MovaiStudio"
+  Output "User folder ${user_documents_path}/MovaiStudio"
+fi
 
 Output "Starting web application"
 x-www-browser --app="$APP_URL" "$APP_URL" > /dev/null 2>&1
