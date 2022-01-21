@@ -40,7 +40,7 @@ FilterRunningService() {
 
 Output "This terminal window will verify all MOVAI Studio services are running \
 and then launch the web application"
-Output "\n(U) [^_^] (U)\n"
+Output "(U) [^_^] (U)"
 
 if [ -f $CONFIG_PATH/config.env ]; then
   Output "Sourcing fleet configuration"

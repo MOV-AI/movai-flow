@@ -30,7 +30,7 @@ Output() {
 
 StopServices() {
   Output "Stopping services..."
-  Output "\n(U) [^_^] (U)\n"
+  Output "(U) [^_^] (U)"
   Output "Terminal will close on completion, wait or press CTRL+C on failure"
   $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF stop
 }

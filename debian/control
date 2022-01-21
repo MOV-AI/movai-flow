@@ -12,6 +12,7 @@ Architecture: all
 Section: devel
 Homepage: https://mov.ai
 Priority: optional
+Conflicts: movai-service
 Depends: ${misc:Depends}, docker-ce (>= 20.10.8), docker-ce-cli
 Description: MOV.AI Development Studio
     The Robotics Engine Platform enhancing ROS

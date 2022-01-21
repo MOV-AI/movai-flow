@@ -28,6 +28,7 @@ Output() {
 }
 
 Output "This terminal window will verify all MOVAI Studio services are running and then launch the CLI"
+Output "(U) [^_^] (U)"
 
 $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF up -d movai-cli
 

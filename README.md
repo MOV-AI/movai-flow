@@ -64,7 +64,7 @@ The studio initiate a set of services running as a `docker-compose` cluster:
 ## Importing ROS package
 
 A folder configured as a ROS wokspace is shared in between the host and the cluster,
-by default it is located in `/usr/share/movai-studio/userspace/`.
+by default it is located in `/usr/share/movai-studio/userspace/` but a link is added to `~/Documents/MovaiStudio`
 
 - Place any ROS package in the ROS workspace as follow :
 
