@@ -1,13 +1,12 @@
 #!/bin/bash
 
-SERVICENAME=movai-studio
-CONF_BASE=/etc/$SERVICENAME
-APP_PATH=/usr/share/$SERVICENAME
+SERVICE_NAME=movai-studio
+CONF_BASE=/etc/$SERVICE_NAME
+APP_PATH=/usr/share/$SERVICE_NAME
 
 # Remove the package (including its configuration files)
 if [ "$1" = "purge" ]; then
     test -d ${CONF_BASE} && rm -r ${CONF_BASE} || true
-
     # TODO: purge volumes
     test -d ${$APP_PATH} && rm -r ${$APP_PATH} || true
 fi
