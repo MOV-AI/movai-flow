@@ -6,10 +6,15 @@
 # Exit on error
 set -e
 
+# Vars
+SERVICE_NAME=movai-studio
+SERVICE_PORTS="8080 8083"
+
 # Vars to store infos
 HaveNvidia=0        # True if Nvidia GPU found
 HaveDockerNvidia=0  # True if Docker Nvidia runtime found
 HaveResources=0     # True if enough RAM,CPU,DISK found
+HaveFreePorts=0     # True if needed ports are not used
 
 # File to store infos
 InstConfig=/tmp/movai-studio-installer.log
@@ -87,8 +92,25 @@ else
   HaveResources=1
 fi
 
+# Check ports
+echo "Checking ports for $SERVICE_NAME"
+HaveUnFreePort=0
+for port in $SERVICE_PORTS; do
+  # echo returns 1 on free port
+  if echo > "/dev/tcp/localhost/$port" > /dev/null 2>&1; then
+    HaveUnFreePort=1
+  fi
+done
+if [ $HaveUnFreePort -gt 0 ]; then
+  echo "  All needed ports are not free"
+else
+  echo "  All needed ports are free"
+  HaveFreePorts=1
+fi
+
 {
     echo "HaveNvidia=$HaveNvidia"
     echo "HaveDockerNvidia=$HaveDockerNvidia"
     echo "HaveResources=$HaveResources"
+    echo "HaveFreePorts=$HaveFreePorts"
 } > "$InstConfig"

@@ -2,9 +2,9 @@
 Name=MOV.AI Studio
 GenericName=ROS Studio
 Comment=MOV.AI Development Studio
-Exec=x-www-browser --app=http://localhost:8080/ http://localhost:8080/
+Exec=/usr/bin/movai-studio-launch
 Icon=movai-studio
-Terminal=false
+Terminal=true
 StartupWMClass=MOV.AI Studio
 MimeType=application/octet-stream;application/zip;text/xml;text/xml;x-scheme-handler/movai;
 Type=Application

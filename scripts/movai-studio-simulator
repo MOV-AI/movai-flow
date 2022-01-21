@@ -1,4 +1,35 @@
 #!/bin/bash
+SCRIPTNAME=RVIZ
+SERVICE_NAME=movai-studio
+APP_PATH=/usr/share/$SERVICE_NAME
+CONFIG_PATH=/etc/$SERVICE_NAME
+DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
+DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
+
+
+Output() {
+  # Prepare base message
+  Message="MOV.AI Studio $SCRIPTNAME: $1"
+
+  # Output the message even if a blank message (make output nice)
+  echo "$Message"
+
+  # Return if blank.
+  if [ "$1" = "" ]; then
+    return
+  fi
+
+  # Output to log
+  if which journalctl > /dev/null 2>&1
+  then
+    echo MESSAGE="$Message" | logger --journald
+  else
+    echo "$Message" | logger
+  fi
+}
+
+Output "This terminal window will verify all MOVAI Studio services are running and then launch the RVIZ application"
+
 xhost +local:docker
 
-/usr/local/bin/docker-compose -f /usr/share/movai-studio/launch/docker-compose.yml up simulator
+$DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF up simulator

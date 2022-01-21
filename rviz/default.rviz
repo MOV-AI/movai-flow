@@ -108,7 +108,9 @@ Visualization Manager:
           Enabled: true
           Invert Rainbow: false
           Max Color: 255; 255; 255
+          Max Intensity: 4096
           Min Color: 0; 0; 0
+          Min Intensity: 0
           Name: OmniLaserScan
           Position Transformer: XYZ
           Queue Size: 10
@@ -150,7 +152,9 @@ Visualization Manager:
           Enabled: true
           Invert Rainbow: false
           Max Color: 255; 255; 255
+          Max Intensity: 4096
           Min Color: 0; 0; 0
+          Min Intensity: 0
           Name: OmniLaserScan
           Position Transformer: XYZ
           Queue Size: 10
@@ -274,7 +278,9 @@ Visualization Manager:
           Enabled: true
           Invert Rainbow: false
           Max Color: 255; 255; 255
+          Max Intensity: 4096
           Min Color: 0; 0; 0
+          Min Intensity: 0
           Name: OmniLaserScan
           Position Transformer: XYZ
           Queue Size: 10
@@ -398,7 +404,9 @@ Visualization Manager:
           Enabled: true
           Invert Rainbow: false
           Max Color: 255; 255; 255
+          Max Intensity: 4096
           Min Color: 0; 0; 0
+          Min Intensity: 0
           Name: OmniLaserScan
           Position Transformer: XYZ
           Queue Size: 10
@@ -522,7 +530,9 @@ Visualization Manager:
           Enabled: true
           Invert Rainbow: false
           Max Color: 255; 255; 255
+          Max Intensity: 4096
           Min Color: 0; 0; 0
+          Min Intensity: 0
           Name: OmniLaserScan
           Position Transformer: XYZ
           Queue Size: 10
@@ -614,7 +624,9 @@ Visualization Manager:
           Enabled: false
           Invert Rainbow: false
           Max Color: 255; 255; 255
+          Max Intensity: 4096
           Min Color: 0; 0; 0
+          Min Intensity: 0
           Name: BackCameraDepthCloud
           Position Transformer: XYZ
           Queue Size: 10
@@ -642,7 +654,9 @@ Visualization Manager:
           Enabled: false
           Invert Rainbow: false
           Max Color: 255; 255; 255
+          Max Intensity: 4096
           Min Color: 0; 0; 0
+          Min Intensity: 0
           Name: FrontCameraDepthCloud
           Position Transformer: XYZ
           Queue Size: 10
@@ -670,7 +684,9 @@ Visualization Manager:
           Enabled: false
           Invert Rainbow: false
           Max Color: 255; 255; 255
+          Max Intensity: 4096
           Min Color: 255; 0; 4
+          Min Intensity: 0
           Name: FrontLaserScan
           Position Transformer: XYZ
           Queue Size: 10
@@ -698,7 +714,9 @@ Visualization Manager:
           Enabled: false
           Invert Rainbow: false
           Max Color: 255; 255; 255
+          Max Intensity: 4096
           Min Color: 33; 255; 47
+          Min Intensity: 0
           Name: BackLaserScan
           Position Transformer: XYZ
           Queue Size: 10
@@ -726,7 +744,9 @@ Visualization Manager:
           Enabled: false
           Invert Rainbow: false
           Max Color: 255; 255; 255
+          Max Intensity: 4096
           Min Color: 0; 0; 0
+          Min Intensity: 0
           Name: OmniLaserScan
           Position Transformer: XYZ
           Queue Size: 10
@@ -754,7 +774,9 @@ Visualization Manager:
           Enabled: false
           Invert Rainbow: false
           Max Color: 255; 255; 255
+          Max Intensity: 4096
           Min Color: 0; 0; 0
+          Min Intensity: 0
           Name: OmniPointCloud2
           Position Transformer: XYZ
           Queue Size: 10
@@ -799,15 +821,6 @@ Visualization Manager:
             Shaft Radius: 0.05000000074505806
             Value: Arrow
           Topic: /wheels_controller/odom
-          Unreliable: false
-          Value: false
-        - Alpha: 1
-          Class: rviz_plugin_tutorials/Imu
-          Color: 204; 51; 204
-          Enabled: false
-          History Length: 1
-          Name: Imu
-          Topic: /wheels_controller/imu
           Unreliable: false
           Value: false
       Enabled: true
@@ -865,7 +878,9 @@ Visualization Manager:
           Enabled: false
           Invert Rainbow: false
           Max Color: 255; 255; 255
+          Max Intensity: 4096
           Min Color: 0; 0; 0
+          Min Intensity: 0
           Name: PanTiltCameraDepthCloud
           Position Transformer: XYZ
           Queue Size: 10
@@ -893,7 +908,9 @@ Visualization Manager:
           Enabled: false
           Invert Rainbow: false
           Max Color: 255; 255; 255
+          Max Intensity: 4096
           Min Color: 255; 0; 4
+          Min Intensity: 0
           Name: FrontLaserScan
           Position Transformer: XYZ
           Queue Size: 10
@@ -921,7 +938,9 @@ Visualization Manager:
           Enabled: false
           Invert Rainbow: false
           Max Color: 255; 255; 255
+          Max Intensity: 4096
           Min Color: 0; 0; 0
+          Min Intensity: 0
           Name: OmniLaserScan
           Position Transformer: XYZ
           Queue Size: 10
@@ -949,7 +968,9 @@ Visualization Manager:
           Enabled: false
           Invert Rainbow: false
           Max Color: 255; 255; 255
+          Max Intensity: 4096
           Min Color: 0; 0; 0
+          Min Intensity: 0
           Name: OmniPointCloud2
           Position Transformer: XYZ
           Queue Size: 10
@@ -994,15 +1015,6 @@ Visualization Manager:
             Shaft Radius: 0.05000000074505806
             Value: Arrow
           Topic: /wheels_controller/odom
-          Unreliable: false
-          Value: false
-        - Alpha: 1
-          Class: rviz_plugin_tutorials/Imu
-          Color: 204; 51; 204
-          Enabled: false
-          History Length: 1
-          Name: Imu
-          Topic: /imu/imu
           Unreliable: false
           Value: false
       Enabled: true
@@ -1083,5 +1095,5 @@ Window Geometry:
   Views:
     collapsed: true
   Width: 1280
-  X: -6
-  Y: -6
+  X: 50
+  Y: 27

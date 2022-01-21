@@ -1,0 +1,65 @@
+#!/bin/bash
+SCRIPTNAME=Launcher
+SERVICE_NAME=movai-studio
+APP_PATH=/usr/share/$SERVICE_NAME
+CONFIG_PATH=/etc/$SERVICE_NAME
+DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
+DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
+APP_URL="http://localhost:8080/api/v1/apps/mov-fe-app-ide-ce/"
+
+Output() {
+  # Prepare base message
+  Message="MOV.AI Studio $SCRIPTNAME: $1"
+
+  # Output the message even if a blank message (make output nice)
+  echo "$Message"
+
+  # Return if blank.
+  if [ "$1" = "" ]; then
+    return
+  fi
+
+  # Output to log
+  if which journalctl > /dev/null 2>&1
+  then
+    echo MESSAGE="$Message" | logger --journald
+  else
+    echo "$Message" | logger
+  fi
+}
+
+StopServices() {
+  Output "Stopping services..."
+  Output "Terminal will close on completion, wait or press CTRL+C on failure"
+  $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF stop
+}
+
+FilterRunningService() {
+  $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF ps --services --filter "status=running" | grep "$1"
+}
+
+Output "This terminal window will verify all MOVAI Studio services are running \
+and then launch the web application"
+
+if [ -f $CONFIG_PATH/config.env ]; then
+  Output "Sourcing fleet configuration"
+  . $CONFIG_PATH/config.env
+else
+  Output "No fleet configuration found"
+fi
+
+pushd "$APP_PATH" || exit
+
+Output "Downloading images"
+$DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF pull
+
+Output "Starting services"
+$DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF up -d
+
+while [[ -z $(FilterRunningService spawner) ]]; do
+  Output "waiting for spawner"
+  sleep 5
+done
+
+Output "Starting web application"
+x-www-browser --app="$APP_URL" "$APP_URL" > /dev/null 2>&1
