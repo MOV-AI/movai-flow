@@ -79,7 +79,7 @@ x-movai-common:
 
 services:
   redis-master:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/redis:latest
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/redis:2.2.2022012
     container_name: redis-master-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -100,7 +100,7 @@ services:
       - STUDIO_DB_PACKAGES=$STUDIO_DB_PACKAGES
 
   redis-local:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/redis:latest
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/redis:2.2.2022012
     container_name: redis-local-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -119,14 +119,12 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/backend:latest
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/backend:2.2.2022012
     container_name: backend-$MOVAI_DEVICE_NAME
     networks:
       - private
     depends_on:
       <<: *movai-common-depend
-    ports:
-      - "${STUDIO_WEB_PORT:-5004}:5004"
     entrypoint: /bin/bash
     environment:
       <<: *movai-common-env
@@ -148,7 +146,7 @@ services:
       retries: 3
 
   influxdb:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/influxdb:main
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/influxdb:v1.0.0
     container_name: influxdb-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -161,7 +159,7 @@ services:
       - influxdb-studio-volume:/var/lib/influxdb
 
   health-node:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/health-node:latest
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/health-node:2.2.2022012
     container_name: health-node-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -179,7 +177,7 @@ services:
       HOST_PROC: /hostfs/proc
 
   ros-master:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-master-noetic:main
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-master-noetic:v0.0.1
     privileged: true
     networks:
       - private
@@ -197,7 +195,7 @@ services:
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-ign-noetic:main
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-ign-noetic:v2.2.4
     privileged: true
     networks:
       - private
@@ -210,7 +208,8 @@ services:
         if [ -n "$STUDIO_SPAWNER_PACKAGES" ]; then
           sudo apt-get update && sudo apt-get install -y $STUDIO_SPAWNER_PACKAGES
         fi
-      interval: 20s
+      # pgrep -f "/usr/bin/python3 /opt/mov.ai/app/async_movaicore.py -v"
+      interval: 2s
       timeout: 60s
       retries: 1
     container_name: spawner-$MOVAI_DEVICE_NAME
@@ -230,7 +229,7 @@ services:
 
   simulator:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ignition-gazebo:latest
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ignition-gazebo:v1.0.0
     container_name: simulator-$MOVAI_DEVICE_NAME
     profiles: ["simulator"]
     environment:
@@ -250,17 +249,24 @@ services:
     network_mode: host
     privileged: true
     tty: true
+    healthcheck:
+      test: pgrep -f "ign gui -s $STUDIO_SIMU_GUI"
+      interval: 20s
+      timeout: 60s
+      retries: 10
     entrypoint: /bin/bash
     command:
       - -ic
       - |
+        rm /opt/mov.ai/.first_run_apt
+        movai-entrypoint.sh
         apt-get update
         apt-get install -y $STUDIO_SIMU_PLUGIN_PACKAGES
         ign gui -s $STUDIO_SIMU_GUI
 
   ros-tools:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-tools-ce:latest
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-tools-ce:v1.0.0
     container_name: ros-tools-$MOVAI_DEVICE_NAME
     profiles: ["tools"]
     environment:
@@ -285,39 +291,15 @@ services:
       - |
         exec /usr/bin/rviz
 
-  movai-cli:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/movai-service:latest
-    depends_on:
-      - spawner
-    privileged: true
-    profiles: ["service"]
-    container_name: movai-cli-$MOVAI_DEVICE_NAME
-    restart: "no"
-    volumes:
-      - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
-      - ./robots:/etc/movai/robots
-      - /var/run/docker.sock:/var/run/docker.sock
-
-  # movai-init:
-  #     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-base-noetic:main
-  #     depends_on:
-  #     - spawner
-  #     networks:
-  #     - private
-  #     environment:
-  #     - MOVAI_BASELINES=$STUDIO_DB_PACKAGES
-  #     command:
-  #       - -c
-  #       - |
-
   haproxy:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/haproxy:latest
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/haproxy:2.2.2022012
     container_name: haproxy-$MOVAI_DEVICE_NAME
     networks:
       - private
       - proxy
     volumes:
       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:rw
+      - ./haproxy/503-movai.http:/etc/503-movai.http
     ports:
       - "${STUDIO_HTTP_PORT:-8080}:80"
       - "${STUDIO_HTTPS_PORT:-8443}:443"
