@@ -63,12 +63,12 @@ jobs:
 
     - name: test cluster frontend
       run: |
-        export url=http://localhost:5004/token-auth/
+        export token_url=http://localhost:8080/token-auth/
         # retry for 1 minute
         count=10
         set +e
         for i in $(seq $count); do
-          status_code=$(curl -s -o /dev/null --cookie-jar cookies --header 'Content-Type: application/json' -X POST --data '{"username":"movai","password":"movai","remember":true}' -w "%{http_code}" $url)
+          status_code=$(curl -k -s -o /dev/null --cookie-jar cookies --header 'Content-Type: application/json' -X POST --data '{"username":"movai","password":"movai","remember":true}' -w "%{http_code}" $token_url)
           if [ $status_code == 200 ]; then
             break
           fi
@@ -76,6 +76,12 @@ jobs:
           sleep 10
         done
         [ $status_code == 200 ] && exit 0
+
+        export url=http://localhost:8080/api/v1/apps/mov-fe-app-ide-ce/
+        #export url=https://localhost:8443/api/v1/apps/mov-fe-app-ide-ce/
+        json=$( status_code=$(curl -k -s --cookie-jar cookies --header 'Content-Type: application/json' -X POST --data '{"username":"movai","password":"movai","remember":true}' -w "%{http_code}" $token_url)' )
+        token=$( jq -r ".access_token" <<<"$json" )
+        curl "$url" -k -X POST -H "X-Cookie:token=$token"
 
   Pack-Project:
     timeout-minutes: 30
@@ -132,3 +138,13 @@ jobs:
         # Store generated .deb
         mkdir artifacts && \
         cp ../*.deb artifacts
+
+    - name: Publish to Nexus ppa-dev
+      run: |
+          NEXUS_ENDPOINT="artifacts.cloud.mov.ai"
+          NEXUS_REPO="ppa-dev"
+          FILE_LOCATION=$(find artifacts/*.deb)
+          curl -u "${{ secrets.NEXUS_PUBLISHER_USR }}:${{ secrets.NEXUS_PUBLISHER_PWD }}" \
+          -H "Content-Type: multipart/form-data" \
+          --data-binary "@$FILE_LOCATION" \
+          "https://$NEXUS_ENDPOINT/repository/$NEXUS_REPO/"

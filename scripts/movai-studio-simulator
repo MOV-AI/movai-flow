@@ -29,6 +29,7 @@ Output() {
 }
 
 Output "This terminal window will verify all MOVAI Studio services are running and then launch the RVIZ application"
+Output "(U) [^_^] (U)"
 
 xhost +local:docker
 
