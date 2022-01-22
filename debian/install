@@ -8,6 +8,7 @@ scripts/movai-studio-simulator usr/bin/
 scripts/movai-studio-rviz usr/bin/
 scripts/movai-studio-cli usr/bin/
 scripts/movai-studio-launch usr/bin/
+scripts/movai-studio-stop usr/bin/
 misc/movai-studio.service usr/lib/systemd/system
 misc/movai-studio.desktop usr/share/applications
 misc/movai-studio-sim.desktop usr/share/applications
