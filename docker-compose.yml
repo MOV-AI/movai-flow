@@ -283,6 +283,9 @@ services:
     runtime: nvidia
     networks:
       - private
+    depends_on:
+      ros-master:
+        condition: service_healthy
     privileged: true
     tty: true
     entrypoint: /bin/bash
