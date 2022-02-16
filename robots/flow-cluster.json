@@ -3,7 +3,7 @@
   "env": "qa",
   "registry": "registry.cloud.mov.ai",
   "robot": {
-    "name": "studio",
+    "name": "flow",
     "fleet": {
       "name": "movai",
       "manager": "http://localhost",
