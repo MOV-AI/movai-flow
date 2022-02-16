@@ -72,7 +72,7 @@ jobs:
           if [ $status_code == 200 ]; then
             break
           fi
-          echo "Waiting for MOVAI Studio availability (ret:$status_code)"
+          echo "Waiting for MOVAI Flow availability (ret:$status_code)"
           sleep 10
         done
         [ $status_code == 200 ] && exit 0
