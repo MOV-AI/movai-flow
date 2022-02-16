@@ -1,5 +1,5 @@
     [Unit]
-    Description=movai-studio
+    Description=movai-flow
     Requires=docker.service
     After=docker.service
     StartLimitIntervalSec=60
@@ -8,14 +8,14 @@
     Type=simple
     User=root
     Group=docker
-    EnvironmentFile=-/etc/movai-studio/config.env
-    WorkingDirectory=/usr/share/movai-studio
+    EnvironmentFile=-/etc/movai-flow/config.env
+    WorkingDirectory=/usr/share/movai-flow
     # Shutdown container (if running) when unit is started
-    ExecStartPre=/usr/local/bin/docker-compose -f /usr/share/movai-studio/docker-compose.yml down
+    ExecStartPre=/usr/local/bin/docker-compose -f /usr/share/movai-flow/docker-compose.yml down
     # Start container when unit is started
-    ExecStart=/usr/local/bin/docker-compose -f /usr/share/movai-studio/docker-compose.yml up
+    ExecStart=/usr/local/bin/docker-compose -f /usr/share/movai-flow/docker-compose.yml up
     # Stop container when unit is stopped
-    ExecStop=/usr/local/bin/docker-compose -f /usr/share/movai-studio/docker-compose.yml down
+    ExecStop=/usr/local/bin/docker-compose -f /usr/share/movai-flow/docker-compose.yml down
 
     [Install]
     WantedBy=multi-user.target

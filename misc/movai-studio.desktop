@@ -1,11 +1,11 @@
 [Desktop Entry]
-Name=MOV.AI Studio
-GenericName=ROS Studio
-Comment=MOV.AI Development Studio
-Exec=/usr/bin/movai-studio-launch
-Icon=movai-studio
+Name=MOV.AI Flow
+GenericName=ROS Flow
+Comment=MOV.AI Development Flow
+Exec=/usr/bin/movai-flow-launch
+Icon=movai-flow
 Terminal=true
-StartupWMClass=MOV.AI Studio
+StartupWMClass=MOV.AI Flow
 MimeType=application/octet-stream;application/zip;text/xml;text/xml;x-scheme-handler/movai;
 Type=Application
 Categories=Development;

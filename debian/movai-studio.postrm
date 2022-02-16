@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SERVICE_NAME=movai-studio
+SERVICE_NAME=movai-flow
 CONF_BASE=/etc/$SERVICE_NAME
 APP_PATH=/usr/share/$SERVICE_NAME
 

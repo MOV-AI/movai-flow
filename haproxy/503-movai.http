@@ -12,7 +12,7 @@ Content-Type: text/html
     <div style="margin: 0 auto; width: 960px;">
           <h2>MOV.AI is starting up. Be patient...</h2>
           <h3>Page is refreshed every 5s, if is taking too long, please check application logs as follow:</h3>
-          <p>docker-compose -f /usr/share/movai-studio/docker-compose.yml logs -f</p>
+          <p>docker-compose -f /usr/share/movai-flow/docker-compose.yml logs -f</p>
     </div>
   </body>
 </html>

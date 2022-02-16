@@ -1,6 +1,6 @@
 #!/bin/bash
 SCRIPTNAME=RVIZ
-SERVICE_NAME=movai-studio
+SERVICE_NAME=movai-flow
 APP_PATH=/usr/share/$SERVICE_NAME
 CONFIG_PATH=/etc/$SERVICE_NAME
 DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
@@ -9,7 +9,7 @@ DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
 
 Output() {
   # Prepare base message
-  Message="MOV.AI Studio $SCRIPTNAME: $1"
+  Message="MOV.AI Flow $SCRIPTNAME: $1"
 
   # Output the message even if a blank message (make output nice)
   echo "$Message"
@@ -28,7 +28,7 @@ Output() {
   fi
 }
 
-Output "This terminal window will verify all MOVAI Studio services are running and then launch the Ignition Simulator GUI application"
+Output "This terminal window will verify all MOVAI Flow services are running and then launch the Ignition Simulator GUI application"
 Output "(U) [^_^] (U)"
 
 xhost +local:docker

@@ -2,10 +2,10 @@
 ./rviz
 ./robots
 ./models_database
-./misc/movai-studio.desktop
-./misc/movai-studio-sim.desktop
-./misc/movai-studio-cli.desktop
-./misc/movai-studio-rviz.desktop
-./misc/movai-studio.png
+./misc/movai-flow.desktop
+./misc/movai-flow-sim.desktop
+./misc/movai-flow-cli.desktop
+./misc/movai-flow-rviz.desktop
+./misc/movai-flow.png
 ./misc/ignition_logo.svg
 ./misc/rviz-package.png
