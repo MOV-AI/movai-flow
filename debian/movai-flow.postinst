@@ -1,0 +1,122 @@
+#!/bin/bash
+# post install script
+
+# Function to output to log and console.
+#
+# Usage:
+#   $1 =  Message (should be "Text Message" quoted).
+#   $2 =  Optional "0" or "1" flag.   "1" adds "(extracted from Preferences.xml)" message
+#
+#   Note: Blank lines (Null text strings "") are not written to the system log.  There is no need to waste that space.
+
+SERVICE_NAME=movai-flow
+SERVICE_PORTS="8080" #8083
+APP_PATH=/usr/share/$SERVICE_NAME
+CONFIG_PATH=/etc/$SERVICE_NAME
+DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
+DOCKER_COMPOSE_ENV=$APP_PATH/.env
+DOCKER_COMPOSE_BIN=$(which docker-compose)
+
+Output() {
+  # Prepare base message
+  Message="MOV.AI Flow install: $1"
+
+  # Output the message even if a blank message (make output nice)
+  echo "$Message"
+
+  # Return if blank.
+  if [ "$1" = "" ]; then
+    return
+  fi
+
+  # Output to log
+  if which journalctl > /dev/null 2>&1
+  then
+    echo MESSAGE="$Message" | logger --journald
+  else
+    echo "$Message" | logger
+  fi
+}
+
+# Load configuration variable values from configuration transfer file as needed
+GetConfig() {
+  RetVal=""
+  InstConfig=/tmp/movai-flow-installer.log
+  RetVal="$(grep ^$1= $InstConfig | sed -e 's/^.*=//'| tr -d '"')"
+  echo "$RetVal"
+}
+
+# exit on major error
+set -e
+HaveNvidia="$(GetConfig HaveNvidia)"
+HaveResources="$(GetConfig HaveResources)"
+HaveFreePorts="$(GetConfig HaveFreePorts)"
+#NeedUser="$(GetConfig NeedUser)"
+
+if [ $HaveResources -gt 0 ]; then
+  Output "Enough RAM,CPU, DISK resources found"
+else
+  Output "Error: Not Enough RAM,CPU, DISK resources found"
+  exit 1
+fi
+
+Output "Checking deps for $SERVICE_NAME"
+if [ -x "$DOCKER_COMPOSE_BIN" ]; then
+  Output "Docker Compose binary found"
+else
+  if [ -x /usr/local/bin/docker-compose ]; then
+    Output "Docker Compose binary found"
+    DOCKER_COMPOSE_BIN=/usr/local/bin/docker-compose
+  else
+    Output "Error: Docker Compose binary not found"
+    exit 1
+  fi
+fi
+
+if [ $HaveFreePorts -gt 0 ]; then
+  Output "Needed ports are available"
+else
+  Output "Error: Needed ports are not available"
+  exit 1
+fi
+
+if [ "$1" == "configure" ]; then
+    Output "Preparing $SERVICE_NAME config"
+    mkdir -p $CONFIG_PATH/
+
+    if [ -f $CONFIG_PATH/config.env ]; then
+      Output "Re-using $SERVICE_NAME config"
+    else
+      FLEET_TOKEN="$(echo movai:ce-flow$RANDOM | base64 -w0)"
+      echo FLEET_TOKEN="$FLEET_TOKEN" > $CONFIG_PATH/config.env
+      Output "Created $SERVICE_NAME fleet token"
+    fi
+
+    Output "Reloading systemd config"
+    systemctl daemon-reload || true
+
+    Output "Enabling $SERVICE_NAME"
+    systemctl enable $SERVICE_NAME.service
+
+    mkdir -p $APP_PATH/{logs,shared,userspace,models_database}
+    sudo chown 1000:1000 $APP_PATH/{logs,shared,userspace,models_database} -R
+
+    # Output "Starting $SERVICE_NAME"
+    # systemctl start $SERVICE_NAME.service
+elif [ "$1" == "abort-remove" ]; then
+    Output "Stopping cluster of $SERVICE_NAME"
+    $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF --env-file $DOCKER_COMPOSE_ENV down || true
+
+    Output "Stopping $SERVICE_NAME"
+    systemctl stop $SERVICE_NAME.service || true
+
+    Output "Disabling $SERVICE_NAME"
+    systemctl disable $SERVICE_NAME.service || true
+
+    Output "Removing $SERVICE_NAME"
+    rm /usr/lib/systemd/system/$SERVICE_NAME.service || true
+
+    Output "Reloading systemd config"
+    systemctl daemon-reload || true
+    systemctl reset-failed || true
+fi

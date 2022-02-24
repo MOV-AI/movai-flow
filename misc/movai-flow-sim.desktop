@@ -1,11 +1,11 @@
 [Desktop Entry]
-Name=MOV.AI Studio Simulator
+Name=MOV.AI Flow Simulator
 GenericName=ROS Simulator
-Comment=MOV.AI Development Studio Simulator
-Exec=/usr/bin/movai-studio-simulator
+Comment=MOV.AI Development Flow Simulator
+Exec=/usr/bin/movai-flow-simulator
 Icon=ignition_logo
-Terminal=false
-StartupWMClass=MOV.AI Studio
+Terminal=true
+StartupWMClass=MOV.AI Flow
 MimeType=application/octet-stream;application/zip;text/xml;text/xml;x-scheme-handler/movai;
 Type=Application
 Categories=Development;

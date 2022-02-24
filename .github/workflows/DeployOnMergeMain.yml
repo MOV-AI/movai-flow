@@ -70,17 +70,6 @@ jobs:
         git pull
         git push --force-with-lease
 
-
-    - name: Publish to Nexus ppa-dev
-      run: |
-          NEXUS_ENDPOINT="artifacts.cloud.mov.ai"
-          NEXUS_REPO="ppa-dev"
-          FILE_LOCATION=$(find artifacts/*.deb)
-          curl -u "${{ secrets.NEXUS_PUBLISHER_USR }}:${{ secrets.NEXUS_PUBLISHER_PWD }}" \
-          -H "Content-Type: multipart/form-data" \
-          --data-binary "@$FILE_LOCATION" \
-          "https://$NEXUS_ENDPOINT/repository/$NEXUS_REPO/"
-
     - name: Publish to Nexus ppa-testing
       run: |
           NEXUS_ENDPOINT="artifacts.cloud.mov.ai"
@@ -98,6 +87,7 @@ jobs:
         name: "Release of ${{ steps.vars-after-raise.outputs.pkg_version  }}"
         generate_release_notes: true
         files: artifacts/*.deb
+        tag_name: ${{ steps.vars-after-raise.outputs.pkg_version  }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

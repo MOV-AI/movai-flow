@@ -1,0 +1,11 @@
+./haproxy
+./rviz
+./robots
+./models_database
+./misc/movai-flow.desktop
+./misc/movai-flow-sim.desktop
+./misc/movai-flow-cli.desktop
+./misc/movai-flow-rviz.desktop
+./misc/movai-flow.png
+./misc/ignition_logo.svg
+./misc/rviz-package.png

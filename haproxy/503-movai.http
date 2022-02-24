@@ -1,0 +1,18 @@
+HTTP/1.0 503 Service Unavailable
+Cache-Control: no-cache
+Connection: close
+Content-Type: text/html
+
+<html>
+  <head>
+    <meta http-equiv="refresh" content="5" />
+    <title>Mov.ai is starting up</title>
+  </head>
+  <body style="font-family:Arial,Helvetica,sans-serif;">
+    <div style="margin: 0 auto; width: 960px;">
+          <h2>MOV.AI is starting up. Be patient...</h2>
+          <h3>Page is refreshed every 5s, if is taking too long, please check application logs as follow:</h3>
+          <p>docker-compose -f /usr/share/movai-flow/docker-compose.yml logs -f</p>
+    </div>
+  </body>
+</html>
