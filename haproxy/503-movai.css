@@ -1,0 +1,46 @@
+body {
+    background-color: white;
+    color: black;
+    padding: 5% 20%;
+    font-family: "sans-serif";
+}
+
+.main {
+    margin: auto;
+    text-align: center;
+    width: 100%;
+    display: inline-block;
+}
+
+.image-container {
+    float: left;
+    padding: 50px;
+    width: 30%;
+    border-right: solid gray 1px;
+}
+
+.image-container img {
+    max-width: 350px;
+}
+
+.info-container {
+    width: 50%;
+    padding: 50px;
+    text-align: left;
+    float: right;
+}
+
+.info-container h1 {
+    color: red;
+    text-align: left;
+}
+
+.code-block {
+    width: 100%;
+    text-align: left;
+    margin-top: 50px;
+    background: lightgray;
+    height: 45px;
+    padding: 10px 25px;
+    border-radius: 10px;
+}
