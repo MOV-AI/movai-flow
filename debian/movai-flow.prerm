@@ -2,7 +2,7 @@
 # pre remove actions
 # clean unziped files
 
-SERVICE_NAME=movai-studio
+SERVICE_NAME=movai-flow
 APP_PATH=/usr/share/$SERVICE_NAME
 DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
 DOCKER_COMPOSE_ENV=$APP_PATH/.env
