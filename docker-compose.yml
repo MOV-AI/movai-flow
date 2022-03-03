@@ -245,7 +245,11 @@ services:
       - $XAUTH:$XAUTH
       - ./models_database:/models_database
       - /.ignition/fuel:/root/.ignition/fuel
-    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+              - capabilities: [gpu]
     network_mode: host
     privileged: true
     tty: true
@@ -274,13 +278,15 @@ services:
       DISPLAY: "$DISPLAY"
       QT_X11_NO_MITSHM: "1"
       XAUTHORITY: "$XAUTH"
-      NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
-      NVIDIA_DRIVER_CAPABILITIES: ${NVIDIA_DRIVER_CAPABILITIES:-graphics}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
       - ./rviz/default.rviz:/headless/.rviz/default.rviz:rw
-    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+              - capabilities: [gpu]
     networks:
       - private
     depends_on:
