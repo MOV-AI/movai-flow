@@ -1,4 +1,4 @@
-movai-studio (1.0.3-2) UNRELEASED; urgency=medium
+movai-flow (1.0.3-2) UNRELEASED; urgency=medium
 
   [ Alex Fernandes ]
   *
@@ -30,21 +30,14 @@ movai-studio (1.0.3-2) UNRELEASED; urgency=medium
   * fix service init
   * bump and fixes
 
-  [ root ]
-  * bump version
-  * UNRELEASED
+  [ Alex Fernandes ]
+  * DP-349 : update ce-demos and rviz (#11)
+  * Update README.md
+  * fix
 
   [ Alex Fernandes ]
   * DP-349 : update ce-demos and rviz (#11)
   * Update README.md
   * fix
 
-  [ root ]
-  * UNRELEASED
-  * UNRELEASED
-  * UNRELEASED
-  * UNRELEASED
-  * UNRELEASED
-  * UNRELEASED
-
- -- root <root@024ef45f27b0>  Sat, 22 Jan 2022 01:15:48 +0000
+ -- Alex Fernandes <afe@afe-laptop>  Tue, 14 Dec 2021 00:08:39 +0000
