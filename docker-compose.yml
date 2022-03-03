@@ -110,7 +110,7 @@ services:
     ports:
       - "6380:6379"
     healthcheck:
-      test: [ "CMD", "echo", ">", "/dev/tcp/localhost/6380" ]
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/6380"]
       interval: 3s
       timeout: 2s
       retries: 3
@@ -140,7 +140,7 @@ services:
         python3 -m tools.new_user -u ${STUDIO_USER_USERNAME:-movai} -p ${STUDIO_USER_USERNAME:-movai} -s
         exec docker-entrypoint.sh
     healthcheck:
-      test: [ "CMD", "echo", ">", "/dev/tcp/localhost/5004" ]
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/5004"]
       interval: 5s
       timeout: 2s
       retries: 3
@@ -151,7 +151,7 @@ services:
     networks:
       - private
     healthcheck:
-      test: [ "CMD", "echo", ">", "/dev/tcp/localhost/8086" ]
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/8086"]
       interval: 3s
       timeout: 2s
       retries: 3
@@ -167,7 +167,7 @@ services:
       influxdb:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "echo", ">", "/dev/tcp/localhost/8081" ]
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/8081"]
       interval: 3s
       timeout: 2s
       retries: 3
@@ -188,7 +188,7 @@ services:
     ports:
       - "${STUDIO_ROS_MASTER_PORT:-11311}:11311"
     healthcheck:
-      test: [ "CMD", "echo", ">", "/dev/tcp/localhost/11311" ]
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/11311"]
       interval: 3s
       timeout: 2s
       retries: 3
@@ -231,7 +231,7 @@ services:
     <<: *movai-common
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ignition-gazebo:v1.0.0
     container_name: simulator-$MOVAI_DEVICE_NAME
-    profiles: [ "simulator" ]
+    profiles: ["simulator"]
     environment:
       <<: *movai-common-env
       DISPLAY: "$DISPLAY"
@@ -249,7 +249,7 @@ services:
       resources:
         reservations:
           devices:
-            - capabilities: [ gpu ]
+            - capabilities: [gpu]
     network_mode: host
     privileged: true
     tty: true
@@ -272,7 +272,7 @@ services:
     <<: *movai-common
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-tools-ce:v1.0.0
     container_name: ros-tools-$MOVAI_DEVICE_NAME
-    profiles: [ "tools" ]
+    profiles: ["tools"]
     environment:
       <<: *movai-common-env
       DISPLAY: "$DISPLAY"
@@ -286,7 +286,7 @@ services:
       resources:
         reservations:
           devices:
-            - capabilities: [ gpu ]
+            - capabilities: [gpu]
     networks:
       - private
     depends_on:
