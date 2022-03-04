@@ -1,22 +1,38 @@
-# ce-project-flow
-Community Edition - MOVAI Flow Project Resources
+# MOV.AI Flow&trade;
+An IDE that introduces visualization and structure to ROS. 
 
-## Before you begin
-Follow these steps to install the necessary tools:
+Features
+- Webbased Visual ROS Editor
+- Built-in Visual State Machine & node orchestration
+- Callback Editor
+- Visual Debugging
+- Configuration Editor
+- Out-of-the-box Integration with ROS
 
-- Install Docker Community Edition (CE) on your workstation. Depending on the OS, you may need to configure your Docker instance to use 4.00 GB of memory for all containers to run properly. Please refer to the Resources section if using Docker for Windows or Docker for Mac for more information.
+<img src="preview.gif" width="400px"/><!--adding a couple more gifs-->
 
-- Install Docker Compose v1.29.1 and newer on your workstation.
 
-> Older versions of `docker-compose` do not support all the features required by `docker-compose.yml` file, so double check that your version meets the minimum version requirements.
+# Supported Systems
+Linunx Ubuntu 20.04-x64
 
-- Login to MOV.AI Docker registry:
+## Minimum Specs
+- Disk 10 GB
+- RAM 4 GB
 
-    ```shell
-    docker login registry.cloud.mov.ai -u username
-    ```
+## Recommended Specs
+- Disk 20 GB
+- RAM 8 GB
+- NVIDIA GPU (For Ignition simulator)
 
-## Install MOVAI Flow
+# Before you begin
+## Pre-requisites:
+- docker-compose > 1.29.2
+- docker > 20.10.8
+- Manage Docker as a non-root user
+cf. https://docs.docker.com/engine/install/ubuntu/ or https://github.com/MOV-AI/movai-flow/edit/dev/README.md#docker-setup
+
+
+# Install MOVAI Flow&trade;
 
 > Important Notes :
 >
@@ -24,30 +40,25 @@ Follow these steps to install the necessary tools:
 >  - current version is only tested with NVidia GPU
 
 Retrieve the `movai-flow` package by downloading it from GitHub releases and then using Linux package manager.
-
-Or `movai-flow` package is also available from our repository :
-
-```shell
-curl -fsSL https://artifacts.cloud.mov.ai/repository/movai-applications/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=all] https://artifacts.cloud.mov.ai/repository/ppa-main main main"
-sudo apt-get install movai-flow
-```
-
-## Controls of MOVAI Flow
-Installing the Flow package will provide a few application shortcuts in the programming section:
-- `MOV.AI Flow`: launches the needed services and then open a browser connected to the flow
-- `MOV.AI Flow RViz`: launches rviz connected to the flow
-- `MOV.AI Flow Simulator`: launches Ignition simulator connected to the flow
-
-Installing the Flow package will provide a few command line tools to control the cluster of containers running the flow:
-- `movai-flow-launch`: launch this script to launch the needed services and then open a browser connected to the flow
-- `movai-flow-stop`: stop all flow services
-- `movai-flow-rviz`: launch rviz connected to the flow
-- `movai-flow-simulator`: launch Ignition simulator connected to the flow
+Alternatively download the package, and run `dpkg -i movai-flow.deb`
 
 
-## Services of MOVAI Flow
-The flow initiate a set of services running as a `docker-compose` cluster:
+
+## Controls of MOVAI Flow&trade;
+Installing the Studio package will provide a few application shortcuts in the programming section:
+- `MOV.AI Flow™`: launches the needed services and then open a browser connected to the studio
+- `MOV.AI Flow™ RViz`: launches rviz connected to the studio
+- `MOV.AI Flow™ Simulator`: launches Ignition simulator connected to the studio
+
+Installing the Flow&trade; package will provide a few command line tools to control the cluster of containers running the studio:
+- `movai-flow-launch`: launch this script to launch the needed services and then open a browser connected to the studio
+- `movai-flow-stop`: stop all studio services
+- `movai-flow-rviz`: launch rviz connected to the studio
+- `movai-flow-simulator`: launch Ignition simulator connected to the studio
+
+
+## Services of MOVAI Flow&trade;
+The Flow&trade; initiate a set of services running as a `docker-compose` cluster:
  - redis-master: master DB of the cluster
  - redis-local: local DB of the cluster
  - backend: web service application
@@ -61,35 +72,66 @@ The flow initiate a set of services running as a `docker-compose` cluster:
 
 > Some directories in the containers are mounted, which means that their contents are synchronized between your computer and the container.
 
-## Importing ROS package
 
-A folder configured as a ROS wokspace is shared in between the host and the cluster,
-by default it is located in `/usr/share/movai-flow/userspace/` but a link is added to `~/Documents/MovaiFlow`
+## Troubles installing?
 
-- Place any ROS package in the ROS workspace as follow :
+Ask community@mov.ai for help.
 
-"""
-    mkdir -p /usr/share/movai-flow/userspace/cache/ros/src
-    cd /usr/share/movai-flow/userspace/cache/ros/src
-    git clone git@github.com:ros/resource_retriever.git
-"""
+# Docker setup
 
-- run compilation script inside the cluster:
+Follow these steps to install and setup the necessary tools:
 
-"""
-    docker exec -it spawner-flow ros1-workspace-build.sh
-"""
+## Install Docker Community Edition (CE) > 20.10.8
 
-The package generated artifacts should them be available in MOV.AI Flow
+> If you already have docker, double check that your version meets the minimum version requirements.
+
+```shell
+sudo apt update && sudo apt upgrade
+sudo apt install curl
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -sc) stable"
+sudo apt -y install docker-ce docker-ce-cli 
+```
+
+Note: Depending on the OS, you may need to configure your Docker instance to use 4.00 GB of memory for all containers to run properly. 
+
+
+## Install Docker Compose > v1.29.1 
+> Older versions of `docker-compose` do not support all the features required by FlowTM (cf. `docker-compose.yml` file).
+> If you already have docker-compose, double check that your version meets the minimum version requirements.
+
+```shell
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+```
+
+## Manage docker without sudo
+```shell
+newgrp docker 
+sudo docker–compose --version
+sudo usermod -aG docker "$USER"
+docker login registry.cloud.mov.ai -u username
+```
+
+https://docs.docker.com/engine/install/linux-postinstall/
+
+## Before oficial release, docker login is necessary :
+- Login to MOV.AI Docker registry:
+
+    ```shell
+    docker login registry.cloud.mov.ai -u username
+    ```
+Ask community@mov.ai for access.
 
 
 
-## Installing the Flow from sources
+
+# Installing the Flow&trade; from sources
 
 Clone the repository or download the sources and follow the following instructions.
 
 ### Initializing Environment
-Before starting MOVAI Flow for the first time, You need to prepare your environment, i.e. create the necessary files, directories and initialize the database.
+Before starting MOVAI Studio for the first time, You need to prepare your environment, i.e. create the necessary files, directories and initialize the database.
 
 To do it, edit .env file and customize variables values:
 
@@ -97,7 +139,7 @@ To do it, edit .env file and customize variables values:
 
 > Values present in the environment at runtime always override those defined inside the .env file. Similarly, values passed via command-line arguments take precedence as well.
 
-### Running MOVAI Flow
+### Running MOVAI Studio
 Now you can start all services:
 
     docker-compose up -d
@@ -119,7 +161,7 @@ The best way to do it is to:
  - re-start following the instructions from the very beginning in this guide
 
 ### Accessing the Flow
-After starting MOVAI Flow, you can interact with it in different ways:
+After starting MOVAI Flow&trade;, you can interact with it in different ways:
 
 - via a browser using the web interface
 - using the REST API
@@ -192,44 +234,19 @@ To stop and delete containers, delete volumes with database data and download im
 
     docker-compose down --volumes --rmi all
 
-### Using the Flow as a service
+### Using the Studio as a service
 
-The package creates a systemd service that autostarts & manages the MOVAI Flow docker-compose instance
+The package creates a systemd service that autostarts & manages the MOVAI Studio docker-compose instance
 
 After the service is created, it can be controlled as follow :
 
     ```shell
-    echo "Enabling & starting movai-flow"
+    echo "Enabling & starting movai-studio"
     # Autostart systemd service
-    sudo systemctl enable movai-flow.service
+    sudo systemctl enable movai-studio.service
     # Start systemd service now
-    sudo systemctl start movai-flow.service
+    sudo systemctl start movai-studio.service
     # Stop systemd service now
-    sudo systemctl stop movai-flow.service
+    sudo systemctl stop movai-studio.service
     ```
-
-### Creating a debian package
-
-    dpkg-buildpackage
-
-## Importing ROS package
-
-A folder configured as a ROS wokspace is shared in between the host and the cluster,
-by default it is located in `/usr/share/movai-flow/userspace/`.
-
-- Place any ROS package in the ROS workspace as follow :
-
-"""
-    mkdir -p /usr/share/movai-flow/userspace/cache/ros/src
-    cd /usr/share/movai-flow/userspace/cache/ros/src
-    git clone git@github.com:ros/resource_retriever.git
-"""
-
-- run compilation script inside the cluster:
-
-"""
-    docker exec -it spawner-flow ros1-workspace-build.sh
-"""
-
-The package generated artifacts should them be available in MOV.AI Flow
 
