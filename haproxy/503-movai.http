@@ -6,13 +6,14 @@ Content-Type: text/html
 <html>
   <head>
     <meta http-equiv="refresh" content="5" />
-    <link rel="stylesheet" href="./503-movai.css">
+    <link rel="stylesheet" href="data:text/css;charset=utf-8;base64, Ym9keSB7DQogICAgYmFja2dyb3VuZC1jb2xvcjogI2U5ZTllOTsNCiAgICBjb2xvcjogYmxhY2s7DQogICAgcGFkZGluZzogNSUgMjAlOw0KICAgIGZvbnQtZmFtaWx5OiAic2Fucy1zZXJpZiI7DQp9DQoNCi5tYWluIHsNCiAgICBtYXJnaW46IGF1dG87DQogICAgdGV4dC1hbGlnbjogY2VudGVyOw0KICAgIHdpZHRoOiAxMDAlOw0KICAgIGRpc3BsYXk6IGlubGluZS1ibG9jazsNCn0NCg0KLnN0YXR1cy1jb250YWluZXIgew0KICAgIGZsb2F0OiBsZWZ0Ow0KICAgIHBhZGRpbmc6IDUwcHg7DQogICAgd2lkdGg6IDMwJTsNCiAgICBib3JkZXItcmlnaHQ6IHNvbGlkIGdyYXkgMXB4Ow0KfQ0KDQouc3RhdHVzLWNvbnRhaW5lciBoMSB7DQogICAgZm9udC1zaXplOiAxMDBweDsNCiAgICBtYXJnaW4tYm90dG9tOiAxMHB4Ow0KfQ0KDQouaW5mby1jb250YWluZXIgew0KICAgIHdpZHRoOiA1MCU7DQogICAgcGFkZGluZzogNTBweDsNCiAgICB0ZXh0LWFsaWduOiBsZWZ0Ow0KICAgIGZsb2F0OiByaWdodDsNCn0NCg0KLmluZm8tY29udGFpbmVyIGgxIHsNCiAgICBjb2xvcjogcmVkOw0KICAgIHRleHQtYWxpZ246IGxlZnQ7DQp9DQoNCi5jb2RlLWJsb2NrIHsNCiAgICB3aWR0aDogMTAwJTsNCiAgICB0ZXh0LWFsaWduOiBsZWZ0Ow0KICAgIG1hcmdpbi10b3A6IDUwcHg7DQogICAgYmFja2dyb3VuZDogbGlnaHRncmF5Ow0KICAgIGhlaWdodDogNDVweDsNCiAgICBwYWRkaW5nOiAxMHB4IDI1cHg7DQogICAgYm9yZGVyLXJhZGl1czogMTBweDsNCn0=" />
     <title>MOV.AI Flow&trade; is starting</title>
   </head>
   <body>
       <div class="main">
-          <div class="image-container">
-              <img src="../resources/robots-animation.gif" alt="MOV.AI Robots Animation" />
+          <div class="status-container">
+            <h1>503</h1>
+            <p>Service Unavailable</p>
           </div>
           <div class="info-container">
               <h1>MOV.AI Flow&trade; is starting up.</h1>
