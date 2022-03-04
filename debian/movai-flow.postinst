@@ -9,7 +9,7 @@
 #
 #   Note: Blank lines (Null text strings "") are not written to the system log.  There is no need to waste that space.
 
-SERVICE_NAME=movai-studio
+SERVICE_NAME=movai-flow
 SERVICE_PORTS="8080" #8083
 APP_PATH=/usr/share/$SERVICE_NAME
 CONFIG_PATH=/etc/$SERVICE_NAME
@@ -19,7 +19,7 @@ DOCKER_COMPOSE_BIN=$(which docker-compose)
 
 Output() {
   # Prepare base message
-  Message="MOV.AI Studio install: $1"
+  Message="MOV.AI Flow install: $1"
 
   # Output the message even if a blank message (make output nice)
   echo "$Message"
@@ -41,7 +41,7 @@ Output() {
 # Load configuration variable values from configuration transfer file as needed
 GetConfig() {
   RetVal=""
-  InstConfig=/tmp/movai-studio-installer.log
+  InstConfig=/tmp/movai-flow-installer.log
   RetVal="$(grep ^$1= $InstConfig | sed -e 's/^.*=//'| tr -d '"')"
   echo "$RetVal"
 }
@@ -87,7 +87,7 @@ if [ "$1" == "configure" ]; then
     if [ -f $CONFIG_PATH/config.env ]; then
       Output "Re-using $SERVICE_NAME config"
     else
-      FLEET_TOKEN="$(echo movai:ce-studio$RANDOM | base64 -w0)"
+      FLEET_TOKEN="$(echo movai:ce-flow$RANDOM | base64 -w0)"
       echo FLEET_TOKEN="$FLEET_TOKEN" > $CONFIG_PATH/config.env
       Output "Created $SERVICE_NAME fleet token"
     fi
