@@ -1,7 +1,7 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: movai-studio
+Upstream-Name: movai-flow
 Upstream-Contact: Maintainer <Maintainer@mov.ai>
-Source: https://github.com/MOV-AI/ce-project-studio
+Source: https://github.com/MOV-AI/ce-project-flow
 
 Files: *
 Copyright: 2021 MOV.AI
