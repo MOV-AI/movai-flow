@@ -6,13 +6,23 @@ Content-Type: text/html
 <html>
   <head>
     <meta http-equiv="refresh" content="5" />
+    <link rel="stylesheet" href="data:text/css;charset=utf-8;base64, Ym9keSB7DQogICAgYmFja2dyb3VuZC1jb2xvcjogI2U5ZTllOTsNCiAgICBjb2xvcjogYmxhY2s7DQogICAgcGFkZGluZzogNSUgMjAlOw0KICAgIGZvbnQtZmFtaWx5OiAic2Fucy1zZXJpZiI7DQp9DQoNCi5tYWluIHsNCiAgICBtYXJnaW46IGF1dG87DQogICAgdGV4dC1hbGlnbjogY2VudGVyOw0KICAgIHdpZHRoOiAxMDAlOw0KICAgIGRpc3BsYXk6IGlubGluZS1ibG9jazsNCn0NCg0KLnN0YXR1cy1jb250YWluZXIgew0KICAgIGZsb2F0OiBsZWZ0Ow0KICAgIHBhZGRpbmc6IDUwcHg7DQogICAgd2lkdGg6IDMwJTsNCiAgICBib3JkZXItcmlnaHQ6IHNvbGlkIGdyYXkgMXB4Ow0KfQ0KDQouc3RhdHVzLWNvbnRhaW5lciBoMSB7DQogICAgZm9udC1zaXplOiAxMDBweDsNCiAgICBtYXJnaW4tYm90dG9tOiAxMHB4Ow0KfQ0KDQouaW5mby1jb250YWluZXIgew0KICAgIHdpZHRoOiA1MCU7DQogICAgcGFkZGluZzogNTBweDsNCiAgICB0ZXh0LWFsaWduOiBsZWZ0Ow0KICAgIGZsb2F0OiByaWdodDsNCn0NCg0KLmluZm8tY29udGFpbmVyIGgxIHsNCiAgICBjb2xvcjogcmVkOw0KICAgIHRleHQtYWxpZ246IGxlZnQ7DQp9DQoNCi5jb2RlLWJsb2NrIHsNCiAgICB3aWR0aDogMTAwJTsNCiAgICB0ZXh0LWFsaWduOiBsZWZ0Ow0KICAgIG1hcmdpbi10b3A6IDUwcHg7DQogICAgYmFja2dyb3VuZDogbGlnaHRncmF5Ow0KICAgIGhlaWdodDogNDVweDsNCiAgICBwYWRkaW5nOiAxMHB4IDI1cHg7DQogICAgYm9yZGVyLXJhZGl1czogMTBweDsNCn0=" />
     <title>MOV.AI Flow&trade; is starting</title>
   </head>
-  <body style="font-family:Arial,Helvetica,sans-serif;">
-    <div style="margin: 0 auto; width: 960px;">
-          <h2>MOV.AI Flow&trade; is starting up. Be patient...</h2>
-          <h3>Page is refreshed every 5s, if is taking too long, please check application logs as follow:</h3>
-          <p>docker logs spawner-studio -f</p>
+  <body>
+      <div class="main">
+          <div class="status-container">
+            <h1>503</h1>
+            <p>Service Unavailable</p>
+          </div>
+          <div class="info-container">
+              <h1>MOV.AI Flow&trade; is starting up.</h1>
+              <h2>This page is refreshed every 5s, if it is taking too long please check application logs as follow:</h2>
+          </div>
+      </div>
+
+    <div class="code-block">
+        <pre><code class="language-bash">docker-compose logs /usr/share/movai-flow/docker-compose.yml</code></pre>
     </div>
   </body>
 </html>
