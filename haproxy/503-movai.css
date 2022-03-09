@@ -9,12 +9,12 @@ body {
     margin: auto;
     text-align: center;
     width: 100%;
-    display: inline-block;
+    display: inline-flex;
 }
 
 .status-container {
-    float: left;
     padding: 50px;
+    position: relative;
     width: 30%;
     border-right: solid gray 1px;
 }
@@ -25,10 +25,10 @@ body {
 }
 
 .info-container {
-    width: 50%;
+    width: 70%;
+    position: relative;
     padding: 50px;
     text-align: left;
-    float: right;
 }
 
 .info-container h1 {
@@ -37,11 +37,50 @@ body {
 }
 
 .code-block {
-    width: 100%;
     text-align: left;
     margin-top: 50px;
     background: lightgray;
     height: 45px;
     padding: 10px 25px;
     border-radius: 10px;
+}
+
+.code-block pre {
+    white-space: normal;
+}
+
+@media only screen and (max-width: 900px) {
+    body {
+        padding: 5% 5%;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    body {
+        padding: 5% 10%;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .main {
+        flex-flow: column;
+    }
+
+    .status-container, .info-container {
+        width: 80%;
+        padding-top: 0;
+    }
+
+    .info-container {
+        padding-top: 50px;
+    }
+
+    .status-container {
+        border-bottom: solid gray 1px;
+        border-right: none;
+    }
+
+    .code-block {
+        margin-top: 0
+    }
 }
