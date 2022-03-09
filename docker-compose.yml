@@ -244,7 +244,7 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
       - ./models_database:/models_database
-      - /home/$USER/.ignition/fuel:/root/.ignition/fuel
+      - /home/$USER/.ignition:/root/.ignition
     runtime: nvidia
     network_mode: host
     privileged: true
