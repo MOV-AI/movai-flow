@@ -1,6 +1,5 @@
 ./haproxy
 ./rviz
-./robots
 ./models_database
 ./docker-compose.yml
 ./.env

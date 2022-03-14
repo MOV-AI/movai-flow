@@ -31,13 +31,13 @@ jobs:
       env:
         GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Validate json
-      uses: anyone-developer/anyone-validate-json@main
-      with:
-        file-extension: '.json'
-        ignore-files: ''
-        ignore-directories: '.git'
-        read-path: 'robots'
+    # - name: Validate json
+    #   uses: anyone-developer/anyone-validate-json@main
+    #   with:
+    #     file-extension: '.json'
+    #     ignore-files: ''
+    #     ignore-directories: '.git'
+    #     read-path: 'robots'
 
     - name: run docker-compose lint
       run: |
