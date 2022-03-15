@@ -228,7 +228,8 @@ services:
       STUDIO_SPAWNER_PACKAGES: $STUDIO_SPAWNER_PACKAGES
 
   simulator:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ignition-gazebo:v1.0.0
+    <<: *movai-common
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ignition-gazebo:v1.0.1
     container_name: simulator-$MOVAI_DEVICE_NAME
     profiles: ["simulator"]
     environment:
@@ -236,9 +237,9 @@ services:
       DISPLAY: "$DISPLAY"
       QT_X11_NO_MITSHM: "1"
       XAUTHORITY: "$XAUTH"
-      IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /models_database/tugbot_models/plugins/system:/movai_ign_plugins/system:/models_database/plugins/system
-      IGN_GUI_PLUGIN_PATH: /models_database/tugbot_models/plugins/gui:/movai_ign_plugins/gui:/models_database/plugins/gui
-      IGN_GAZEBO_RESOURCE_PATH: /models_database/rpm_models/worlds:/models_database/rpm_models:/models_database/tugbot_models/worlds:/models_database/tugbot_models:/models_database/husky_models/worlds:/models_database/husky_models:/models_database/movai_models/worlds:/models_database/movai_models/models:/models_database/my_models
+      IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /movai_ign_plugins/system:/models_database/plugins/system
+      IGN_GUI_PLUGIN_PATH: /movai_ign_plugins/gui:/models_database/plugins/gui
+      IGN_GAZEBO_RESOURCE_PATH: /models_database/my_models
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
