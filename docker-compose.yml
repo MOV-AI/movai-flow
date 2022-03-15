@@ -228,7 +228,6 @@ services:
       STUDIO_SPAWNER_PACKAGES: $STUDIO_SPAWNER_PACKAGES
 
   simulator:
-    <<: *movai-common
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ignition-gazebo:v1.0.0
     container_name: simulator-$MOVAI_DEVICE_NAME
     profiles: ["simulator"]
@@ -240,18 +239,11 @@ services:
       IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /models_database/tugbot_models/plugins/system:/movai_ign_plugins/system:/models_database/plugins/system
       IGN_GUI_PLUGIN_PATH: /models_database/tugbot_models/plugins/gui:/movai_ign_plugins/gui:/models_database/plugins/gui
       IGN_GAZEBO_RESOURCE_PATH: /models_database/rpm_models/worlds:/models_database/rpm_models:/models_database/tugbot_models/worlds:/models_database/tugbot_models:/models_database/husky_models/worlds:/models_database/husky_models:/models_database/movai_models/worlds:/models_database/movai_models/models:/models_database/my_models
-      NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
-      NVIDIA_DRIVER_CAPABILITIES: ${NVIDIA_DRIVER_CAPABILITIES:-graphics}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
       - ./models_database:/models_database
       - /.ignition/fuel:/root/.ignition/fuel
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - capabilities: [gpu]
     network_mode: host
     privileged: true
     tty: true
@@ -264,14 +256,12 @@ services:
     command:
       - -ic
       - |
-        rm /opt/mov.ai/.first_run_apt
+        rm -f /opt/mov.ai/.first_run_apt
         movai-entrypoint.sh
         apt-get update
         apt-get install -y $STUDIO_SIMU_PLUGIN_PACKAGES
         ign gui -s $STUDIO_SIMU_GUI
-
   ros-tools:
-    <<: *movai-common
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-tools-ce:v1.0.0
     container_name: ros-tools-$MOVAI_DEVICE_NAME
     profiles: ["tools"]
@@ -280,22 +270,13 @@ services:
       DISPLAY: "$DISPLAY"
       QT_X11_NO_MITSHM: "1"
       XAUTHORITY: "$XAUTH"
-      NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
-      NVIDIA_DRIVER_CAPABILITIES: ${NVIDIA_DRIVER_CAPABILITIES:-graphics}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
       - ./rviz/default.rviz:/headless/.rviz/default.rviz:rw
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - capabilities: [gpu]
+      - rviz-flow-volume:/headless/.rviz/persistent_settings
     networks:
       - private
-    depends_on:
-      ros-master:
-        condition: service_healthy
     privileged: true
     tty: true
     entrypoint: /bin/bash
@@ -323,6 +304,7 @@ volumes:
   redis-master-flow-volume:
   redis-local-flow-volume:
   influxdb-flow-volume:
+  rviz-flow-volume:
 
 networks:
   proxy:

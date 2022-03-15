@@ -3,7 +3,8 @@ SCRIPTNAME=RVIZ
 SERVICE_NAME=movai-flow
 APP_PATH=/usr/share/$SERVICE_NAME
 CONFIG_PATH=/etc/$SERVICE_NAME
-DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
+SERVICE_CONF=$APP_PATH/docker-compose.yml
+SERVICE_NVIDIA_CONF=$APP_PATH/docker-compose-nvidia.yml
 DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
 
 
@@ -31,6 +32,18 @@ Output() {
 Output "This terminal window will verify all MOVAI Flow services are running and then launch the Ignition Simulator GUI application"
 Output "(U) [^_^] (U)"
 
-xhost +local:docker
+if [ -f $CONFIG_PATH/config.env ]; then
+  Output "Sourcing configuration"
+  . $CONFIG_PATH/config.env
+else
+  Output "No configuration found"
+fi
 
-$DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF up simulator
+xhost +local:docker
+if [ "$HAVE_NVIDIA" = "1" ]; then
+  Output "Launching simulator for Nvidia GPU"
+  exec $DOCKER_COMPOSE_BIN -f $SERVICE_NVIDIA_CONF up simulator
+else
+  Output "Launching simulator for integrated GPU"
+  exec $DOCKER_COMPOSE_BIN -f $SERVICE_CONF up simulator
+fi
