@@ -237,8 +237,8 @@ services:
       DISPLAY: "$DISPLAY"
       QT_X11_NO_MITSHM: "1"
       XAUTHORITY: "$XAUTH"
-      IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /models_database/plugins/system
-      IGN_GUI_PLUGIN_PATH: /models_database/plugins/gui
+      IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /movai_ign_plugins/system:/models_database/plugins/system
+      IGN_GUI_PLUGIN_PATH: /movai_ign_plugins/gui:/models_database/plugins/gui
       IGN_GAZEBO_RESOURCE_PATH: /models_database/my_models
       NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
       NVIDIA_DRIVER_CAPABILITIES: ${NVIDIA_DRIVER_CAPABILITIES:-graphics}
