@@ -30,9 +30,9 @@ Output() {
 
 # Symlink userspace and models_database to ~/Documents/MovaiFlow
 user_documents_path=$(xdg-user-dir DOCUMENTS)
-mkdir -p "${user_documents_path}/MovaiFlow"
 Output "Creating user and models folder"
-if [ -e "${user_documents_path}/MovaiFlow" ]; then
+if [ ! -e "${user_documents_path}/MovaiFlow" ]; then
+  mkdir -p "${user_documents_path}/MovaiFlow"
   ln -sf "$APP_PATH/userspace" "${user_documents_path}/MovaiFlow"
   ln -sf "$APP_PATH/models_database" "${user_documents_path}/MovaiFlow"  
   Output "User and models folder ${user_documents_path}/MovaiFlow"
