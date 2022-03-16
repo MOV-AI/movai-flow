@@ -12,8 +12,8 @@ version: "3.9"
 services:
   simulator:
     extends:
-        file: docker-compose.yml
-        service: simulator
+      file: docker-compose.yml
+      service: simulator
     environment:
       NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
       NVIDIA_DRIVER_CAPABILITIES: ${NVIDIA_DRIVER_CAPABILITIES:-graphics}
@@ -22,11 +22,11 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              capabilities: [ "gpu" ]
+              capabilities: ["gpu"]
   ros-tools:
     extends:
-        file: docker-compose.yml
-        service: ros-tools
+      file: docker-compose.yml
+      service: ros-tools
     environment:
       NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
       NVIDIA_DRIVER_CAPABILITIES: ${NVIDIA_DRIVER_CAPABILITIES:-graphics}
@@ -35,7 +35,7 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              capabilities: [ "gpu" ]
+              capabilities: ["gpu"]
 networks:
   private:
     external:
