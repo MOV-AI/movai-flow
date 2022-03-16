@@ -228,7 +228,6 @@ services:
       STUDIO_SPAWNER_PACKAGES: $STUDIO_SPAWNER_PACKAGES
 
   simulator:
-    <<: *movai-common
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ignition-gazebo:v1.0.1
     container_name: simulator-$MOVAI_DEVICE_NAME
     profiles: ["simulator"]
@@ -274,8 +273,7 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
-      - ./rviz/default.rviz:/headless/.rviz/default.rviz:rw
-      - rviz-flow-volume:/headless/.rviz/persistent_settings
+      - ./rviz/:/headless/.rviz/:rw
     networks:
       - private
     privileged: true
@@ -305,7 +303,6 @@ volumes:
   redis-master-flow-volume:
   redis-local-flow-volume:
   influxdb-flow-volume:
-  rviz-flow-volume:
 
 networks:
   proxy:

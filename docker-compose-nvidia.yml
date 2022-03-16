@@ -40,5 +40,3 @@ networks:
   private:
     external:
       name: flow-private
-volumes:
-  rviz-flow-volume:
