@@ -229,7 +229,7 @@ services:
 
   simulator:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ignition-gazebo:v1.0.1
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ignition-gazebo:v1.0.0
     container_name: simulator-$MOVAI_DEVICE_NAME
     profiles: ["simulator"]
     environment:
