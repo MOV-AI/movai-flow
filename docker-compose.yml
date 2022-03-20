@@ -74,8 +74,6 @@ x-movai-common:
       condition: service_healthy
     redis-master:
       condition: service_healthy
-    influxdb:
-      condition: service_healthy
 
 services:
   redis-master:
@@ -145,27 +143,11 @@ services:
       timeout: 2s
       retries: 3
 
-  influxdb:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/influxdb:v1.0.0
-    container_name: influxdb-$MOVAI_DEVICE_NAME
-    networks:
-      - private
-    healthcheck:
-      test: ["CMD", "echo", ">", "/dev/tcp/localhost/8086"]
-      interval: 3s
-      timeout: 2s
-      retries: 3
-    volumes:
-      - influxdb-flow-volume:/var/lib/influxdb
-
   health-node:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/health-node:2.2.2022012
     container_name: health-node-$MOVAI_DEVICE_NAME
     networks:
       - private
-    depends_on:
-      influxdb:
-        condition: service_healthy
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/8081"]
       interval: 3s
@@ -302,7 +284,6 @@ services:
 volumes:
   redis-master-flow-volume:
   redis-local-flow-volume:
-  influxdb-flow-volume:
 
 networks:
   proxy:
