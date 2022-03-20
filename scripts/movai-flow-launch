@@ -62,13 +62,19 @@ while [[ -z $(FilterRunningService spawner) ]]; do
   sleep 5
 done
 
+while [[ -z $( $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF exec -u movai spawner bash -c 'pgrep -f "/usr/bin/python3 /opt/mov.ai/app/async_movaicore.py -v"') ]]
+do
+    sleep 10
+    Output "loading ..."
+done
+
 # Symlink userspace and models_database to ~/Documents/MovaiFlow
 user_documents_path=$(xdg-user-dir DOCUMENTS)
 Output "Creating user and models folder"
 if [ ! -e "${user_documents_path}/MovaiFlow" ]; then
   mkdir -p "${user_documents_path}/MovaiFlow"
   ln -sf "$APP_PATH/userspace" "${user_documents_path}/MovaiFlow"
-  ln -sf "$APP_PATH/models_database" "${user_documents_path}/MovaiFlow"  
+  ln -sf "$APP_PATH/models_database" "${user_documents_path}/MovaiFlow"
   Output "User and models folder ${user_documents_path}/MovaiFlow"
 fi
 

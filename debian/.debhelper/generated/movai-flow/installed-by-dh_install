@@ -2,6 +2,7 @@
 ./rviz
 ./models_database
 ./docker-compose.yml
+./docker-compose-nvidia.yml
 ./.env
 ./scripts/movai-flow-simulator
 ./scripts/movai-flow-rviz
