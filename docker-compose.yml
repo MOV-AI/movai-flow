@@ -225,7 +225,7 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
       - ./models_database:/models_database
-      - /.ignition/fuel:/root/.ignition/fuel
+      - ./models_database/fuel:/root/.ignition/fuel
     network_mode: host
     privileged: true
     tty: true
