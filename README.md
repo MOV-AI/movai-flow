@@ -71,10 +71,10 @@ The Flow&trade; initiate a set of services running as a `docker-compose` cluster
  - ros-tools: rviz container with graphical capabilities enabled
 
 > Some directories in the containers are mounted, which means that their contents are synchronized between your computer and the container.
-
+A folder configured as a ROS wokspace is shared in between the host and the cluster,
+by default it is located in `/usr/share/movai-flow/userspace/` but a link is added to `~/Documents/MovaiFlow/userspace`
 
 ## Troubles installing?
-
 Ask community@mov.ai for help.
 
 # Docker setup
@@ -139,8 +139,8 @@ To do it, edit .env file and customize variables values:
 
 > Values present in the environment at runtime always override those defined inside the .env file. Similarly, values passed via command-line arguments take precedence as well.
 
-### Running MOVAI Studio
-Now you can start all services:
+### Running MOVAI Flow
+Now you can start core services:
 
     docker-compose up -d
 
@@ -186,8 +186,11 @@ Here is a sample curl command, which sends a request to ...:
         "${ENDPOINT_URL}/api/v1/..."
 
 #### Accessing the Simulator
-First of all:
+First of all be aware that the Simulator is based on the containerized [Ignition Fortress](https://ignitionrobotics.org/docs/fortress) application.
 
+> The recommeded setup is to have an NVidia GPU  but still an integrated Intel GPU can also work with lower performance
+
+##### With Nvidia GPU
 Install NVIDIA-DOCKER service to enable GPU resources inside the container:
 
     distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
@@ -200,15 +203,29 @@ Restart the docker service:
 
     sudo systemctl restart docker
 
-After starting MOVAI Flow, you can launch Ignition Fortress:
+After starting MOVAI Flow, you can launch Ignition Fortress with Nvidia GPU acceleration :
 
     xhost +local:docker
-    docker-compose up simulator
+    docker-compose -f docker-compose-nvidia.yml up simulator
+
+##### With generic GPU
+
+After starting MOVAI Flow, you can launch Ignition Fortress without GPU acceleration:
+
+    xhost +local:docker
+    docker-compose -f docker-compose.yml up simulator
 
 #### Accessing ROS tools rviz
 
+With Nvidia GPU acceleration :
+
     xhost +local:docker
-    docker-compose up ros-tools
+    docker-compose -f docker-compose-nvidia.yml up ros-tools
+
+Without GPU acceleration :
+
+    xhost +local:docker
+    docker-compose -f docker-compose.yml up ros-tools
 
 
 #### Accessing the web interface
