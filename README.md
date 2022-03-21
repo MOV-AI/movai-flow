@@ -1,5 +1,5 @@
-# ce-project-studio
-Community Edition - MOVAI Studio Project Resources
+# ce-project-flow
+Community Edition - MOVAI Flow Project Resources
 
 ## Before you begin
 Follow these steps to install the necessary tools:
@@ -16,38 +16,38 @@ Follow these steps to install the necessary tools:
     docker login registry.cloud.mov.ai -u username
     ```
 
-## Install MOVAI Studio
+## Install MOVAI Flow
 
 > Important Notes :
 >
 >  - current version is only tested on Ubuntu 20.04 / Debian
 >  - current version is only tested with NVidia GPU
 
-Retrieve the `movai-studio` package by downloading it from GitHub releases and then using Linux package manager.
+Retrieve the `movai-flow` package by downloading it from GitHub releases and then using Linux package manager.
 
-Or `movai-studio` package is also available from our repository :
+Or `movai-flow` package is also available from our repository :
 
 ```shell
 curl -fsSL https://artifacts.cloud.mov.ai/repository/movai-applications/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=all] https://artifacts.cloud.mov.ai/repository/ppa-main main main"
-sudo apt-get install movai-studio
+sudo apt-get install movai-flow
 ```
 
-## Controls of MOVAI Studio
-Installing the Studio package will provide a few application shortcuts in the programming section:
-- `MOV.AI Studio`: launches the needed services and then open a browser connected to the studio
-- `MOV.AI Studio RViz`: launches rviz connected to the studio
-- `MOV.AI Studio Simulator`: launches Ignition simulator connected to the studio
+## Controls of MOVAI Flow
+Installing the Flow package will provide a few application shortcuts in the programming section:
+- `MOV.AI Flow`: launches the needed services and then open a browser connected to the flow
+- `MOV.AI Flow RViz`: launches rviz connected to the flow
+- `MOV.AI Flow Simulator`: launches Ignition simulator connected to the flow
 
-Installing the Studio package will provide a few command line tools to control the cluster of containers running the studio:
-- `movai-studio-launch`: launch this script to launch the needed services and then open a browser connected to the studio
-- `movai-studio-stop`: stop all studio services
-- `movai-studio-rviz`: launch rviz connected to the studio
-- `movai-studio-simulator`: launch Ignition simulator connected to the studio
+Installing the Flow package will provide a few command line tools to control the cluster of containers running the flow:
+- `movai-flow-launch`: launch this script to launch the needed services and then open a browser connected to the flow
+- `movai-flow-stop`: stop all flow services
+- `movai-flow-rviz`: launch rviz connected to the flow
+- `movai-flow-simulator`: launch Ignition simulator connected to the flow
 
 
-## Services of MOVAI Studio
-The studio initiate a set of services running as a `docker-compose` cluster:
+## Services of MOVAI Flow
+The flow initiate a set of services running as a `docker-compose` cluster:
  - redis-master: master DB of the cluster
  - redis-local: local DB of the cluster
  - backend: web service application
@@ -64,32 +64,32 @@ The studio initiate a set of services running as a `docker-compose` cluster:
 ## Importing ROS package
 
 A folder configured as a ROS wokspace is shared in between the host and the cluster,
-by default it is located in `/usr/share/movai-studio/userspace/` but a link is added to `~/Documents/MovaiStudio`
+by default it is located in `/usr/share/movai-flow/userspace/` but a link is added to `~/Documents/MovaiFlow/userspace`
 
 - Place any ROS package in the ROS workspace as follow :
 
 """
-    mkdir -p /usr/share/movai-studio/userspace/cache/ros/src
-    cd /usr/share/movai-studio/userspace/cache/ros/src
+    mkdir -p /usr/share/movai-flow/userspace/cache/ros/src
+    cd /usr/share/movai-flow/userspace/cache/ros/src
     git clone git@github.com:ros/resource_retriever.git
 """
 
 - run compilation script inside the cluster:
 
 """
-    docker exec -it spawner-studio ros1-workspace-build.sh
+    docker exec -it spawner-flow ros1-workspace-build.sh
 """
 
-The package generated artifacts should them be available in MOV.AI Studio
+The package generated artifacts should them be available in MOV.AI Flow
 
 
 
-## Installing the Studio from sources
+## Installing the Flow from sources
 
 Clone the repository or download the sources and follow the following instructions.
 
 ### Initializing Environment
-Before starting MOVAI Studio for the first time, You need to prepare your environment, i.e. create the necessary files, directories and initialize the database.
+Before starting MOVAI Flow for the first time, You need to prepare your environment, i.e. create the necessary files, directories and initialize the database.
 
 To do it, edit .env file and customize variables values:
 
@@ -97,8 +97,8 @@ To do it, edit .env file and customize variables values:
 
 > Values present in the environment at runtime always override those defined inside the .env file. Similarly, values passed via command-line arguments take precedence as well.
 
-### Running MOVAI Studio
-Now you can start all services:
+### Running MOVAI Flow
+Now you can start core services:
 
     docker-compose up -d
 
@@ -118,8 +118,8 @@ The best way to do it is to:
 
  - re-start following the instructions from the very beginning in this guide
 
-### Accessing the Studio
-After starting MOVAI Studio, you can interact with it in different ways:
+### Accessing the Flow
+After starting MOVAI Flow, you can interact with it in different ways:
 
 - via a browser using the web interface
 - using the REST API
@@ -144,8 +144,11 @@ Here is a sample curl command, which sends a request to ...:
         "${ENDPOINT_URL}/api/v1/..."
 
 #### Accessing the Simulator
-First of all:
+First of all be aware that the Simulator is based on the containerized [Ignition Fortress](https://ignitionrobotics.org/docs/fortress) application.
 
+> The recommeded setup is to have an NVidia GPU  but still an integrated Intel GPU can also work with lower performance
+
+##### With Nvidia GPU
 Install NVIDIA-DOCKER service to enable GPU resources inside the container:
 
     distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
@@ -158,15 +161,29 @@ Restart the docker service:
 
     sudo systemctl restart docker
 
-After starting MOVAI Studio, you can launch Ignition Fortress:
+After starting MOVAI Flow, you can launch Ignition Fortress with Nvidia GPU acceleration :
 
     xhost +local:docker
-    docker-compose up simulator
+    docker-compose -f docker-compose-nvidia.yml up simulator
+
+##### With generic GPU
+
+After starting MOVAI Flow, you can launch Ignition Fortress without GPU acceleration:
+
+    xhost +local:docker
+    docker-compose -f docker-compose.yml up simulator
 
 #### Accessing ROS tools rviz
 
+With Nvidia GPU acceleration :
+
     xhost +local:docker
-    docker-compose up ros-tools
+    docker-compose -f docker-compose-nvidia.yml up ros-tools
+
+Without GPU acceleration :
+
+    xhost +local:docker
+    docker-compose -f docker-compose.yml up ros-tools
 
 
 #### Accessing the web interface
@@ -192,20 +209,20 @@ To stop and delete containers, delete volumes with database data and download im
 
     docker-compose down --volumes --rmi all
 
-### Using the Studio as a service
+### Using the Flow as a service
 
-The package creates a systemd service that autostarts & manages the MOVAI Studio docker-compose instance
+The package creates a systemd service that autostarts & manages the MOVAI Flow docker-compose instance
 
 After the service is created, it can be controlled as follow :
 
     ```shell
-    echo "Enabling & starting movai-studio"
+    echo "Enabling & starting movai-flow"
     # Autostart systemd service
-    sudo systemctl enable movai-studio.service
+    sudo systemctl enable movai-flow.service
     # Start systemd service now
-    sudo systemctl start movai-studio.service
+    sudo systemctl start movai-flow.service
     # Stop systemd service now
-    sudo systemctl stop movai-studio.service
+    sudo systemctl stop movai-flow.service
     ```
 
 ### Creating a debian package
@@ -215,21 +232,21 @@ After the service is created, it can be controlled as follow :
 ## Importing ROS package
 
 A folder configured as a ROS wokspace is shared in between the host and the cluster,
-by default it is located in `/usr/share/movai-studio/userspace/`.
+by default it is located in `/usr/share/movai-flow/userspace/`.
 
 - Place any ROS package in the ROS workspace as follow :
 
 """
-    mkdir -p /usr/share/movai-studio/userspace/cache/ros/src
-    cd /usr/share/movai-studio/userspace/cache/ros/src
+    mkdir -p /usr/share/movai-flow/userspace/cache/ros/src
+    cd /usr/share/movai-flow/userspace/cache/ros/src
     git clone git@github.com:ros/resource_retriever.git
 """
 
 - run compilation script inside the cluster:
 
 """
-    docker exec -it spawner-studio ros1-workspace-build.sh
+    docker exec -it spawner-flow ros1-workspace-build.sh
 """
 
-The package generated artifacts should them be available in MOV.AI Studio
+The package generated artifacts should them be available in MOV.AI Flow
 

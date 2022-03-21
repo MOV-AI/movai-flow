@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: install static-checks-requirements
       run: |
@@ -24,24 +24,25 @@ jobs:
     - name: Yamllint
       uses: karancode/yamllint-github-action@master
       with:
-        yamllint_file_or_dir: docker-compose.yml
+        yamllint_file_or_dir: docker-compose.yml docker-compose-nvidia.yml
         yamllint_strict: false
         yamllint_comment: true
         yamllint_config_filepath: .yamllint-config.yml
       env:
         GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Validate json
-      uses: anyone-developer/anyone-validate-json@main
-      with:
-        file-extension: '.json'
-        ignore-files: ''
-        ignore-directories: '.git'
-        read-path: 'robots'
+    # - name: Validate json
+    #   uses: anyone-developer/anyone-validate-json@main
+    #   with:
+    #     file-extension: '.json'
+    #     ignore-files: ''
+    #     ignore-directories: '.git'
+    #     read-path: 'robots'
 
     - name: run docker-compose lint
       run: |
         docker-compose -f docker-compose.yml config
+        docker-compose -f docker-compose-nvidia.yml config
 
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v1
@@ -72,7 +73,7 @@ jobs:
           if [ $status_code == 200 ]; then
             break
           fi
-          echo "Waiting for MOVAI Studio availability (ret:$status_code)"
+          echo "Waiting for MOVAI Flow availability (ret:$status_code)"
           sleep 10
         done
         [ $status_code == 200 ] && exit 0
@@ -95,7 +96,7 @@ jobs:
         password: ${{secrets.PORTUS_APP_TOKEN}}
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Find Package details
       id: vars
       run: |

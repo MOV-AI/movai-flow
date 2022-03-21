@@ -1,4 +1,4 @@
-# Basic MOVAI Studio cluster configuration with Redis and Redis local databases.
+# Basic MOVAI Flow cluster configuration with Redis and Redis local databases.
 #
 # WARNING:
 #   This configuration is for local development. Do not use it in a production deployment.
@@ -11,11 +11,11 @@
 # MOVAI_UID                    - User ID in MOVAI containers
 #                                Default: 1000
 # MOVAI_DEVICE_NAME            - Docker containers identifier
-#                                Default: Studio
+#                                Default: Flow
 # MOVAI_ENV                    - Docker containers environment (develop/qa/release)
 #                                Default: qa
 #
-# Those configurations are useful mostly in case of standalone testing/running MOVAI Studio in test/try-out mode
+# Those configurations are useful mostly in case of standalone testing/running MOVAI Flow in test/try-out mode
 #
 # STUDIO_USER_USERNAME   - Username for the administrator account (if requested).
 #                          Default: movai
@@ -50,7 +50,7 @@ x-movai-common:
     LOGLEVEL: WARNING
     MOVAI_USERSPACE: /opt/mov.ai/user
     MOVAI_MANAGER_URI: ${MANAGER_URI:-http://localhost}
-    DEVICE_NAME: ${MOVAI_DEVICE_NAME:-studio}
+    DEVICE_NAME: ${MOVAI_DEVICE_NAME:-flow}
     FLEET_NAME: ${FLEET_NAME:?missing FLEET_NAME ENV var}
     FLEET_TOKEN: ${FLEET_TOKEN:?missing FLEET_TOKEN ENV var}
     REDIS_LOCAL_PORT: 6379
@@ -95,7 +95,7 @@ services:
       timeout: 60s
       retries: 1
     volumes:
-      - redis-master-studio-volume:/data
+      - redis-master-flow-volume:/data
     environment:
       - STUDIO_DB_PACKAGES=$STUDIO_DB_PACKAGES
 
@@ -115,7 +115,7 @@ services:
       timeout: 2s
       retries: 3
     volumes:
-      - redis-local-studio-volume:/data
+      - redis-local-flow-volume:/data
 
   backend:
     <<: *movai-common
@@ -156,7 +156,7 @@ services:
       timeout: 2s
       retries: 3
     volumes:
-      - influxdb-studio-volume:/var/lib/influxdb
+      - influxdb-flow-volume:/var/lib/influxdb
 
   health-node:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/health-node:2.2.2022012
@@ -228,7 +228,6 @@ services:
       STUDIO_SPAWNER_PACKAGES: $STUDIO_SPAWNER_PACKAGES
 
   simulator:
-    <<: *movai-common
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ignition-gazebo:v1.0.0
     container_name: simulator-$MOVAI_DEVICE_NAME
     profiles: ["simulator"]
@@ -237,15 +236,14 @@ services:
       DISPLAY: "$DISPLAY"
       QT_X11_NO_MITSHM: "1"
       XAUTHORITY: "$XAUTH"
-      IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /models_database/tugbot_models/plugins/system:/movai_ign_plugins/system:/models_database/plugins/system
-      IGN_GUI_PLUGIN_PATH: /models_database/tugbot_models/plugins/gui:/movai_ign_plugins/gui:/models_database/plugins/gui
-      IGN_GAZEBO_RESOURCE_PATH: /models_database/rpm_models/worlds:/models_database/rpm_models:/models_database/tugbot_models/worlds:/models_database/tugbot_models:/models_database/husky_models/worlds:/models_database/husky_models:/models_database/movai_models/worlds:/models_database/movai_models/models:/models_database/my_models
+      IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /movai_ign_plugins/system:/models_database/plugins/system
+      IGN_GUI_PLUGIN_PATH: /movai_ign_plugins/gui:/models_database/plugins/gui
+      IGN_GAZEBO_RESOURCE_PATH: /models_database/my_models
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
       - ./models_database:/models_database
       - /.ignition/fuel:/root/.ignition/fuel
-    runtime: nvidia
     network_mode: host
     privileged: true
     tty: true
@@ -258,14 +256,12 @@ services:
     command:
       - -ic
       - |
-        rm /opt/mov.ai/.first_run_apt
+        rm -f /opt/mov.ai/.first_run_apt
         movai-entrypoint.sh
         apt-get update
         apt-get install -y $STUDIO_SIMU_PLUGIN_PACKAGES
         ign gui -s $STUDIO_SIMU_GUI
-
   ros-tools:
-    <<: *movai-common
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-tools-ce:v1.0.0
     container_name: ros-tools-$MOVAI_DEVICE_NAME
     profiles: ["tools"]
@@ -274,13 +270,10 @@ services:
       DISPLAY: "$DISPLAY"
       QT_X11_NO_MITSHM: "1"
       XAUTHORITY: "$XAUTH"
-      NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
-      NVIDIA_DRIVER_CAPABILITIES: ${NVIDIA_DRIVER_CAPABILITIES:-graphics}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
-      - ./rviz/default.rviz:/headless/.rviz/default.rviz:rw
-    runtime: nvidia
+      - ./rviz/:/headless/.rviz/:rw
     networks:
       - private
     depends_on:
@@ -310,12 +303,12 @@ services:
       - SPAWNER_PORTS="bind :11411\\n\\tbind :9090"
 
 volumes:
-  redis-master-studio-volume:
-  redis-local-studio-volume:
-  influxdb-studio-volume:
+  redis-master-flow-volume:
+  redis-local-flow-volume:
+  influxdb-flow-volume:
 
 networks:
   proxy:
-    name: studio-proxy
+    name: flow-proxy
   private:
-    name: studio-private
+    name: flow-private

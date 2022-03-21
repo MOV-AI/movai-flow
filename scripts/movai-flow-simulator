@@ -1,0 +1,59 @@
+#!/bin/bash
+SCRIPTNAME=SIMULATOR
+SERVICE_NAME=movai-flow
+APP_PATH=/usr/share/$SERVICE_NAME
+CONFIG_PATH=/etc/$SERVICE_NAME
+SERVICE_CONF=$APP_PATH/docker-compose.yml
+SERVICE_NVIDIA_CONF=$APP_PATH/docker-compose-nvidia.yml
+DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
+
+
+Output() {
+  # Prepare base message
+  Message="MOV.AI Flow $SCRIPTNAME: $1"
+
+  # Output the message even if a blank message (make output nice)
+  echo "$Message"
+
+  # Return if blank.
+  if [ "$1" = "" ]; then
+    return
+  fi
+
+  # Output to log
+  if which journalctl > /dev/null 2>&1
+  then
+    echo MESSAGE="$Message" | logger --journald
+  else
+    echo "$Message" | logger
+  fi
+}
+
+# Symlink userspace and models_database to ~/Documents/MovaiFlow
+user_documents_path=$(xdg-user-dir DOCUMENTS)
+Output "Creating user and models folder"
+if [ ! -e "${user_documents_path}/MovaiFlow" ]; then
+  mkdir -p "${user_documents_path}/MovaiFlow"
+  ln -sf "$APP_PATH/userspace" "${user_documents_path}/MovaiFlow"
+  ln -sf "$APP_PATH/models_database" "${user_documents_path}/MovaiFlow"  
+  Output "User and models folder ${user_documents_path}/MovaiFlow"
+fi
+
+Output "This terminal window will verify all MOVAI Flow services are running and then launch the Ignition Simulator GUI application"
+Output "(U) [^_^] (U)"
+
+if [ -f $CONFIG_PATH/config.env ]; then
+  Output "Sourcing configuration"
+  . $CONFIG_PATH/config.env
+else
+  Output "No configuration found"
+fi
+
+xhost +local:docker
+if [ "$HAVE_NVIDIA" = "1" ]; then
+  Output "Launching simulator for Nvidia GPU"
+  exec $DOCKER_COMPOSE_BIN -f $SERVICE_NVIDIA_CONF up simulator
+else
+  Output "Launching simulator for integrated GPU"
+  exec $DOCKER_COMPOSE_BIN -f $SERVICE_CONF up simulator
+fi

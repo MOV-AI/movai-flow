@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SERVICE_NAME=movai-studio
+SERVICE_NAME=movai-flow
 CONF_BASE=/etc/$SERVICE_NAME
 APP_PATH=/usr/share/$SERVICE_NAME
 
@@ -8,7 +8,7 @@ APP_PATH=/usr/share/$SERVICE_NAME
 if [ "$1" = "purge" ]; then
     test -d ${CONF_BASE} && rm -r ${CONF_BASE} || true
     # TODO: purge volumes
-    test -d ${$APP_PATH} && rm -r ${$APP_PATH} || true
+    test -d ${APP_PATH} && rm -r ${APP_PATH} || true
 fi
 
 true
