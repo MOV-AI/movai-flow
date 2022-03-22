@@ -15,6 +15,11 @@ if [ "$1" = "purge" ]; then
         $DOCKER_BIN volume rm $volumes
     fi
     
+    images=$($DOCKER_BIN images | awk '$1 ~ "mov.ai" { print $3 }')
+    if [ -n "$images" ]
+    then
+        $DOCKER_BIN rmi $images
+    fi
     test -d ${APP_PATH} && rm -r ${APP_PATH} || true
 fi
 
