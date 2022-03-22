@@ -7,7 +7,6 @@ APP_PATH=/usr/share/$SERVICE_NAME
 DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
 DOCKER_COMPOSE_ENV=$APP_PATH/.env
 DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
-
 systemctl stop $SERVICE_NAME
 systemctl disable $SERVICE_NAME
 rm /usr/lib/systemd/system/$SERVICE_NAME.service
