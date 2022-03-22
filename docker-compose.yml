@@ -63,7 +63,6 @@ x-movai-common:
     IGNITION_MOVAI: "true"
     IGN_PARTITION: ${IGN_PARTITION:?missing IGN_PARTITION ENV var}
     IGNITION_VERSION: fortress
-    APP_PATH: /opt/mov.ai/app
     APT_AUTOINSTALL: "once"
     APT_KEYS_URL_LIST: "https://artifacts.cloud.mov.ai/repository/movai-applications/gpg"
     APT_REPOS_LIST: "deb [arch=all] https://artifacts.cloud.mov.ai/repository/ppa-testing testing main"
