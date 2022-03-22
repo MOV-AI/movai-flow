@@ -22,7 +22,7 @@ Content-Type: text/html
     </div>
 
     <div class="code-block">
-      <pre><code class="language-bash">docker-compose logs /usr/share/movai-flow/docker-compose.yml</code></pre>
+      <pre><code class="language-bash">docker-compose -f /usr/share/movai-flow/docker-compose.yml logs </code></pre>
     </div>
   </body>
 </html>
