@@ -15,7 +15,7 @@ if [ "$1" = "purge" ]; then
         $DOCKER_BIN volume rm $volumes
     fi
     
-    images=$(docker images | awk '$1 ~ "mov.ai" { print $3 }')
+    images=$($DOCKER_BIN images | awk '$1 ~ "mov.ai" { print $3 }')
     if [ -n "$images" ]
     then
         $DOCKER_BIN rmi $images
