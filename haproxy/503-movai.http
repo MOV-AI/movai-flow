@@ -6,13 +6,23 @@ Content-Type: text/html
 <html>
   <head>
     <meta http-equiv="refresh" content="5" />
-    <title>Mov.ai is starting up</title>
+    <link rel="stylesheet" href="data:text/css;charset=utf-8;base64, Ym9keSB7DQogICAgYmFja2dyb3VuZC1jb2xvcjogI2U5ZTllOTsNCiAgICBjb2xvcjogYmxhY2s7DQogICAgcGFkZGluZzogNSUgMjAlOw0KICAgIGZvbnQtZmFtaWx5OiAic2Fucy1zZXJpZiI7DQp9DQoNCi5tYWluIHsNCiAgICBtYXJnaW46IGF1dG87DQogICAgdGV4dC1hbGlnbjogY2VudGVyOw0KICAgIHdpZHRoOiAxMDAlOw0KICAgIGRpc3BsYXk6IGlubGluZS1mbGV4Ow0KfQ0KDQouc3RhdHVzLWNvbnRhaW5lciB7DQogICAgcGFkZGluZzogNTBweDsNCiAgICBwb3NpdGlvbjogcmVsYXRpdmU7DQogICAgd2lkdGg6IDMwJTsNCiAgICBib3JkZXItcmlnaHQ6IHNvbGlkIGdyYXkgMXB4Ow0KfQ0KDQouc3RhdHVzLWNvbnRhaW5lciBoMSB7DQogICAgZm9udC1zaXplOiAxMDBweDsNCiAgICBtYXJnaW4tYm90dG9tOiAxMHB4Ow0KfQ0KDQouaW5mby1jb250YWluZXIgew0KICAgIHdpZHRoOiA3MCU7DQogICAgcG9zaXRpb246IHJlbGF0aXZlOw0KICAgIHBhZGRpbmc6IDUwcHg7DQogICAgdGV4dC1hbGlnbjogbGVmdDsNCn0NCg0KLmluZm8tY29udGFpbmVyIGgxIHsNCiAgICBjb2xvcjogcmVkOw0KICAgIHRleHQtYWxpZ246IGxlZnQ7DQp9DQoNCi5jb2RlLWJsb2NrIHsNCiAgICB0ZXh0LWFsaWduOiBsZWZ0Ow0KICAgIG1hcmdpbi10b3A6IDUwcHg7DQogICAgYmFja2dyb3VuZDogbGlnaHRncmF5Ow0KICAgIGhlaWdodDogNDVweDsNCiAgICBwYWRkaW5nOiAxMHB4IDI1cHg7DQogICAgYm9yZGVyLXJhZGl1czogMTBweDsNCn0NCg0KLmNvZGUtYmxvY2sgcHJlIHsNCiAgICB3aGl0ZS1zcGFjZTogbm9ybWFsOw0KfQ0KDQpAbWVkaWEgb25seSBzY3JlZW4gYW5kIChtYXgtd2lkdGg6IDkwMHB4KSB7DQogICAgYm9keSB7DQogICAgICAgIHBhZGRpbmc6IDUlIDUlOw0KICAgIH0NCn0NCg0KQG1lZGlhIG9ubHkgc2NyZWVuIGFuZCAobWF4LXdpZHRoOiAxMjAwcHgpIHsNCiAgICBib2R5IHsNCiAgICAgICAgcGFkZGluZzogNSUgMTAlOw0KICAgIH0NCn0NCg0KQG1lZGlhIG9ubHkgc2NyZWVuIGFuZCAobWF4LXdpZHRoOiA4MDBweCkgew0KICAgIC5tYWluIHsNCiAgICAgICAgZmxleC1mbG93OiBjb2x1bW47DQogICAgfQ0KDQogICAgLnN0YXR1cy1jb250YWluZXIsIC5pbmZvLWNvbnRhaW5lciB7DQogICAgICAgIHdpZHRoOiA4MCU7DQogICAgICAgIHBhZGRpbmctdG9wOiAwOw0KICAgIH0NCg0KICAgIC5pbmZvLWNvbnRhaW5lciB7DQogICAgICAgIHBhZGRpbmctdG9wOiA1MHB4Ow0KICAgIH0NCg0KICAgIC5zdGF0dXMtY29udGFpbmVyIHsNCiAgICAgICAgYm9yZGVyLWJvdHRvbTogc29saWQgZ3JheSAxcHg7DQogICAgICAgIGJvcmRlci1yaWdodDogbm9uZTsNCiAgICB9DQoNCiAgICAuY29kZS1ibG9jayB7DQogICAgICAgIG1hcmdpbi10b3A6IDANCiAgICB9DQp9" />
+    <title>MOV.AI Flow&trade; is starting</title>
   </head>
-  <body style="font-family:Arial,Helvetica,sans-serif;">
-    <div style="margin: 0 auto; width: 960px;">
-          <h2>MOV.AI is starting up. Be patient...</h2>
-          <h3>Page is refreshed every 5s, if is taking too long, please check application logs as follow:</h3>
-          <p>docker-compose -f /usr/share/movai-flow/docker-compose.yml logs -f</p>
+  <body>
+    <div class="main">
+      <div class="status-container">
+        <h1>503</h1>
+        <p>Service Unavailable</p>
+      </div>
+      <div class="info-container">
+        <h1>MOV.AI Flow&trade; is starting up.</h1>
+        <h2>This page is refreshed every 5s, if it is taking too long please check application logs as follow:</h2>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <pre><code class="language-bash">docker-compose -f /usr/share/movai-flow/docker-compose.yml logs </code></pre>
     </div>
   </body>
 </html>

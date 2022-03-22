@@ -24,24 +24,25 @@ jobs:
     - name: Yamllint
       uses: karancode/yamllint-github-action@master
       with:
-        yamllint_file_or_dir: docker-compose.yml
+        yamllint_file_or_dir: docker-compose.yml docker-compose-nvidia.yml
         yamllint_strict: false
         yamllint_comment: true
         yamllint_config_filepath: .yamllint-config.yml
       env:
         GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Validate json
-      uses: anyone-developer/anyone-validate-json@main
-      with:
-        file-extension: '.json'
-        ignore-files: ''
-        ignore-directories: '.git'
-        read-path: 'robots'
+    # - name: Validate json
+    #   uses: anyone-developer/anyone-validate-json@main
+    #   with:
+    #     file-extension: '.json'
+    #     ignore-files: ''
+    #     ignore-directories: '.git'
+    #     read-path: 'robots'
 
     - name: run docker-compose lint
       run: |
         docker-compose -f docker-compose.yml config
+        docker-compose -f docker-compose-nvidia.yml config
 
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v1
