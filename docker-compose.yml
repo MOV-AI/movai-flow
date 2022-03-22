@@ -92,7 +92,7 @@ services:
       health-node:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "echo", ">", "/dev/tcp/localhost/6379" ]
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/6379"]
       start_period: 3s
       interval: 3s
       timeout: 60s
