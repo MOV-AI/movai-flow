@@ -1,4 +1,4 @@
-movai-flow (1.1.0-0) UNRELEASED; urgency=medium
+movai-flow (1.1.0-1) UNRELEASED; urgency=medium
 
   [ Alex Fernandes ]
   *
@@ -40,4 +40,7 @@ movai-flow (1.1.0-0) UNRELEASED; urgency=medium
   * Update README.md
   * fix
 
- -- Alex Fernandes <afe@afe-laptop>  Tue, 14 Dec 2021 00:08:39 +0000
+  [ root ]
+  * UNRELEASED
+
+ -- root <root@db6047ce2c8d>  Tue, 22 Mar 2022 12:01:15 +0000
