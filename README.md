@@ -98,6 +98,7 @@ To do it, edit .env file and customize variables values:
 > Values present in the environment at runtime always override those defined inside the .env file. Similarly, values passed via command-line arguments take precedence as well.
 
 ### Running MOVAI Flow
+
 Now you can start core services:
 
     docker-compose up -d
