@@ -141,7 +141,7 @@ services:
         rm -f /opt/mov.ai/app/movai.{log,err}
         touch /opt/mov.ai/app/movai.{log,err}
         exec docker-entrypoint.sh &
-        printf "Waiting redis to launch on 6379:...\n"
+        printf "Waiting backend to launch on localhost:5004:...\n"
         while ! timeout 1 bash -c "echo > /dev/tcp/localhost/5004"; do
           sleep 5
         done
