@@ -51,8 +51,6 @@ The flow initiate a set of services running as a `docker-compose` cluster:
  - redis-master: master DB of the cluster
  - redis-local: local DB of the cluster
  - backend: web service application
- - influxdb: timeseries DB storing metrics
- - health-node: web service application for metrics and logs
  - ros-master: ROS core service
  - spawner: MOVAI flow orchestrator of ROS nodes
  - haproxy: web proxy
