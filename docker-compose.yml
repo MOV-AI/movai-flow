@@ -25,15 +25,16 @@
 # STUDIO_SIMU_GUI        - Default Simulation GUI: WorldLauncher
 #
 # STUDIO_SIMU_PLUGIN_PACKAGES - List of movai ignition plugin packages to be installed.
+#                               Default: movai-ign-plugin-world-launcher
 #
 # STUDIO_DB_PACKAGES     - List of packages initializing the DB.
 #                          Default: movai-baseline
 #
 # STUDIO_APP_PACKAGES    - List of packages initializing the web apps.
-#                          Default: movai-launched movai-ide
+#                          Default: movai-launcher movai-ide
 #
 # STUDIO_SPAWNER_PACKAGES - List of packages initializing the spawner.
-#                          Default: libgflags-dev ros-noetic-mav-msgs ros-noetic-movai-ign ignition-fortress
+#                          Default: ros-noetic-movai-ce-demos
 #
 # SPAWNER_PIP_ADDITIONAL_REQUIREMENTS - Additional PIP requirements to add when starting ROS spawner.
 #                                Default: ''
@@ -90,7 +91,7 @@ services:
         condition: service_healthy
     healthcheck:
       # test: [ "CMD", "echo", ">", "/dev/tcp/localhost/6379" ]
-      test: "apt-get update && apt-get install -y movai-baseline $STUDIO_DB_PACKAGES"
+      test: "apt-get update && apt-get install -y $STUDIO_DB_PACKAGES"
       interval: 3s
       timeout: 60s
       retries: 1
