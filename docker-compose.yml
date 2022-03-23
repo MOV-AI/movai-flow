@@ -60,7 +60,7 @@ x-movai-common:
     REDIS_MASTER_HOST: redis-master
     ROS_MASTER_URI: http://ros-master:11311/
     PUBLIC_IP: ${PUBLIC_IP:-127.0.0.1}
-    LOG_HTTP_HOST: http://health-node:8081
+    LOG_HTTP_HOST:
     IGNITION_MOVAI: "true"
     IGN_PARTITION: ${IGN_PARTITION:?missing IGN_PARTITION ENV var}
     IGNITION_VERSION: fortress
@@ -75,8 +75,6 @@ x-movai-common:
       condition: service_healthy
     redis-master:
       condition: service_healthy
-    influxdb:
-      condition: service_healthy
 
 services:
   redis-master:
@@ -86,9 +84,6 @@ services:
       - private
     ports:
       - "6379:6379"
-    depends_on:
-      health-node:
-        condition: service_healthy
     healthcheck:
       # test: [ "CMD", "echo", ">", "/dev/tcp/localhost/6379" ]
       test: "apt-get update && apt-get install -y $STUDIO_DB_PACKAGES"
@@ -105,9 +100,6 @@ services:
     container_name: redis-local-$MOVAI_DEVICE_NAME
     networks:
       - private
-    depends_on:
-      health-node:
-        condition: service_healthy
     ports:
       - "6380:6379"
     healthcheck:
@@ -145,38 +137,6 @@ services:
       interval: 5s
       timeout: 2s
       retries: 3
-
-  influxdb:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/influxdb:v1.0.0
-    container_name: influxdb-$MOVAI_DEVICE_NAME
-    networks:
-      - private
-    healthcheck:
-      test: ["CMD", "echo", ">", "/dev/tcp/localhost/8086"]
-      interval: 3s
-      timeout: 2s
-      retries: 3
-    volumes:
-      - influxdb-flow-volume:/var/lib/influxdb
-
-  health-node:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/health-node:2.2.2022012
-    container_name: health-node-$MOVAI_DEVICE_NAME
-    networks:
-      - private
-    depends_on:
-      influxdb:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "echo", ">", "/dev/tcp/localhost/8081"]
-      interval: 3s
-      timeout: 2s
-      retries: 3
-    environment:
-      <<: *movai-common-env
-      SPAWNER_GROUPS: $SPAWNER_GROUPS
-      HOST_PROC: /hostfs/proc
-
   ros-master:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-master-noetic:v0.0.1
     privileged: true
@@ -303,7 +263,6 @@ services:
 volumes:
   redis-master-flow-volume:
   redis-local-flow-volume:
-  influxdb-flow-volume:
 
 networks:
   proxy:
