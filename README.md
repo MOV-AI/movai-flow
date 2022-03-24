@@ -190,9 +190,9 @@ First of all be aware that the Simulator is based on the containerized [Ignition
 
 > The recommeded setup is to have an NVidia GPU,  but still an integrated Intel GPU can also work with lower performance
 
-##### With Nvidia GPU
+After starting MOVAI Flow, you can launch Ignition Fortress :
 
-After starting MOVAI Flow, you can launch Ignition Fortress with Nvidia GPU acceleration :
+##### With Nvidia GPU acceleration :
 
     xhost +local:docker
     docker-compose -f docker-compose-nvidia.yml up simulator
