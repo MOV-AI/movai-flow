@@ -82,7 +82,7 @@ x-movai-common:
 
 services:
   redis-master:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/develop/redis:test-2.0.7
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/redis2:v1.0.1
     container_name: redis-master-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -104,7 +104,7 @@ services:
       APT_INSTALL_LIST: $STUDIO_DB_PACKAGES
 
   redis-local:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/develop/redis:test-2.0.7
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/redis2:v1.0.1
     container_name: redis-local-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -124,7 +124,7 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/develop/backend:2.2.2022081
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/backend:2.2.2022082
     container_name: backend-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -169,7 +169,7 @@ services:
       - influxdb-flow-volume:/var/lib/influxdb
 
   health-node:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/develop/health-node:2.2.2022081
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/health-node:2.2.2022082
     container_name: health-node-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -238,7 +238,7 @@ services:
       APT_INSTALL_LIST: $STUDIO_SPAWNER_PACKAGES
 
   simulator:
-    image: ignition-gazebo:test
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ignition-gazebo:v1.0.2
     container_name: simulator-$MOVAI_DEVICE_NAME
     profiles: ["simulator"]
     environment:
