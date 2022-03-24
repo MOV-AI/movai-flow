@@ -94,7 +94,7 @@ services:
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/6379"]
       start_period: 3s
-      interval: 3s
+      interval: 10s
       timeout: 60s
       retries: 1
     volumes:
@@ -116,7 +116,7 @@ services:
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/6380"]
       start_period: 3s
-      interval: 3s
+      interval: 10s
       timeout: 2s
       retries: 3
     volumes:
@@ -133,24 +133,26 @@ services:
     entrypoint: /bin/bash
     environment:
       <<: *movai-common-env
-      APT_INSTALL_LIST: "movai-backend,$STUDIO_APP_PACKAGES"
+      APT_INSTALL_LIST: "$STUDIO_APP_PACKAGES"
     command:
       - -ic
       - |
         set -m
         rm -f /opt/mov.ai/app/movai.{log,err}
         touch /opt/mov.ai/app/movai.{log,err}
-        exec docker-entrypoint.sh &
-        printf "Waiting backend to launch on localhost:5004:...\n"
+        docker-entrypoint.sh &
         while ! timeout 1 bash -c "echo > /dev/tcp/localhost/5004"; do
+          printf "Waiting backend to launch on localhost:5004:...\n"
           sleep 5
         done
-        fg
+        printf "Adding default user\n"
         python3 -m tools.new_user -u ${STUDIO_USER_USERNAME:-movai} -p ${STUDIO_USER_USERNAME:-movai} -s
+        printf "Ready to serve\n"
+        fg %
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/5004"]
       start_period: 5s
-      interval: 5s
+      interval: 10s
       timeout: 2s
       retries: 3
 
@@ -162,7 +164,7 @@ services:
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/8086"]
       start_period: 3s
-      interval: 3s
+      interval: 10s
       timeout: 2s
       retries: 3
     volumes:
@@ -179,14 +181,13 @@ services:
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/8081"]
       start_period: 3s
-      interval: 3s
+      interval: 10s
       timeout: 2s
       retries: 3
     environment:
       <<: *movai-common-env
       SPAWNER_GROUPS: $SPAWNER_GROUPS
       HOST_PROC: /hostfs/proc
-      APT_INSTALL_LIST: "movai-health-node"
 
   ros-master:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-master-noetic:v0.0.2
@@ -202,7 +203,7 @@ services:
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/11311"]
       start_period: 3s
-      interval: 3s
+      interval: 10s
       timeout: 2s
       retries: 3
 
@@ -303,19 +304,6 @@ services:
       - "${STUDIO_HTTPS_PORT:-8443}:443"
     environment:
       - SPAWNER_PORTS="bind :11411\\n\\tbind :9090"
-
-  logs:
-    container_name: logs-$MOVAI_DEVICE_NAME
-    image: amir20/dozzle:latest
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - 9999:8080
-    networks:
-      - proxy
-    environment:
-      DOZZLE_NO_ANALYTICS: "true"
-      DOZZLE_FILTER: "name=$MOVAI_DEVICE_NAME"
 
 volumes:
   redis-master-flow-volume:
