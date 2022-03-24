@@ -1,8 +1,8 @@
 #!/bin/bash
 SCRIPTNAME=RVIZ
 SERVICE_NAME=movai-flow
-APP_PATH=/usr/share/$SERVICE_NAME
-CONFIG_PATH=/etc/$SERVICE_NAME
+APP_PATH=${APP_PATH:-/usr/share/$SERVICE_NAME}
+CONFIG_PATH=${CONFIG_PATH:-/etc/$SERVICE_NAME}
 SERVICE_CONF=$APP_PATH/docker-compose.yml
 SERVICE_NVIDIA_CONF=$APP_PATH/docker-compose-nvidia.yml
 DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
@@ -28,21 +28,33 @@ Output() {
   fi
 }
 
+FilterRunningService() {
+  $DOCKER_COMPOSE_BIN -f $SERVICE_CONF ps --services --filter "status=running" | grep "$1"
+}
+
 Output "This terminal window will verify all MOVAI Flow services are running and then launch the RVIZ application"
 Output "(U) [^_^] (U)"
 
-if [ -f $CONFIG_PATH/config.env ]; then
+if [ -f "$CONFIG_PATH/config.env" ]; then
   Output "Sourcing configuration"
-  . $CONFIG_PATH/config.env
+  . "$CONFIG_PATH/config.env"
 else
   Output "No configuration found"
 fi
 
 xhost +local:docker
+Output "Launching ros-master"
+$DOCKER_COMPOSE_BIN -f "$SERVICE_CONF" up -d ros-master
+
+while [[ -z $(FilterRunningService ros-master) ]]; do
+  Output "waiting for ros-master"
+  sleep 5
+done
+
 if [ "$HAVE_NVIDIA" = "1" ]; then
   Output "Launching RViz for Nvidia GPU"
-  exec $DOCKER_COMPOSE_BIN -f $SERVICE_NVIDIA_CONF up ros-tools
+  exec $DOCKER_COMPOSE_BIN -f "$SERVICE_NVIDIA_CONF" up ros-tools
 else
   Output "Launching RViz for integrated GPU"
-  exec $DOCKER_COMPOSE_BIN -f $SERVICE_CONF up ros-tools
+  exec $DOCKER_COMPOSE_BIN -f "$SERVICE_CONF" up ros-tools
 fi
