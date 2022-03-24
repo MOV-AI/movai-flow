@@ -175,12 +175,12 @@ Now you can start core services, by `cd`ing into the folder where `docker-compos
 
 > The recommeded setup is to have an NVidia GPU,  but still an integrated Intel GPU can also work with lower performance
 
-With Nvidia GPU acceleration :
+##### With Nvidia GPU acceleration :
 
     xhost +local:docker
     docker-compose -f docker-compose-nvidia.yml up ros-tools
 
-Without GPU acceleration :
+##### Without GPU acceleration :
 
     xhost +local:docker
     docker-compose -f docker-compose.yml up ros-tools
@@ -196,6 +196,8 @@ After starting MOVAI Flow, you can launch Ignition Fortress with Nvidia GPU acce
 
     xhost +local:docker
     docker-compose -f docker-compose-nvidia.yml up simulator
+    
+##### Without GPU acceleration :
 
     xhost +local:docker
     docker-compose -f docker-compose.yml up simulator
