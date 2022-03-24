@@ -95,8 +95,8 @@ services:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/6379"]
       start_period: 3s
       interval: 10s
-      timeout: 60s
-      retries: 1
+      timeout: 2s
+      retries: 3
     volumes:
       - redis-master-flow-volume:/data
     environment:
@@ -262,8 +262,8 @@ services:
     healthcheck:
       test: pgrep -f "ign gui -s $STUDIO_SIMU_GUI"
       start_period: 3s
-      interval: 10s
-      timeout: 60s
+      interval: 30s
+      timeout: 3s
       retries: 10
     command: ign gui -s $STUDIO_SIMU_GUI
 
