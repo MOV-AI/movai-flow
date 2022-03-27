@@ -1,2 +1,4 @@
 debian/movai-flow/
 logs/
+models_database/fuel/
+debian/files/
