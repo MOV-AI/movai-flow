@@ -25,15 +25,16 @@
 # STUDIO_SIMU_GUI        - Default Simulation GUI: WorldLauncher
 #
 # STUDIO_SIMU_PLUGIN_PACKAGES - List of movai ignition plugin packages to be installed.
+#                               Default: movai-ign-plugin-world-launcher
 #
 # STUDIO_DB_PACKAGES     - List of packages initializing the DB.
 #                          Default: movai-baseline
 #
 # STUDIO_APP_PACKAGES    - List of packages initializing the web apps.
-#                          Default: movai-launched movai-ide
+#                          Default: movai-launcher movai-ide
 #
 # STUDIO_SPAWNER_PACKAGES - List of packages initializing the spawner.
-#                          Default: libgflags-dev ros-noetic-mav-msgs ros-noetic-movai-ign ignition-fortress
+#                          Default: ros-noetic-movai-ce-demos
 #
 # SPAWNER_PIP_ADDITIONAL_REQUIREMENTS - Additional PIP requirements to add when starting ROS spawner.
 #                                Default: ''
@@ -59,10 +60,13 @@ x-movai-common:
     REDIS_MASTER_HOST: redis-master
     ROS_MASTER_URI: http://ros-master:11311/
     PUBLIC_IP: ${PUBLIC_IP:-127.0.0.1}
-    LOG_HTTP_HOST: http://health-node:8081
+    LOG_HTTP_HOST:
     IGNITION_MOVAI: "true"
     IGN_PARTITION: ${IGN_PARTITION:?missing IGN_PARTITION ENV var}
     IGNITION_VERSION: fortress
+    APT_AUTOINSTALL: "once"
+    APT_KEYS_URL_LIST: "https://artifacts.cloud.mov.ai/repository/movai-applications/gpg"
+    APT_REPOS_LIST: "deb [arch=all] https://artifacts.cloud.mov.ai/repository/ppa-testing testing main"
   volumes:
     - ./userspace:/opt/mov.ai/user
     - ./shared:/opt/mov.ai/shared
@@ -74,44 +78,38 @@ x-movai-common:
       condition: service_healthy
     redis-master:
       condition: service_healthy
-    influxdb:
-      condition: service_healthy
 
 services:
   redis-master:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/redis:2.2.2022012
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/redis2:v1.0.1
     container_name: redis-master-$MOVAI_DEVICE_NAME
     networks:
       - private
     ports:
       - "6379:6379"
-    depends_on:
-      health-node:
-        condition: service_healthy
     healthcheck:
-      # test: [ "CMD", "echo", ">", "/dev/tcp/localhost/6379" ]
-      test: "apt-get update && apt-get install -y movai-baseline $STUDIO_DB_PACKAGES"
-      interval: 3s
-      timeout: 60s
-      retries: 1
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/6379"]
+      start_period: 3s
+      interval: 10s
+      timeout: 2s
+      retries: 3
     volumes:
       - redis-master-flow-volume:/data
     environment:
-      - STUDIO_DB_PACKAGES=$STUDIO_DB_PACKAGES
+      <<: *movai-common-env
+      APT_INSTALL_LIST: $STUDIO_DB_PACKAGES
 
   redis-local:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/redis:2.2.2022012
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/redis2:v1.0.1
     container_name: redis-local-$MOVAI_DEVICE_NAME
     networks:
       - private
-    depends_on:
-      health-node:
-        condition: service_healthy
     ports:
       - "6380:6379"
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/6380"]
-      interval: 3s
+      start_period: 3s
+      interval: 10s
       timeout: 2s
       retries: 3
     volumes:
@@ -119,7 +117,7 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/backend:2.2.2022012
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/backend:2.2.2022082
     container_name: backend-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -128,56 +126,30 @@ services:
     entrypoint: /bin/bash
     environment:
       <<: *movai-common-env
-      STUDIO_APP_PACKAGES: $STUDIO_APP_PACKAGES
+      APT_INSTALL_LIST: "$STUDIO_APP_PACKAGES"
     command:
       - -ic
       - |
+        set -m
         rm -f /opt/mov.ai/app/movai.{log,err}
         touch /opt/mov.ai/app/movai.{log,err}
-        if [ -n "$STUDIO_APP_PACKAGES" ]; then
-          sudo apt-get update && sudo apt-get install -y $STUDIO_APP_PACKAGES
-        fi
+        docker-entrypoint.sh &
+        while ! timeout 1 bash -c "echo > /dev/tcp/localhost/5004"; do
+          printf "Waiting backend to launch on localhost:5004:...\n"
+          sleep 5
+        done
+        printf "Adding default user\n"
         python3 -m tools.new_user -u ${STUDIO_USER_USERNAME:-movai} -p ${STUDIO_USER_USERNAME:-movai} -s
-        exec docker-entrypoint.sh
+        printf "Ready to serve\n"
+        fg %
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/5004"]
-      interval: 5s
+      start_period: 5s
+      interval: 10s
       timeout: 2s
       retries: 3
-
-  influxdb:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/influxdb:v1.0.0
-    container_name: influxdb-$MOVAI_DEVICE_NAME
-    networks:
-      - private
-    healthcheck:
-      test: ["CMD", "echo", ">", "/dev/tcp/localhost/8086"]
-      interval: 3s
-      timeout: 2s
-      retries: 3
-    volumes:
-      - influxdb-flow-volume:/var/lib/influxdb
-
-  health-node:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/health-node:2.2.2022012
-    container_name: health-node-$MOVAI_DEVICE_NAME
-    networks:
-      - private
-    depends_on:
-      influxdb:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "echo", ">", "/dev/tcp/localhost/8081"]
-      interval: 3s
-      timeout: 2s
-      retries: 3
-    environment:
-      <<: *movai-common-env
-      SPAWNER_GROUPS: $SPAWNER_GROUPS
-      HOST_PROC: /hostfs/proc
-
   ros-master:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-master-noetic:v0.0.1
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-master-noetic:v0.0.2
     privileged: true
     networks:
       - private
@@ -189,13 +161,14 @@ services:
       - "${STUDIO_ROS_MASTER_PORT:-11311}:11311"
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/11311"]
-      interval: 3s
+      start_period: 3s
+      interval: 10s
       timeout: 2s
       retries: 3
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-ign-noetic:v2.2.4
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-ign-noetic:v2.2.8
     privileged: true
     networks:
       - private
@@ -204,13 +177,10 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: |
-        if [ -n "$STUDIO_SPAWNER_PACKAGES" ]; then
-          sudo apt-get update && sudo apt-get install -y $STUDIO_SPAWNER_PACKAGES
-        fi
-      # pgrep -f "/usr/bin/python3 /opt/mov.ai/app/async_movaicore.py -v"
-      interval: 2s
-      timeout: 60s
+      test: pgrep -f "/usr/bin/python3 /opt/mov.ai/app/async_movaicore.py -v"
+      start_period: 10s
+      interval: 10s
+      timeout: 3s
       retries: 1
     container_name: spawner-$MOVAI_DEVICE_NAME
     volumes:
@@ -225,10 +195,10 @@ services:
       <<: *movai-common-env
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       APP_NAME: spawner
-      STUDIO_SPAWNER_PACKAGES: $STUDIO_SPAWNER_PACKAGES
+      APT_INSTALL_LIST: $STUDIO_SPAWNER_PACKAGES
 
   simulator:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ignition-gazebo:v1.0.0
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ignition-gazebo:v1.0.2
     container_name: simulator-$MOVAI_DEVICE_NAME
     profiles: ["simulator"]
     environment:
@@ -239,6 +209,7 @@ services:
       IGN_GAZEBO_SYSTEM_PLUGIN_PATH: /movai_ign_plugins/system:/models_database/plugins/system
       IGN_GUI_PLUGIN_PATH: /movai_ign_plugins/gui:/models_database/plugins/gui
       IGN_GAZEBO_RESOURCE_PATH: /models_database/my_models
+      APT_INSTALL_LIST: $STUDIO_SIMU_PLUGIN_PACKAGES
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
@@ -249,18 +220,12 @@ services:
     tty: true
     healthcheck:
       test: pgrep -f "ign gui -s $STUDIO_SIMU_GUI"
-      interval: 20s
-      timeout: 60s
+      start_period: 3s
+      interval: 30s
+      timeout: 3s
       retries: 10
-    entrypoint: /bin/bash
-    command:
-      - -ic
-      - |
-        rm -f /opt/mov.ai/.first_run_apt
-        movai-entrypoint.sh
-        apt-get update
-        apt-get install -y $STUDIO_SIMU_PLUGIN_PACKAGES
-        ign gui -s $STUDIO_SIMU_GUI
+    command: ign gui -s $STUDIO_SIMU_GUI
+
   ros-tools:
     image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-tools-ce:v1.0.0
     container_name: ros-tools-$MOVAI_DEVICE_NAME
@@ -285,7 +250,7 @@ services:
         exec /usr/bin/rviz
 
   haproxy:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/haproxy:2.2.2022012
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/haproxy:2.2.2022048
     container_name: haproxy-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -302,7 +267,6 @@ services:
 volumes:
   redis-master-flow-volume:
   redis-local-flow-volume:
-  influxdb-flow-volume:
 
 networks:
   proxy:
