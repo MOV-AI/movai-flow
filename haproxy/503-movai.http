@@ -17,7 +17,7 @@ Content-Type: text/html
       </div>
       <div class="info-container">
         <h1>MOV.AI Flow&trade; is starting up.</h1>
-        <h2>This page is refreshed every 5s, if it is taking too long please check application logs as follow:</h2>
+        <h2>This page is refreshed every 5 seconds. If it is taking too long, please check the application logs as follows:</h2>
       </div>
     </div>
 
