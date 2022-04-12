@@ -7,7 +7,7 @@
 # The following variables are supported:
 #
 # MOVAI_REGISTRY               - Docker images registry
-#                                Default: registry.cloud.mov.ai
+#                                Default: pubregistry.aws.cloud.mov.ai
 # MOVAI_UID                    - User ID in MOVAI containers
 #                                Default: 1000
 # MOVAI_DEVICE_NAME            - Docker containers identifier
@@ -81,7 +81,7 @@ x-movai-common:
 
 services:
   redis-master:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/redis2:v1.0.1
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.6
     container_name: redis-master-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -100,7 +100,7 @@ services:
       APT_INSTALL_LIST: $STUDIO_DB_PACKAGES
 
   redis-local:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/redis2:v1.0.1
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.6
     container_name: redis-local-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -117,7 +117,7 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/backend:2.2.2022082
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend:v1.0.0
     container_name: backend-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -149,7 +149,7 @@ services:
       timeout: 2s
       retries: 3
   ros-master:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-master-noetic:v0.0.2
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-master-noetic:v1.0.0
     privileged: true
     networks:
       - private
@@ -168,7 +168,7 @@ services:
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-ign-noetic:v2.2.8
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-ign-noetic:v2.2.8
     privileged: true
     networks:
       - private
@@ -198,7 +198,7 @@ services:
       APT_INSTALL_LIST: $STUDIO_SPAWNER_PACKAGES
 
   simulator:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ignition-gazebo:v1.0.2
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ignition-gazebo:v1.0.2
     container_name: simulator-$MOVAI_DEVICE_NAME
     profiles: ["simulator"]
     environment:
@@ -227,7 +227,7 @@ services:
     command: ign gui -s $STUDIO_SIMU_GUI
 
   ros-tools:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-tools-ce:v1.0.0
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-tools-ce:v1.0.0
     container_name: ros-tools-$MOVAI_DEVICE_NAME
     profiles: ["tools"]
     environment:
@@ -250,7 +250,7 @@ services:
         exec /usr/bin/rviz
 
   haproxy:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/haproxy:2.2.2022048
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/haproxy:2.2.2022048
     container_name: haproxy-$MOVAI_DEVICE_NAME
     networks:
       - private
