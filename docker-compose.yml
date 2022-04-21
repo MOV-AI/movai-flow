@@ -120,34 +120,21 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:1.0.0.13
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:1.0.0.15
     container_name: backend-$MOVAI_DEVICE_NAME
     networks:
       - private
     depends_on:
       <<: *movai-common-depend
-    entrypoint: /bin/bash
     environment:
       <<: *movai-common-env
       APT_INSTALL_LIST: "$STUDIO_APP_PACKAGES"
-    command:
-      - -ic
-      - |
-        set -m
-        rm -f /opt/mov.ai/app/movai.{log,err}
-        touch /opt/mov.ai/app/movai.{log,err}
-        ln -sf /usr/local/lib/python3.8/dist-packages/backend/tools/ /opt/mov.ai/app/tools
-        docker-entrypoint.sh &
-        while ! timeout 1 bash -c "echo > /dev/tcp/localhost/5004"; do
-          printf "Waiting backend to launch on localhost:5004:...\n"
-          sleep 5
-        done
-        printf "Adding default user\n"
-        python3 -m backend.tools.new_user -u "${USER_USERNAME:-movai}" -p "${USER_PASSWORD:-movai}" -s
-        printf "Ready to serve\n"
-        fg %
+      HTTP_PORT: ${STUDIO_WEB_PORT}
+      DEFAULT_USERNAME: movai
+      DEFAULT_PASSWORD: movai
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?missing JWT_SECRET_KEY ENV var}
     healthcheck:
-      test: ["CMD", "echo", ">", "/dev/tcp/localhost/5004"]
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/${STUDIO_WEB_PORT}"]
       start_period: 5s
       interval: 10s
       timeout: 2s
