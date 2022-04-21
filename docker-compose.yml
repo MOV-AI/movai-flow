@@ -48,7 +48,10 @@ x-movai-common:
   environment:
     &movai-common-env
     MOVAI_ENV: ${MOVAI_ENV:-qa}
-    LOGLEVEL: WARNING
+    MOVAI_STDOUT_VERBOSITY_LEVEL: ${LOG_LEVEL:-30} #WARNING
+    MOVAI_HEALTHNODE_VERBOSITY_LEVEL: ${LOG_LEVEL:-30}
+    MOVAI_LOGFILE_VERBOSITY_LEVEL: ${LOG_LEVEL:-30}
+    MOVAI_GENERAL_VERBOSITY_LEVEL: ${LOG_LEVEL:-30}
     MOVAI_USERSPACE: /opt/mov.ai/user
     MOVAI_MANAGER_URI: ${MANAGER_URI:-http://localhost}
     DEVICE_NAME: ${MOVAI_DEVICE_NAME:-flow}
@@ -60,7 +63,7 @@ x-movai-common:
     REDIS_MASTER_HOST: redis-master
     ROS_MASTER_URI: http://ros-master:11311/
     PUBLIC_IP: ${PUBLIC_IP:-127.0.0.1}
-    LOG_HTTP_HOST:
+    LOG_HTTP_HOST: ${MANAGER_URI:-http://localhost}
     IGNITION_MOVAI: "true"
     IGN_PARTITION: ${IGN_PARTITION:?missing IGN_PARTITION ENV var}
     IGNITION_VERSION: fortress
@@ -117,7 +120,7 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend:v1.0.0
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:1.0.0.13
     container_name: backend-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -133,13 +136,14 @@ services:
         set -m
         rm -f /opt/mov.ai/app/movai.{log,err}
         touch /opt/mov.ai/app/movai.{log,err}
+        ln -sf /usr/local/lib/python3.8/dist-packages/backend/tools/ /opt/mov.ai/app/tools
         docker-entrypoint.sh &
         while ! timeout 1 bash -c "echo > /dev/tcp/localhost/5004"; do
           printf "Waiting backend to launch on localhost:5004:...\n"
           sleep 5
         done
         printf "Adding default user\n"
-        python3 -m tools.new_user -u ${STUDIO_USER_USERNAME:-movai} -p ${STUDIO_USER_USERNAME:-movai} -s
+        python3 -m backend.tools.new_user -u "${USER_USERNAME:-movai}" -p "${USER_PASSWORD:-movai}" -s
         printf "Ready to serve\n"
         fg %
     healthcheck:
@@ -148,6 +152,7 @@ services:
       interval: 10s
       timeout: 2s
       retries: 3
+
   ros-master:
     image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-master-noetic:v1.0.0
     privileged: true
@@ -168,7 +173,7 @@ services:
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-ign-noetic:v2.2.8
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-base-noetic:v3.0.0
     privileged: true
     networks:
       - private
@@ -177,7 +182,7 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: pgrep -f "/usr/bin/python3 /opt/mov.ai/app/async_movaicore.py -v"
+      test: pgrep -f "/usr/bin/python3 -m flow_initiator"
       start_period: 10s
       interval: 10s
       timeout: 3s
@@ -250,14 +255,15 @@ services:
         exec /usr/bin/rviz
 
   haproxy:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/haproxy:2.2.2022048
+    image: haproxy:2.4.15
     container_name: haproxy-$MOVAI_DEVICE_NAME
     networks:
       - private
       - proxy
     volumes:
-      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:rw
-      - ./haproxy/503-movai.http:/etc/503-movai.http
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./haproxy/503-movai.http:/etc/503-movai.http:ro
+      - ./haproxy/proxy.pem:/etc/ssl/private/proxy.pem:ro
     ports:
       - "${STUDIO_HTTP_PORT:-8080}:80"
       - "${STUDIO_HTTPS_PORT:-8443}:443"
