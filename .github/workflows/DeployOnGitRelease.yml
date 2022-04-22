@@ -4,36 +4,20 @@ on:
     types: [released]
 
 jobs:
-  Deploy-App-General-Avaiability:
-    runs-on: ubuntu-20.04
-    container:
-      image: registry.cloud.mov.ai/devops/py-buildserver:latest
-      credentials:
-        username: ${{secrets.PORTUS_APP_USER}}
-        password: ${{secrets.PORTUS_APP_TOKEN}}
+  Release-Ros-Component:
+    uses: MOV-AI/.github/.github/workflows/ros-workflow.yml@v1
+    with:
+      release: 'true'
+      prod_publish_repos: '["ppa-public"]'
 
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-
-    - name: Set tag output
-      id: vars
-      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
-
-    - name: Fetch artifact from github release
-      run: |
-        mkdir artifacts
-        cd artifacts
-        gh release download ${{ steps.vars.outputs.tag}} -p *.deb
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Publish to Nexus ppa-main
-      run: |
-          NEXUS_ENDPOINT="artifacts.cloud.mov.ai"
-          NEXUS_REPO="ppa-main"
-          FILE_LOCATION=$(find artifacts/*.deb)
-          curl -u "${{ secrets.NEXUS_PUBLISHER_USR }}:${{ secrets.NEXUS_PUBLISHER_PWD }}" \
-          -H "Content-Type: multipart/form-data" \
-          --data-binary "@$FILE_LOCATION" \
-          "https://$NEXUS_ENDPOINT/repository/$NEXUS_REPO/"
+    secrets:
+      auto_commit_user: ${{ secrets.RAISE_BOT_COMMIT_USER }}
+      auto_commit_mail: ${{ secrets.RAISE_BOT_COMMIT_MAIL }}
+      registry_user: ${{ secrets.PORTUS_APP_USER }}
+      registry_password: ${{ secrets.PORTUS_APP_TOKEN }}
+      nexus_publisher_user: ${{ secrets.TMP_PACKAGE_DEPLOYER_NX_USR }}
+      nexus_publisher_password: ${{ secrets.TMP_PACKAGE_DEPLOYER_NX_PWD }}
+      aws_sqs_rosdep_access_key: ${{ secrets.AWS_SQS_ROSDEP_ACCESS_KEY }}
+      aws_sqs_rosdep_secret_access_key: ${{ secrets.AWS_SQS_ROSDEP_SECRET_ACCESS_KEY }}
+      gh_token: ${{ secrets.GITHUB_TOKEN }}
+      sonar_token: ${{ secrets.SONAR_TOKEN }}
