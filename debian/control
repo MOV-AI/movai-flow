@@ -14,5 +14,5 @@ Homepage: https://mov.ai
 Priority: optional
 Conflicts: movai-service, movai-studio
 Depends: ${misc:Depends}, docker-ce (>= 20.10.8), docker-ce-cli
-Description: MOV.AI Development Flow
-    The Robotics Engine Platform enhancing ROS
+Description: MOV.AI Flow
+    An IDE that introduces visualization and structure to ROS. Develop faster, understand ROS projects in an instant, and debug easily
