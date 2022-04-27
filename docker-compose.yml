@@ -7,7 +7,7 @@
 # The following variables are supported:
 #
 # MOVAI_REGISTRY               - Docker images registry
-#                                Default: registry.cloud.mov.ai
+#                                Default: pubregistry.aws.cloud.mov.ai
 # MOVAI_UID                    - User ID in MOVAI containers
 #                                Default: 1000
 # MOVAI_DEVICE_NAME            - Docker containers identifier
@@ -48,7 +48,10 @@ x-movai-common:
   environment:
     &movai-common-env
     MOVAI_ENV: ${MOVAI_ENV:-qa}
-    LOGLEVEL: WARNING
+    MOVAI_STDOUT_VERBOSITY_LEVEL: ${LOGLEVEL:-30} #WARNING
+    MOVAI_LOGFILE_VERBOSITY_LEVEL: ${LOGLEVEL:-30}
+    MOVAI_GENERAL_VERBOSITY_LEVEL: ${LOGLEVEL:-30}
+    MOVAI_HEALTHNODE_VERBOSITY_LEVEL: 0
     MOVAI_USERSPACE: /opt/mov.ai/user
     MOVAI_MANAGER_URI: ${MANAGER_URI:-http://localhost}
     DEVICE_NAME: ${MOVAI_DEVICE_NAME:-flow}
@@ -60,7 +63,7 @@ x-movai-common:
     REDIS_MASTER_HOST: redis-master
     ROS_MASTER_URI: http://ros-master:11311/
     PUBLIC_IP: ${PUBLIC_IP:-127.0.0.1}
-    LOG_HTTP_HOST:
+    LOG_HTTP_HOST: ${MANAGER_URI:-http://localhost}
     IGNITION_MOVAI: "true"
     IGN_PARTITION: ${IGN_PARTITION:?missing IGN_PARTITION ENV var}
     IGNITION_VERSION: fortress
@@ -81,7 +84,7 @@ x-movai-common:
 
 services:
   redis-master:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/redis2:v1.0.1
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.6
     container_name: redis-master-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -100,7 +103,7 @@ services:
       APT_INSTALL_LIST: $STUDIO_DB_PACKAGES
 
   redis-local:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/redis2:v1.0.1
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.6
     container_name: redis-local-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -117,39 +120,28 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/backend:2.2.2022082
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:1.0.0.20
     container_name: backend-$MOVAI_DEVICE_NAME
     networks:
       - private
     depends_on:
       <<: *movai-common-depend
-    entrypoint: /bin/bash
     environment:
       <<: *movai-common-env
       APT_INSTALL_LIST: "$STUDIO_APP_PACKAGES"
-    command:
-      - -ic
-      - |
-        set -m
-        rm -f /opt/mov.ai/app/movai.{log,err}
-        touch /opt/mov.ai/app/movai.{log,err}
-        docker-entrypoint.sh &
-        while ! timeout 1 bash -c "echo > /dev/tcp/localhost/5004"; do
-          printf "Waiting backend to launch on localhost:5004:...\n"
-          sleep 5
-        done
-        printf "Adding default user\n"
-        python3 -m tools.new_user -u ${STUDIO_USER_USERNAME:-movai} -p ${STUDIO_USER_USERNAME:-movai} -s
-        printf "Ready to serve\n"
-        fg %
+      HTTP_PORT: ${STUDIO_WEB_PORT}
+      DEFAULT_USERNAME: movai
+      DEFAULT_PASSWORD: movai
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?missing JWT_SECRET_KEY ENV var}
     healthcheck:
-      test: ["CMD", "echo", ">", "/dev/tcp/localhost/5004"]
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/${STUDIO_WEB_PORT}"]
       start_period: 5s
       interval: 10s
       timeout: 2s
       retries: 3
+
   ros-master:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-master-noetic:v0.0.2
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-master-noetic:v1.0.0
     privileged: true
     networks:
       - private
@@ -168,7 +160,7 @@ services:
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/spawner-ign-noetic:v2.2.8
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-ign-noetic:v3.0.2
     privileged: true
     networks:
       - private
@@ -177,7 +169,7 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: pgrep -f "/usr/bin/python3 /opt/mov.ai/app/async_movaicore.py -v"
+      test: pgrep -f "/usr/bin/python3 -m flow_initiator"
       start_period: 10s
       interval: 10s
       timeout: 3s
@@ -198,7 +190,7 @@ services:
       APT_INSTALL_LIST: $STUDIO_SPAWNER_PACKAGES
 
   simulator:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ignition-gazebo:v1.0.2
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ignition-gazebo:v1.0.4
     container_name: simulator-$MOVAI_DEVICE_NAME
     profiles: ["simulator"]
     environment:
@@ -227,7 +219,7 @@ services:
     command: ign gui -s $STUDIO_SIMU_GUI
 
   ros-tools:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/devops/ros-tools-ce:v1.0.0
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-tools-ce:v1.0.0
     container_name: ros-tools-$MOVAI_DEVICE_NAME
     profiles: ["tools"]
     environment:
@@ -250,14 +242,15 @@ services:
         exec /usr/bin/rviz
 
   haproxy:
-    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/haproxy:2.2.2022048
+    image: haproxy:2.4.15
     container_name: haproxy-$MOVAI_DEVICE_NAME
     networks:
       - private
       - proxy
     volumes:
-      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:rw
-      - ./haproxy/503-movai.http:/etc/503-movai.http
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - ./haproxy/503-movai.http:/etc/503-movai.http:ro
+      - ./haproxy/proxy.pem:/etc/ssl/private/proxy.pem:ro
     ports:
       - "${STUDIO_HTTP_PORT:-8080}:80"
       - "${STUDIO_HTTPS_PORT:-8443}:443"
