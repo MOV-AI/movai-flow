@@ -1,4 +1,4 @@
-movai-flow (1.1.1-1) UNRELEASED; urgency=medium
+movai-flow (1.2.0-0) UNRELEASED; urgency=medium
 
   [ Alex Fernandes ]
   *
@@ -40,10 +40,17 @@ movai-flow (1.1.1-1) UNRELEASED; urgency=medium
   * Update README.md
   * fix
 
-  [ root ]
-  * UNRELEASED
-  * UNRELEASED
-  * UNRELEASED
-  * UNRELEASED
+  [ mithun ]
+  * Move media directory from root to docs
 
- -- root <root@1b10c1cdb921>  Thu, 31 Mar 2022 09:44:14 +0000
+  [ Rian Martins ]
+  * FP-1646 : Fix typo in 503 page (#98)
+
+  [ Alex Fernandes ]
+  * draft public dockers
+  * remove docker login
+  * updates and debug
+  * fix health check
+  * fix web authentication
+
+ -- Alex Fernandes <afe@bffa3bc3c99e>  Thu, 21 Apr 2022 23:37:06 +0000

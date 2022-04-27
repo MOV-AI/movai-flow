@@ -1,4 +1,4 @@
-# MOV.AI Flow&trade; 
+# MOV.AI Flow&trade;
 ### An IDE that introduces visualization and `structure to ROS_`
 You can develop faster, understand ROS projects in an instant, and debug easily.
 
@@ -6,10 +6,10 @@ You can develop faster, understand ROS projects in an instant, and debug easily.
 
 MOV.AI Flow™  brings many features to your ROS project development:
 
-| <img src="http://files.readme.io/77ed66f-movaiflow_feat1.png" width="400"/>|<img src="https://files.readme.io/7381cb9-feat2_fms.png" width="400"/> | 
+| <img src="http://files.readme.io/77ed66f-movaiflow_feat1.png" width="400"/>|<img src="https://files.readme.io/7381cb9-feat2_fms.png" width="400"/> |
 |:--:|:--:|
 | *Web-based Visual ROS Editor* | *Built-in visual State machine and node orchestration* |
-| <img src="https://files.readme.io/76e2705-feat3_callback.png" width="400"/>|<img src="https://files.readme.io/4543108-feat4_debug.png" width="400"/> | 
+| <img src="https://files.readme.io/76e2705-feat3_callback.png" width="400"/>|<img src="https://files.readme.io/4543108-feat4_debug.png" width="400"/> |
 | *Callback Editor* | *Visual Debugging* |
 | <img src="https://files.readme.io/c6345de-flow_feat5_configs.png" width="400"/> | <img src="https://files.readme.io/91c9444-feat6_ros.png" width="400"/> |
 | *Configuration Editor* | *Out-of-the-box Integration with the ROS Ecosystem*|
@@ -42,31 +42,26 @@ Ubuntu [20.04 - x64](https://ubuntu.com/download/desktop/thank-you?version=20.04
 - Do you have NVIDIA GPU? Install Docker NVIDIA's toolkit for HW acceleration [(Instructions)](https://docs.nvidia.com/ai-enterprise/deployment-guide/dg-docker.html#enabling-the-docker-repository-and-installing-the-nvidia-container-toolkit)
 - While the SW is not public, you need to do docker login after installing Docker.
 
+### Just give me some steps!
 
-
-
-### Just give me some steps! 
-
-```
+```shell
 sudo apt update && sudo apt upgrade
 sudo apt install curl
-# docker 
+# docker
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -sc) stable"
-sudo apt -y install docker-ce docker-ce-cli 
+sudo apt -y install docker-ce docker-ce-cli
 # docker compose
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 # docker sudo group
 sudo groupadd docker
-sudo gpasswd -a $USER docker 
-docker login registry.cloud.mov.ai -u movaiflowtester
-<Password: ask for it community@mov.ai>
+sudo gpasswd -a $USER docker
 ```
 
 NVIDIA GPU support
 
-```
+```shell
 #Add the package repositories:
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
 curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
@@ -79,24 +74,20 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 sudo systemctl restart docker
 ```
 
-
 # Installing MOV.AI Flow&trade;
-## Download 
+## Download
 -  Download the [latest release](https://github.com/MOV-AI/movai-flow/releases/latest/download) .deb file
 
 
 ## Install
 Option A)
 1. Open a Terminal, `cd` into downloads folder, and type `sudo dpkg -i ./movai-flow*.deb`
-1. Enter your user password in the prompt. The installation should then execute, provide debugging information, and complete. 
- 
+1. Enter your user password in the prompt. The installation should then execute, provide debugging information, and complete.
+
 Option B)
 1. Go to the Downloads folder.
-1. Double-click on it to launch it. 
-1. Click the Install option. The Ubuntu Software Package Manager starts installing the downloaded app. 
-
-
-
+1. Double-click on it to launch it.
+1. Click the Install option. The Ubuntu Software Package Manager starts installing the downloaded app.
 
 
 # Getting Started
@@ -125,7 +116,7 @@ After starting MOVAI Flow&trade;, you can interact with it in different ways:
 Once the services have started up, you can log in to the web interface and try to run some tasks.
 The webserver is available at: http://localhost:8080. The default account has both the username and the password: `movai`.
 
-## Accessing ROS *terminal* 
+## Accessing ROS *terminal*
 To get access to `rostopic` and `rosbag` commands, or to install/build more ros-packages, access the ROS *terminal* typing:
 
 `docker exec -it spawner-robot1 bash`
@@ -196,7 +187,7 @@ After starting MOVAI Flow, you can launch Ignition Fortress :
 
     xhost +local:docker
     docker-compose -f docker-compose-nvidia.yml up simulator
-    
+
 ##### Without GPU acceleration :
 
     xhost +local:docker
