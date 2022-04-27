@@ -40,11 +40,6 @@ movai-flow (1.2.0-0) UNRELEASED; urgency=medium
   * Update README.md
   * fix
 
-  [ root ]
-  * UNRELEASED
-  * UNRELEASED
-  * UNRELEASED
-
   [ mithun ]
   * Move media directory from root to docs
 
