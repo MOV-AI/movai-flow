@@ -42,12 +42,9 @@ Ubuntu [20.04 - x64](https://ubuntu.com/download/desktop/thank-you?version=20.04
 - Do you have NVIDIA GPU? Install Docker NVIDIA's toolkit for HW acceleration [(Instructions)](https://docs.nvidia.com/ai-enterprise/deployment-guide/dg-docker.html#enabling-the-docker-repository-and-installing-the-nvidia-container-toolkit)
 - While the SW is not public, you need to do docker login after installing Docker.
 
-
-
-
 ### Just give me some steps! 
 
-```
+```shell
 sudo apt update && sudo apt upgrade
 sudo apt install curl
 # docker 
@@ -60,13 +57,11 @@ sudo chmod +x /usr/local/bin/docker-compose
 # docker sudo group
 sudo groupadd docker
 sudo gpasswd -a $USER docker 
-docker login registry.cloud.mov.ai -u movaiflowtester
-<Password: ask for it community@mov.ai>
 ```
 
 NVIDIA GPU support
 
-```
+```shell
 #Add the package repositories:
 distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
 curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
@@ -78,7 +73,6 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 #Restart the Docker service:
 sudo systemctl restart docker
 ```
-
 
 # Installing MOV.AI Flow&trade;
 ## Download 
@@ -94,9 +88,6 @@ Option B)
 1. Go to the Downloads folder.
 1. Double-click on it to launch it. 
 1. Click the Install option. The Ubuntu Software Package Manager starts installing the downloaded app. 
-
-
-
 
 
 # Getting Started
