@@ -49,9 +49,9 @@ x-movai-common:
     &movai-common-env
     MOVAI_ENV: ${MOVAI_ENV:-qa}
     MOVAI_STDOUT_VERBOSITY_LEVEL: ${LOGLEVEL:-30} #WARNING
-    MOVAI_HEALTHNODE_VERBOSITY_LEVEL: ${LOGLEVEL:-30}
     MOVAI_LOGFILE_VERBOSITY_LEVEL: ${LOGLEVEL:-30}
     MOVAI_GENERAL_VERBOSITY_LEVEL: ${LOGLEVEL:-30}
+    MOVAI_HEALTHNODE_VERBOSITY_LEVEL: 0
     MOVAI_USERSPACE: /opt/mov.ai/user
     MOVAI_MANAGER_URI: ${MANAGER_URI:-http://localhost}
     DEVICE_NAME: ${MOVAI_DEVICE_NAME:-flow}
@@ -120,7 +120,7 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:1.0.0.15
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:1.0.0.19
     container_name: backend-$MOVAI_DEVICE_NAME
     networks:
       - private
@@ -160,7 +160,7 @@ services:
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-base-noetic:v3.0.0
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-base-noetic:v3.0.1
     privileged: true
     networks:
       - private
@@ -190,7 +190,7 @@ services:
       APT_INSTALL_LIST: $STUDIO_SPAWNER_PACKAGES
 
   simulator:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ignition-gazebo:v1.0.2
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ignition-gazebo:v1.0.4
     container_name: simulator-$MOVAI_DEVICE_NAME
     profiles: ["simulator"]
     environment:
