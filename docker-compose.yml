@@ -88,7 +88,7 @@ services:
     container_name: redis-master-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
-      options: 
+      options:
         mode: "non-blocking"
         max-buffer-size: "4m"
     networks:
@@ -112,7 +112,7 @@ services:
     container_name: redis-local-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
-      options: 
+      options:
         mode: "non-blocking"
         max-buffer-size: "4m"
     networks:
@@ -134,7 +134,7 @@ services:
     container_name: backend-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
-      options: 
+      options:
         mode: "non-blocking"
         max-buffer-size: "4m"
     networks:
@@ -166,7 +166,7 @@ services:
     container_name: ros-master-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
-      options: 
+      options:
         mode: "non-blocking"
         max-buffer-size: "4m"
     ports:
@@ -197,7 +197,7 @@ services:
     container_name: spawner-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
-      options: 
+      options:
         mode: "non-blocking"
         max-buffer-size: "4m"
     volumes:
@@ -219,7 +219,7 @@ services:
     container_name: simulator-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
-      options: 
+      options:
         mode: "non-blocking"
         max-buffer-size: "4m"
     profiles: ["simulator"]
@@ -253,7 +253,7 @@ services:
     container_name: ros-tools-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
-      options: 
+      options:
         mode: "non-blocking"
         max-buffer-size: "4m"
     profiles: ["tools"]
@@ -281,7 +281,7 @@ services:
     container_name: haproxy-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
-      options: 
+      options:
         mode: "non-blocking"
         max-buffer-size: "4m"
     networks:
