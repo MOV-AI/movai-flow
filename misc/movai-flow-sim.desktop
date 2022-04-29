@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=MOV.AI Flow Simulator
 GenericName=Ignition Gazebo Simulator
-Comment=MOV.AI Development Flow Simulator for ROS
+Comment=World Launcher for Ignition Gazebo Simulator
 Exec=/usr/bin/movai-flow-simulator
 Icon=ignition_logo
 Terminal=true
