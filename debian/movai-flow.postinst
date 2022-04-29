@@ -108,6 +108,9 @@ if [ "$1" == "configure" ]; then
     mkdir -p $APP_PATH/{logs,shared,userspace,models_database}
     sudo chown 1000:1000 $APP_PATH/{logs,shared,userspace,models_database} -R
 
+    Output "Downloading images"
+    $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF pull
+
     # Output "Starting $SERVICE_NAME"
     # systemctl start $SERVICE_NAME.service
 elif [ "$1" == "abort-remove" ]; then
