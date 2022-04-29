@@ -19,7 +19,7 @@ DOCKER_COMPOSE_BIN=$(which docker-compose)
 
 Output() {
   # Prepare base message
-  Message="MOV.AI Flow install: $1"
+  Message="MOV.AI Flow™ install: $1"
 
   # Output the message even if a blank message (make output nice)
   echo "$Message"
