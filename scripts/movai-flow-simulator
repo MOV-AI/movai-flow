@@ -39,12 +39,12 @@ if [ ! -e "${user_documents_path}/MovaiFlow" ]; then
   Output "User and models folder ${user_documents_path}/MovaiFlow"
 fi
 
-Output "This terminal window will verify all MOVAI Flow services are running and then launch the Ignition Simulator GUI application"
+Output "This terminal window will verify all MOV.AI Flow™ services are running and then launch the Ignition Simulator GUI application"
 Output "(U) [^_^] (U)"
 
-if [ -f $CONFIG_PATH/config.env ]; then
+if [ -f "$CONFIG_PATH/config.env" ]; then
   Output "Sourcing configuration"
-  . $CONFIG_PATH/config.env
+  . "$CONFIG_PATH/config.env"
 else
   Output "No configuration found"
 fi
@@ -52,8 +52,8 @@ fi
 xhost +local:docker
 if [ "$HAVE_NVIDIA" = "1" ]; then
   Output "Launching simulator for Nvidia GPU"
-  exec $DOCKER_COMPOSE_BIN -f $SERVICE_NVIDIA_CONF up simulator
+  exec $DOCKER_COMPOSE_BIN -f "$SERVICE_NVIDIA_CONF" up simulator
 else
   Output "Launching simulator for integrated GPU"
-  exec $DOCKER_COMPOSE_BIN -f $SERVICE_CONF up simulator
+  exec $DOCKER_COMPOSE_BIN -f "$SERVICE_CONF" up simulator
 fi

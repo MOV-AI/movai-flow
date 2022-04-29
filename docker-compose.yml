@@ -1,4 +1,4 @@
-# Basic MOVAI Flow cluster configuration with Redis and Redis local databases.
+# Basic MOV.AI Flow™ cluster configuration with Redis and Redis local databases.
 #
 # WARNING:
 #   This configuration is for local development. Do not use it in a production deployment.
@@ -15,7 +15,7 @@
 # MOVAI_ENV                    - Docker containers environment (develop/qa/release)
 #                                Default: qa
 #
-# Those configurations are useful mostly in case of standalone testing/running MOVAI Flow in test/try-out mode
+# Those configurations are useful mostly in case of standalone testing/running MOV.AI Flow™ in test/try-out mode
 #
 # STUDIO_USER_USERNAME   - Username for the administrator account (if requested).
 #                          Default: movai

@@ -6,7 +6,6 @@ docker-compose-nvidia.yml usr/share/movai-flow
 .env usr/share/movai-flow
 scripts/movai-flow-simulator usr/bin/
 scripts/movai-flow-rviz usr/bin/
-scripts/movai-flow-cli usr/bin/
 scripts/movai-flow-launch usr/bin/
 scripts/movai-flow-stop usr/bin/
 misc/movai-flow.service usr/lib/systemd/system

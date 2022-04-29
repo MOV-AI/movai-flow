@@ -32,7 +32,7 @@ FilterRunningService() {
   $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF ps --services --filter "status=running" | grep "$1"
 }
 
-Output "This terminal window will verify all MOVAI Flow services are running \
+Output "This terminal window will verify all MOV.AI Flow™ services are running \
 and then launch the web application"
 Output "(U) [^_^] (U)"
 

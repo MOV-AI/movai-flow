@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Description:    Collect setup and runtime information about the host MOVAI Flow is (to be) installed on
+# Description:    Collect setup and runtime information about the host MOV.AI Flow™ is (to be) installed on
 #
 
 # Exit on error
@@ -83,7 +83,7 @@ fi
 
 if [[ ${warning_resources} == "true" ]]; then
   echo
-  echo -e "\033[1;33mWARNING!!!: You have not enough resources to run MOVAI Flow (see above)!\e[0m"
+  echo -e "\033[1;33mWARNING!!!: You have not enough resources to run MOV.AI Flow™ (see above)!\e[0m"
   echo "Please increase amount of resources available"
   echo
   echo "ERROR: Invalid installation config.  Refusing to install."

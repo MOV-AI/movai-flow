@@ -2,3 +2,5 @@ debian/movai-flow/
 logs/
 models_database/fuel/
 debian/files/
+debian/.debhelper/generated/movai-flow/installed-by-dh_installdocs
+rviz/persistent_settings
