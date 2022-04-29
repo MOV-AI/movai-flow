@@ -28,10 +28,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Publish to Nexus ppa-main
+    - name: Publish to Nexus ppa-public
       run: |
           NEXUS_ENDPOINT="artifacts.cloud.mov.ai"
-          NEXUS_REPO="ppa-main"
+          NEXUS_REPO="ppa-public"
           FILE_LOCATION=$(find artifacts/*.deb)
           curl -u "${{ secrets.NEXUS_PUBLISHER_USR }}:${{ secrets.NEXUS_PUBLISHER_PWD }}" \
           -H "Content-Type: multipart/form-data" \
