@@ -27,7 +27,7 @@ if [ "$Architecture" = "x86_64" ]; then
   # Is there a Nvidia card present (possible HW enhanced graphical rendering)
   [ "$(echo /sys/module/nvidia/drivers/pci:nvidia/*:*:*.*)" != "/sys/module/nvidia/drivers/pci:nvidia/*:*:*.*" ] && HaveNvidia=1
   # Is there NVIDIA Container Toolkit to build and run GPU accelerated Docker containers
-  [ "$(dpkg -l | grep ^ii | grep -iw nvidia-docker2)" != "" ] && HaveDockerNvidia=1
+  [ "$(dpkg -l | grep ^ii | grep -iw nvidia-container-toolkit)" != "" ] && HaveDockerNvidia=1
 fi
 if [ $HaveNvidia -gt 0 ]; then
     echo "  Nvidia GPU card found"
@@ -102,7 +102,7 @@ for port in $SERVICE_PORTS; do
   fi
 done
 if [ $HaveUnFreePort -gt 0 ]; then
-  echo "  All needed ports are not free"
+  echo "  All needed ports ($SERVICE_PORTS) are not free"
 else
   echo "  All needed ports are free"
   HaveFreePorts=1
