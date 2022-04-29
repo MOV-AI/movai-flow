@@ -1,11 +1,11 @@
 [Desktop Entry]
-Name=MOV.AI Flow RViz
+Name=MOV.AI Flow™ RViz
 GenericName=ROS RViz
-Comment=MOV.AI Development Flow RViz
+Comment=MOV.AI Flow™ RViz
 Exec=/usr/bin/movai-flow-rviz
 Icon=rviz-package
 Terminal=true
-StartupWMClass=MOV.AI Flow
+StartupWMClass=MOV.AI Flow™
 MimeType=application/octet-stream;application/zip;text/xml;text/xml;x-scheme-handler/movai;
 Type=Application
 Categories=Development;
