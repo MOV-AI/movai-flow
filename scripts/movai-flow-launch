@@ -28,12 +28,6 @@ Output() {
   fi
 }
 
-StopServices() {
-  Output "Stopping services..."
-  Output "Terminal will close on completion, wait or press CTRL+C on failure"
-  $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF stop
-}
-
 FilterRunningService() {
   $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF ps --services --filter "status=running" | grep "$1"
 }
