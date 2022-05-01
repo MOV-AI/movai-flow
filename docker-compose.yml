@@ -48,9 +48,9 @@ x-movai-common:
   environment:
     &movai-common-env
     MOVAI_ENV: ${MOVAI_ENV:-qa}
-    MOVAI_STDOUT_VERBOSITY_LEVEL: ${LOGLEVEL:-30}  # WARNING
-    MOVAI_LOGFILE_VERBOSITY_LEVEL: ${LOGLEVEL:-30}
-    MOVAI_GENERAL_VERBOSITY_LEVEL: ${LOGLEVEL:-30}
+    MOVAI_STDOUT_VERBOSITY_LEVEL: 10  # DEBUG
+    MOVAI_LOGFILE_VERBOSITY_LEVEL: 30  # WARNING
+    MOVAI_GENERAL_VERBOSITY_LEVEL: 10  # DEBUG
     MOVAI_HEALTHNODE_VERBOSITY_LEVEL: 0
     MOVAI_USERSPACE: /opt/mov.ai/user
     MOVAI_MANAGER_URI: ${MANAGER_URI:-http://localhost}
@@ -86,6 +86,11 @@ services:
   redis-master:
     image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.6
     container_name: redis-master-$MOVAI_DEVICE_NAME
+    logging:
+      driver: "journald"
+      options:
+        mode: "non-blocking"
+        max-buffer-size: "4m"
     networks:
       - private
     ports:
@@ -106,6 +111,11 @@ services:
   redis-local:
     image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.6
     container_name: redis-local-$MOVAI_DEVICE_NAME
+    logging:
+      driver: "journald"
+      options:
+        mode: "non-blocking"
+        max-buffer-size: "4m"
     networks:
       - private
     ports:
@@ -122,8 +132,13 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:1.0.0.20
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:1.0.0.21
     container_name: backend-$MOVAI_DEVICE_NAME
+    logging:
+      driver: "journald"
+      options:
+        mode: "non-blocking"
+        max-buffer-size: "4m"
     networks:
       - private
     depends_on:
@@ -152,6 +167,11 @@ services:
       backend:
         condition: service_healthy
     container_name: ros-master-$MOVAI_DEVICE_NAME
+    logging:
+      driver: "journald"
+      options:
+        mode: "non-blocking"
+        max-buffer-size: "4m"
     ports:
       - "${STUDIO_ROS_MASTER_PORT:-11311}:11311"
     healthcheck:
@@ -164,7 +184,7 @@ services:
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-ign-noetic:v3.0.2
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-ign-noetic:v3.0.3
     privileged: true
     networks:
       - private
@@ -179,6 +199,11 @@ services:
       timeout: 3s
       retries: 1
     container_name: spawner-$MOVAI_DEVICE_NAME
+    logging:
+      driver: "journald"
+      options:
+        mode: "non-blocking"
+        max-buffer-size: "4m"
     volumes:
       - /dev:/dev
       - /sys/devices:/sys/devices
@@ -197,6 +222,11 @@ services:
   simulator:
     image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ignition-gazebo:v1.0.4
     container_name: simulator-$MOVAI_DEVICE_NAME
+    logging:
+      driver: "journald"
+      options:
+        mode: "non-blocking"
+        max-buffer-size: "4m"
     profiles: ["simulator"]
     environment:
       <<: *movai-common-env
@@ -226,6 +256,11 @@ services:
   ros-tools:
     image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-tools-ce:v1.0.0
     container_name: ros-tools-$MOVAI_DEVICE_NAME
+    logging:
+      driver: "journald"
+      options:
+        mode: "non-blocking"
+        max-buffer-size: "4m"
     profiles: ["tools"]
     environment:
       <<: *movai-common-env
@@ -249,6 +284,11 @@ services:
   haproxy:
     image: haproxy:2.4.15
     container_name: haproxy-$MOVAI_DEVICE_NAME
+    logging:
+      driver: "journald"
+      options:
+        mode: "non-blocking"
+        max-buffer-size: "4m"
     networks:
       - private
       - proxy
