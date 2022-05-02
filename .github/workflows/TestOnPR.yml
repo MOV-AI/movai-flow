@@ -142,3 +142,9 @@ jobs:
           -H "Content-Type: multipart/form-data" \
           --data-binary "@$FILE_LOCATION" \
           "https://$NEXUS_ENDPOINT/repository/$NEXUS_REPO/"
+
+    - name: Store artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: packages
+        path: artifacts/*
