@@ -5,7 +5,7 @@ on:
 
 jobs:
   Release-Ros-Component:
-    uses: MOV-AI/.github/.github/workflows/ros-workflow.yml@v1
+    uses: MOV-AI/.github/.github/workflows/ros-workflow.yml@feat/enable-multi-prod-publish
     with:
       release: 'true'
       prod_publish_repos: '["ppa-public"]'
