@@ -106,6 +106,7 @@ services:
     environment:
       <<: *movai-common-env
       APT_INSTALL_LIST: $STUDIO_DB_PACKAGES
+    restart: unless-stopped
 
   redis-local:
     image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.6
@@ -127,6 +128,7 @@ services:
       retries: 3
     volumes:
       - redis-local-flow-volume:/data
+    restart: unless-stopped
 
   backend:
     <<: *movai-common
@@ -154,6 +156,7 @@ services:
       interval: 10s
       timeout: 2s
       retries: 3
+    restart: unless-stopped
 
   ros-master:
     image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-master-noetic:v1.0.0
@@ -177,6 +180,7 @@ services:
       interval: 10s
       timeout: 2s
       retries: 3
+    restart: unless-stopped
 
   spawner:
     <<: *movai-common
@@ -213,6 +217,7 @@ services:
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       APP_NAME: spawner
       APT_INSTALL_LIST: $STUDIO_SPAWNER_PACKAGES
+    restart: unless-stopped
 
   simulator:
     image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ignition-gazebo:v1.0.4
@@ -296,6 +301,7 @@ services:
       - "${STUDIO_HTTPS_PORT:-8443}:443"
     environment:
       - SPAWNER_PORTS="bind :11411\\n\\tbind :9090"
+    restart: unless-stopped
 
 volumes:
   redis-master-flow-volume:
