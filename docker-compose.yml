@@ -277,7 +277,7 @@ services:
         exec /usr/bin/rviz
 
   haproxy:
-    image: haproxy:2.4.15
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/haproxy:2.4.15
     container_name: haproxy-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
