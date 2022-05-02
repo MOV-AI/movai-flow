@@ -14,5 +14,8 @@ if [ "$1" = "remove" ]; then
     $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF down || true
     popd || echo ""
 
+    find /home -type l -wholename "*MovaiFlow/models_database" -delete
+    find /home -type l -wholename "*MovaiFlow/userspace" -delete
+
     rm -r $APP_PATH
 fi

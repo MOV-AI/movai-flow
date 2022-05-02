@@ -9,7 +9,7 @@ DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
 
 Output() {
   # Prepare base message
-  Message="MOV.AI Flow $SCRIPTNAME: $1"
+  Message="MOV.AI Flow™ $SCRIPTNAME: $1"
 
   # Output the message even if a blank message (make output nice)
   echo "$Message"
@@ -32,7 +32,7 @@ FilterRunningService() {
   $DOCKER_COMPOSE_BIN -f $SERVICE_CONF ps --services --filter "status=running" | grep "$1"
 }
 
-Output "This terminal window will verify all MOVAI Flow services are running and then launch the RVIZ application"
+Output "This terminal window will verify all MOV.AI Flow™ services are running and then launch the RVIZ application"
 Output "(U) [^_^] (U)"
 
 if [ -f "$CONFIG_PATH/config.env" ]; then

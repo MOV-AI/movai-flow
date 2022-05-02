@@ -94,21 +94,21 @@ Option B)
 
 ## Shortcuts
 Installing the Flow package will provide a few application shortcuts in the programming section:
-- `MOV.AI Flow`: launches the needed services and then open a browser connected to the flow
-- `MOV.AI Flow RViz`: launches rviz connected to the flow
-- `MOV.AI Flow Simulator`: launches Ignition simulator connected to the flow
+- `MOV.AI Flow™`: launches the needed services and then open a browser connected to the flow
+- `MOV.AI Flow™ RViz`: launches rviz connected to the flow
+- `MOV.AI Flow™ Simulator`: launches Ignition simulator connected to the flow
 
 ![](https://files.readme.io/bcc3fb7-three_icons.png)
 
 ## CLI
-Installing the Flow package will provide a few command line tools to control the cluster of containers running the flow:
+Installing the MOV.AI Flow&trade; package will provide a few command line tools to control the cluster of containers running the flow:
 - `movai-flow-launch`: launch this script to launch the needed services and then open a browser connected to the flow
 - `movai-flow-stop`: stop all flow services
 - `movai-flow-rviz`: launch rviz connected to the flow
 - `movai-flow-simulator`: launch Ignition simulator connected to the flow
 
-## Accessing the Flow&trade; IDE
-After starting MOVAI Flow&trade;, you can interact with it in different ways:
+## Accessing the MOV.AI Flow&trade; IDE
+After starting MOV.AI Flow&trade;, you can interact with it in different ways:
 
 - via a browser using the web interface
 - ~~using the REST API~~
@@ -125,13 +125,13 @@ To get access to `rostopic` and `rosbag` commands, or to install/build more ros-
 
 # More Info
 
-Flow&trade; initiates a set of services running as a `docker-compose` cluster, namely:
+MOV.AI Flow&trade; initiates a set of services running as a `docker-compose` cluster, namely:
 
  - redis-master: master DB of the cluster
  - redis-local: local DB of the cluster
  - backend: web service application
  - ros-master: ROS core service
- - spawner: MOVAI flow orchestrator of ROS nodes
+ - spawner: Flow orchestrator of ROS nodes
  - haproxy: web proxy
  - simulator: Ignition Fortress container with graphical capabilities enabled
  - ros-tools: rviz container with graphical capabilities enabled
@@ -148,7 +148,7 @@ Flow&trade; initiates a set of services running as a `docker-compose` cluster, n
 Clone the repository or download the sources and follow the following instructions.
 
 ### Initializing Environment
-Before starting MOVAI Flow for the first time, You need to prepare your environment, i.e. create the necessary files, directories and initialize the database.
+Before starting MOV.AI Flow™ for the first time, You need to prepare your environment, i.e. create the necessary files, directories and initialize the database.
 
 To do it, edit .env file and customize variables values:
 
@@ -156,7 +156,7 @@ To do it, edit .env file and customize variables values:
 
 > Values present in the environment at runtime always override those defined inside the .env file. Similarly, values passed via command-line arguments take precedence as well.
 
-### Running MOVAI Flow
+### Running MOV.AI Flow™
 
 Now you can start core services, by `cd`ing into the folder where `docker-compose.yml` is:
 
@@ -181,7 +181,7 @@ First of all be aware that the Simulator is based on the containerized [Ignition
 
 > The recommeded setup is to have an NVidia GPU,  but still an integrated Intel GPU can also work with lower performance
 
-After starting MOVAI Flow, you can launch Ignition Fortress :
+After starting MOV.AI Flow™, you can launch Ignition Fortress :
 
 ##### With Nvidia GPU acceleration :
 

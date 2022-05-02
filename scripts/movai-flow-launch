@@ -10,7 +10,7 @@ APP_URL="http://localhost:8080/api/v1/apps/mov-fe-app-ide-ce/"
 
 Output() {
   # Prepare base message
-  Message="MOV.AI Flow $SCRIPTNAME: $1"
+  Message="MOV.AI Flow™ $SCRIPTNAME: $1"
 
   # Output the message even if a blank message (make output nice)
   echo "$Message"
@@ -29,17 +29,11 @@ Output() {
   fi
 }
 
-StopServices() {
-  Output "Stopping services..."
-  Output "Terminal will close on completion, wait or press CTRL+C on failure"
-  $DOCKER_COMPOSE_BIN -f "$DOCKER_COMPOSE_CONF" stop
-}
-
 FilterRunningService() {
   $DOCKER_COMPOSE_BIN -f "$DOCKER_COMPOSE_CONF" ps --services --filter "status=running" | grep "$1"
 }
 
-Output "This terminal window will verify all MOVAI Flow services are running \
+Output "This terminal window will verify all MOV.AI Flow™ services are running \
 and then launch the web application"
 Output "(U) [^_^] (U)"
 
