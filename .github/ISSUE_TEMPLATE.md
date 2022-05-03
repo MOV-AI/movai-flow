@@ -11,24 +11,26 @@ Have you checked our docs before proceeding?
   2. 
   3. 
 
-### Screenshots
+#### Actual Behaviour
+<!-- Actual behaviour. -->
+
+#### Expected Behaviour
+<!-- Expected behaviour. -->
+
+
+### Screenshots/GIFs
 <!-- Include result of `docks ps | grep mov.ai` on your terminal. -->
 
-#### Expected
-<!-- Expected result. -->
-
-#### Actual
-<!-- Actual result. -->
-
-### Possible workarounds
-<!-- List steps for a possible work around if you found any -->
-- 
 
 ### Versions
 <!-- Result of `apt list movai-flow` command in your terminal -->
 - movai-flow: 
 <!-- Check the settings button on the IDE -->
 - movai-ide: 
+
+### Possible workarounds
+<!-- List steps for a possible work around if you found any -->
+- 
 
 ### Additional Details
 <!-- Any additional detail you can provide. -->
