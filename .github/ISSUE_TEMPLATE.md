@@ -11,12 +11,6 @@ Have you checked our docs before proceeding?
   2. 
   3. 
 
-### Versions
-<!-- Result of `apt list movai-flow` command in your terminal -->
-- movai-flow: 
-<!-- Check the settings button on the IDE -->
-- movai-ide: 
-
 ### Screenshots
 <!-- Include result of `docks ps | grep mov.ai` on your terminal. -->
 
@@ -29,6 +23,12 @@ Have you checked our docs before proceeding?
 ### Possible workarounds
 <!-- List steps for a possible work around if you found any -->
 - 
+
+### Versions
+<!-- Result of `apt list movai-flow` command in your terminal -->
+- movai-flow: 
+<!-- Check the settings button on the IDE -->
+- movai-ide: 
 
 ### Additional Details
 <!-- Any additional detail you can provide. -->
