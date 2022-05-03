@@ -32,6 +32,12 @@ Have you checked our docs before proceeding?
 <!-- List steps for a possible work around if you found any -->
 -
 
+### Versions
+<!-- Result of `apt list movai-flow` command in your terminal -->
+- movai-flow:
+<!-- Check the settings button on the IDE -->
+- movai-ide:
+
 ### Additional Details
 <!-- Any additional detail you can provide. -->
 - Installed packages:
