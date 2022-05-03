@@ -38,6 +38,10 @@ Have you checked our docs before proceeding?
 <!-- Check the settings button on the IDE -->
 - movai-ide:
 
+### Possible workarounds
+<!-- List steps for a possible work around if you found any -->
+-
+
 ### Additional Details
 <!-- Any additional detail you can provide. -->
 - Installed packages:
