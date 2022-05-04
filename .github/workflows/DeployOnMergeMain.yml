@@ -69,7 +69,7 @@ jobs:
       run: |
         # commit of debian/changelog previously done
         git pull
-        git push --force-with-lease
+        git push
 
     - name: Publish to Nexus ppa-testing
       run: |
