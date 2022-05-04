@@ -60,20 +60,6 @@ movai-flow (1.2.0-2) UNRELEASED; urgency=medium
   * Pre-release 1.2.0-2 (#112)
 
   [ Alex Fernandes ]
-  * hotfix: pass token to git config
-  * hotfix: really pass token to git config
-  * hotfix: remove force push
-  * hotfix: add git config inside Raise step
-
-  [ OttoMation-Movai ]
-  * hotfix: clean
-
-  [ Alex Fernandes ]
-  * hotfix: use git config local
-  * hotfix: review remote url setting
   * hotfix: uses action to push version raise
-  * hotfix: incorrect git token var name
-  * hotfix: pass user to git push
-  * CICD : check (#128)
 
- -- Alex Fernandes <afe@ip-172-31-25-153.eu-west-1.compute.internal>  Wed, 04 May 2022 21:06:40 +0000
+ -- Alex Fernandes <afe@mov.ai>  Wed, 04 May 2022 21:06:40 +0000
