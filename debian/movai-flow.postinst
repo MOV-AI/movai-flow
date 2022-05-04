@@ -105,5 +105,4 @@ if [ "$1" == "configure" ]; then
 elif [ "$1" == "abort-remove" ]; then
     Output "Stopping cluster of $SERVICE_NAME"
     $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF --env-file $DOCKER_COMPOSE_ENV down || true
-
 fi

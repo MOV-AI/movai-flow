@@ -7,9 +7,9 @@ Have you checked our docs before proceeding?
 
 ### Steps to Reproduce
 <!-- Tell us how to reproduce it (include any useful information). -->
-  1. 
-  2. 
-  3. 
+  1.
+  2.
+  3.
 
 #### Actual Behaviour
 <!-- Actual behaviour. -->
@@ -24,13 +24,23 @@ Have you checked our docs before proceeding?
 
 ### Versions
 <!-- Result of `apt list movai-flow` command in your terminal -->
-- movai-flow: 
+- movai-flow:
 <!-- Check the settings button on the IDE -->
-- movai-ide: 
+- movai-ide:
 
 ### Possible workarounds
 <!-- List steps for a possible work around if you found any -->
-- 
+-
+
+### Versions
+<!-- Result of `apt list movai-flow` command in your terminal -->
+- movai-flow:
+<!-- Check the settings button on the IDE -->
+- movai-ide:
+
+### Possible workarounds
+<!-- List steps for a possible work around if you found any -->
+-
 
 ### Additional Details
 <!-- Any additional detail you can provide. -->
