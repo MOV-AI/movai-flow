@@ -1,3 +1,5 @@
+*.deb
+artifacts/
 debian/movai-flow/
 logs/
 models_database/fuel/
