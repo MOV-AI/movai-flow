@@ -42,8 +42,8 @@ jobs:
 
     - name: Pack debian
       run: |
-        git config --global user.name ${{ secrets.RAISE_BOT_COMMIT_USER }}
-        git config --global user.email ${{ secrets.RAISE_BOT_COMMIT_MAIL }}
+        git config --local user.name ${{ secrets.RAISE_BOT_COMMIT_USER }}
+        git config --local user.email ${{ secrets.RAISE_BOT_COMMIT_MAIL }}
         git remote set-url origin https://x-access-token:${{ secrets.RAISE_BOT_COMMIT_PWD }}@github.com/${{ github.repository }}
 
         apt-get update
@@ -68,11 +68,14 @@ jobs:
     - name: Raise App version
       run: |
         # commit of debian/changelog previously done
-        git config --global user.name ${{ secrets.RAISE_BOT_COMMIT_USER }}
-        git config --global user.email ${{ secrets.RAISE_BOT_COMMIT_MAIL }}
+        git config --local user.name ${{ secrets.RAISE_BOT_COMMIT_USER }}
+        git config --local user.email ${{ secrets.RAISE_BOT_COMMIT_MAIL }}
         git remote set-url origin https://x-access-token:${{ secrets.RAISE_BOT_COMMIT_PWD }}@github.com/${{ github.repository }}
         git pull
         git push
+
+        git remote set-url origin https://x-access-token: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@github.com/MOV-AI/movai-flow
+
 
     - name: Publish to Nexus ppa-testing
       run: |
