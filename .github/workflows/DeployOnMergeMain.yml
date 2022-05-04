@@ -44,7 +44,6 @@ jobs:
       run: |
         git config --local user.name ${{ secrets.RAISE_BOT_COMMIT_USER }}
         git config --local user.email ${{ secrets.RAISE_BOT_COMMIT_MAIL }}
-        git remote set-url origin https://x-access-token:${{ secrets.RAISE_BOT_COMMIT_PWD }}@github.com/${{ github.repository }}
 
         apt-get update
         apt-get install -y devscripts equivs git-buildpackage
@@ -70,12 +69,9 @@ jobs:
         # commit of debian/changelog previously done
         git config --local user.name ${{ secrets.RAISE_BOT_COMMIT_USER }}
         git config --local user.email ${{ secrets.RAISE_BOT_COMMIT_MAIL }}
-        git remote set-url origin https://x-access-token:${{ secrets.RAISE_BOT_COMMIT_PWD }}@github.com/${{ github.repository }}
+        git remote set-url origin https://${{ secrets.RAISE_BOT_COMMIT_USER }}:${{ secrets.RAISE_BOT_COMMIT_PWD }}@github.com/${{ github.repository }}
         git pull
         git push
-
-        git remote set-url origin https://x-access-token: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@github.com/MOV-AI/movai-flow
-
 
     - name: Publish to Nexus ppa-testing
       run: |
