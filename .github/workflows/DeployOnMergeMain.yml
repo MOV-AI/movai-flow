@@ -42,8 +42,8 @@ jobs:
 
     - name: Pack debian
       run: |
-        git config --local user.name ${{ secrets.RAISE_BOT_COMMIT_USER }}
-        git config --local user.email ${{ secrets.RAISE_BOT_COMMIT_MAIL }}
+        git config --global user.name ${{ secrets.RAISE_BOT_COMMIT_USER }}
+        git config --global user.email ${{ secrets.RAISE_BOT_COMMIT_MAIL }}
 
         apt-get update
         apt-get install -y devscripts equivs git-buildpackage
@@ -67,9 +67,9 @@ jobs:
     - name: Raise App version
       run: |
         # commit of debian/changelog previously done
-        git config --local user.name ${{ secrets.RAISE_BOT_COMMIT_USER }}
-        git config --local user.email ${{ secrets.RAISE_BOT_COMMIT_MAIL }}
-        git remote set-url origin https://${{ secrets.RAISE_BOT_COMMIT_USER }}:${{ secrets.RAISE_BOT_COMMIT_PWD }}@github.com/${{ github.repository }}
+        git config --global user.name ${{ secrets.RAISE_BOT_COMMIT_USER }}
+        git config --global user.email ${{ secrets.RAISE_BOT_COMMIT_MAIL }}
+        git remote set-url origin https://${{ secrets.RAISE_BOT_COMMIT_USER }}:${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}@github.com/${{ github.repository }}
         git pull
         git push
 
