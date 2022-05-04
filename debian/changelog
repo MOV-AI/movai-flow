@@ -1,4 +1,4 @@
-movai-flow (1.2.0-2) UNRELEASED; urgency=medium
+movai-flow (1.2.0-3) UNRELEASED; urgency=medium
 
   [ Alex Fernandes ]
   *
@@ -62,4 +62,7 @@ movai-flow (1.2.0-2) UNRELEASED; urgency=medium
   [ Alex Fernandes ]
   * hotfix: uses action to push version raise
 
- -- Alex Fernandes <afe@mov.ai>  Wed, 04 May 2022 21:06:40 +0000
+  [ root ]
+  * UNRELEASED
+
+ -- root <root@c32df7e6c3c5>  Wed, 04 May 2022 21:30:59 +0000
