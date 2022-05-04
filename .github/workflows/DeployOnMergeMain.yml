@@ -65,13 +65,11 @@ jobs:
         cp ../*.deb artifacts
 
     - name: Raise App version
-      run: |
-        # commit of debian/changelog previously done
-        git config --local user.name ${{ secrets.RAISE_BOT_COMMIT_USER }}
-        git config --local user.email ${{ secrets.RAISE_BOT_COMMIT_MAIL }}
-        git remote set-url origin https://${{ secrets.RAISE_BOT_COMMIT_USER }}:${{ secrets.RAISE_BOT_COMMIT_PWD }}@github.com/${{ github.repository }}
-        git pull
-        git push
+      uses: colmose/push-bot@v1.0.0
+      with:
+        token: ${{ secrets.RAISE_BOT_COMMIT_PWD }}
+        branch_name: ${{ github.ref_name }}
+        bot_name: ${{ secrets.RAISE_BOT_COMMIT_USER }}
 
     - name: Publish to Nexus ppa-testing
       run: |
