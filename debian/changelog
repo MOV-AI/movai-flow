@@ -1,4 +1,4 @@
-movai-flow (1.2.0-1) UNRELEASED; urgency=medium
+movai-flow (1.2.0-3) UNRELEASED; urgency=medium
 
   [ Alex Fernandes ]
   *
@@ -56,4 +56,13 @@ movai-flow (1.2.0-1) UNRELEASED; urgency=medium
   [ root ]
   * UNRELEASED
 
- -- root <root@4c6b547d679b>  Wed, 27 Apr 2022 19:13:55 +0000
+  [ Mithun Kinarullathil ]
+  * Pre-release 1.2.0-2 (#112)
+
+  [ Alex Fernandes ]
+  * hotfix: uses action to push version raise
+
+  [ root ]
+  * UNRELEASED
+
+ -- root <root@c32df7e6c3c5>  Wed, 04 May 2022 21:30:59 +0000
