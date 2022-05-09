@@ -65,11 +65,11 @@ jobs:
         cp ../*.deb artifacts
 
     - name: Raise App version
-      uses: colmose/push-bot@v1.0.0
+      uses: CasperWA/push-protected@v2
       with:
         token: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
-        branch_name: ${{ github.ref_name }}
-        bot_name: ${{ secrets.RAISE_BOT_COMMIT_USER }}
+        branch: ${{ github.ref_name }}
+        unprotect_reviews: true
 
     - name: Publish to Nexus ppa-testing
       run: |
