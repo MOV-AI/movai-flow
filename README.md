@@ -76,7 +76,7 @@ sudo systemctl restart docker
 
 # Installing MOV.AI Flow&trade;
 ## Download
--  Download the [latest release](https://github.com/MOV-AI/movai-flow/releases/latest/download) .deb file
+-  Download the debian file from the [latest releases page](https://github.com/MOV-AI/movai-flow/releases/latest)
 
 
 ## Install
