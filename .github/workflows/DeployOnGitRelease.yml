@@ -8,6 +8,7 @@ jobs:
     uses: MOV-AI/.github/.github/workflows/ros-workflow.yml@feat/enable-multi-prod-publish
     with:
       release: 'true'
+      ros_distro: '["noetic"]'
       prod_publish_repos: '["ppa-public"]'
     secrets:
       auto_commit_user: ${{ secrets.RAISE_BOT_COMMIT_USER }}
