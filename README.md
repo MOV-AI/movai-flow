@@ -33,7 +33,7 @@ An IDE that introduces visualization and structure to ROS. You can develop faste
 | <img src="https://files.readme.io/c6345de-flow_feat5_configs.png" width="400"/> | <img src="https://files.readme.io/91c9444-feat6_ros.png" width="400"/> |
 | *Configuration Editor* | *Out-of-the-box Integration with the ROS Ecosystem*|
 
-
+---
 ## Let's get started :smile:
 ### Supported Systems
 Ubuntu [20.04 - x64](https://ubuntu.com/download/desktop/thank-you?version=20.04.4&architecture=amd64)
@@ -89,6 +89,8 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 #Restart the Docker service:
 sudo systemctl restart docker
 ```
+
+---
 
 ## Installation
 #### Option A
@@ -148,6 +150,7 @@ MOV.AI Flow™ initiates a set of services running as a *docker-compose* cluster
 > Run `docker images` to check all downloaded images into your disk.
 > Run `docker container ls` to  check current running containers
 
+---
 
 ## Accessing the MOV.AI Flow™ IDE
 After starting MOV.AI Flow™, you can interact with it via a browser using the web interface
