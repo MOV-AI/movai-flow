@@ -196,7 +196,7 @@ Follow our [documentation](https://flow.mov.ai/docs) to get detailed information
 
 ---
 
-## Runing from source code
+## Running from source code
 
 Clone the repository or download the sources and follow the following instructions.
 
