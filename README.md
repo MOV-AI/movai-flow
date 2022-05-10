@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/MOV-AI/movai-flow/releases"><img alt="CircleCI" src="https://img.shields.io/github/release/MOV-AI/movai-flow.svg?label=current+release"></a>
+  <a href="https://github.com/MOV-AI/movai-flow/releases/latest"><img alt="CircleCI" src="https://img.shields.io/github/release/MOV-AI/movai-flow.svg?label=current+release"></a>
   <a href="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnGitRelease.yml"><img alt="Deploy - To Nexus On Github Release" src="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnGitRelease.yml/badge.svg"></a>
   <a href="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnMergeMain.yml"><img alt="Deploy - On branch main/release Push" src="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnMergeMain.yml/badge.svg"></a>
   <a href="https://github.com/MOV-AI/movai-flow/actions/workflows/TestOnPR.yml"><img alt="CI - On main/dev/release branches" src="https://github.com/MOV-AI/movai-flow/actions/workflows/TestOnPR.yml/badge.svg"></a>
@@ -16,9 +16,7 @@
 </p>
 
 
----
 # Overview
-
 An IDE that introduces visualization and structure to ROS. You can develop faster, understand ROS projects in an instant, and debug easily.
 
 <p align="center">
@@ -36,8 +34,8 @@ An IDE that introduces visualization and structure to ROS. You can develop faste
 | *Configuration Editor* | *Out-of-the-box Integration with the ROS Ecosystem*|
 
 
----
-## Supported Systems
+## Let's get started :smile:
+### Supported Systems
 Ubuntu [20.04 - x64](https://ubuntu.com/download/desktop/thank-you?version=20.04.4&architecture=amd64)
 
 ### Minimum Specs
@@ -49,8 +47,6 @@ Ubuntu [20.04 - x64](https://ubuntu.com/download/desktop/thank-you?version=20.04
 - RAM 8 GB
 - NVIDIA GPU (For Ignition simulator)
 
-
-## Let's get started :D
 ### Install and configure requirements
 Install the requirements by either following the respective links or copy paste the below commands into your terminal if you have the supported system mentioned above:
 
@@ -94,16 +90,18 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 sudo systemctl restart docker
 ```
 
-# Installation
-## Download and Install
-##### Option A)
+## Installation
+#### Option A
 - Download the debian file from the **Assets** section of the [latest releases page](https://github.com/MOV-AI/movai-flow/releases/latest)
 - Click on the downloaded file in your browser or double click on the `movai-flow*.deb` file in your Downloads directory using a file explorer
 - Enter your user password if there is a promt.
 - Click the Install option. The Ubuntu Software Package Manager starts installing the downloaded app.
 
-##### Option B)
-Open a terminal, down the latest debian file and install it. Enter your user password if there is a promt.
+#### Option B
+- Open a terminal
+- Down the latest debian file
+- Install it. Enter your user password if there is a promt.
+
 ```shell
 # Install curl
 sudo apt install curl
@@ -113,10 +111,8 @@ curl -s https://api.github.com/repos/MOV-AI/movai-flow/releases/latest | grep "b
 sudo apt install ./movai-flow-1.2.0*.deb
 ```
 
-
----
-# Usage
-## Desktop shortcuts
+## Usage
+### Desktop shortcuts
 Installing the Flow package will provide a few application shortcuts in the programming section:
 
 <p align="center">
@@ -127,7 +123,7 @@ Installing the Flow package will provide a few application shortcuts in the prog
 - MOV.AI Flow™ RViz: launches rviz connected to the flow
 - MOV.AI Flow™ Simulator: launches Ignition simulator connected to the flow
 
-## CLI
+### CLI
 Installing the MOV.AI Flow™ package will provide a few command line tools to control the cluster of containers running the flow:
 - `movai-flow-launch`: launch this script to launch the needed services and then open a browser connected to the flow
 - `movai-flow-stop`: stop all flow services
@@ -135,7 +131,6 @@ Installing the MOV.AI Flow™ package will provide a few command line tools to c
 - `movai-flow-simulator`: launch Ignition simulator connected to the flow
 
 
----
 ## MOV.AI Flow™ components
 
 MOV.AI Flow™ initiates a set of services running as a *docker-compose* cluster, namely:
@@ -154,14 +149,13 @@ MOV.AI Flow™ initiates a set of services running as a *docker-compose* cluster
 > Run `docker container ls` to  check current running containers
 
 
----
 ## Accessing the MOV.AI Flow™ IDE
 After starting MOV.AI Flow™, you can interact with it via a browser using the web interface
 
 Once the services have started up, you can log in to the web interface and try to run some tasks.
 The webserver is available at: http://localhost:8080. The default account has both the username and the password: `movai`.
 
-## Accessing ROS *terminal*
+## Executing ROS commands
 To get access to `rostopic` and `rosbag` commands, or to install/build more ros-packages, access the spawner container terminal by typing: `docker exec -it spawner-robot1 bash`
 
 ```
@@ -193,6 +187,9 @@ Welcome! Have fun!
 movai@8245cb518b06:~/app$
 ```
 
+## Documentation
+Follow our [documentation](https://flow.mov.ai/docs) to get detailed information on getting familiar with the platform and how to setup your flows.
+
 ---
 
 ## Runing from source code
@@ -218,12 +215,12 @@ Now you can start core services, by `cd`ing into the folder where `docker-compos
 
 > The recommeded setup is to have an NVidia GPU,  but still an integrated Intel GPU can also work with lower performance
 
-##### With Nvidia GPU acceleration :
+#### With Nvidia GPU acceleration :
 
     xhost +local:docker
     docker-compose -f docker-compose-nvidia.yml up ros-tools
 
-##### Without GPU acceleration :
+#### Without GPU acceleration :
 
     xhost +local:docker
     docker-compose -f docker-compose.yml up ros-tools
@@ -235,12 +232,12 @@ First of all be aware that the Simulator is based on the containerized [Ignition
 
 After starting MOV.AI Flow™, you can launch Ignition Fortress :
 
-##### With Nvidia GPU acceleration :
+#### With Nvidia GPU acceleration :
 
     xhost +local:docker
     docker-compose -f docker-compose-nvidia.yml up simulator
 
-##### Without GPU acceleration :
+#### Without GPU acceleration :
 
     xhost +local:docker
     docker-compose -f docker-compose.yml up simulator
