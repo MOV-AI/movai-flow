@@ -101,7 +101,7 @@ sudo systemctl restart docker
 
 #### Option B
 - Open a terminal
-- Down the latest debian file
+- Download the latest debian file
 - Install it. Enter your user password if there is a promt.
 
 ```shell
