@@ -4,9 +4,9 @@
 
 <p align="center">
   <a href="https://github.com/MOV-AI/movai-flow/releases/latest"><img alt="CircleCI" src="https://img.shields.io/github/release/MOV-AI/movai-flow.svg?label=current+release"></a>
-  <a href="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnGitRelease.yml"><img alt="Deploy - To Nexus On Github Release" src="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnGitRelease.yml/badge.svg"></a>
-  <a href="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnMergeMain.yml"><img alt="Deploy - On branch main/release Push" src="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnMergeMain.yml/badge.svg"></a>
-  <a href="https://github.com/MOV-AI/movai-flow/actions/workflows/TestOnPR.yml"><img alt="CI - On main/dev/release branches" src="https://github.com/MOV-AI/movai-flow/actions/workflows/TestOnPR.yml/badge.svg"></a>
+  <a href="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnGitRelease.yml"><img alt="Official Release" src="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnGitRelease.yml/badge.svg"></a>
+  <a href="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnMergeMain.yml"><img alt="Pre Release" src="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnMergeMain.yml/badge.svg"></a>
+  <a href="https://github.com/MOV-AI/movai-flow/actions/workflows/TestOnPR.yml"><img alt="PR Checks" src="https://github.com/MOV-AI/movai-flow/actions/workflows/TestOnPR.yml/badge.svg"></a>
   <a href="https://twitter.com/MovAIRobots"><img alt="Twitter" src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"></a>
 
 </p>
