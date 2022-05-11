@@ -1,4 +1,4 @@
-name: "CI - On main/dev/release branches"
+name: "PR Checks"
 on:
   pull_request:
     branches:
