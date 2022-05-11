@@ -1,4 +1,4 @@
-name: "Deploy - On branch main/release Push"
+name: "Pre Release"
 on:
   push:
     branches:
