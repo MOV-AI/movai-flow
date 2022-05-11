@@ -1,4 +1,4 @@
-name: "Deploy - To Nexus On Github Release"
+name: "Official Release"
 on:
   release:
     types: [released]

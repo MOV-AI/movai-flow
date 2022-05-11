@@ -1,4 +1,4 @@
-name: "CI - On main/dev/release branches"
+name: "PR Checks"
 on:
   pull_request:
     branches:
@@ -144,7 +144,7 @@ jobs:
           "https://$NEXUS_ENDPOINT/repository/$NEXUS_REPO/"
 
     - name: Store artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: packages
         path: artifacts/*
