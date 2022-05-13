@@ -137,14 +137,14 @@ Installing the MOV.AI Flow™ package will provide a few command line tools to c
 
 MOV.AI Flow™ initiates a set of services running as a *docker-compose* cluster, namely:
 
- - redis-master: master DB of the cluster
- - redis-local: local DB of the cluster
- - backend: web service application
- - ros-master: ROS core service
- - spawner: Flow orchestrator of ROS nodes
- - haproxy: web proxy
- - simulator: Ignition Fortress container with graphical capabilities enabled
- - ros-tools: rviz container with graphical capabilities enabled
+ - [redis-master](https://github.com/MOV-AI/containers-redis2): Master DB of the cluster
+ - [redis-local](https://github.com/MOV-AI/containers-redis2): Local DB of the cluster
+ - [backend](https://github.com/MOV-AI/backend): Web service application
+ - [ros-master](https://github.com/MOV-AI/containers-ros-master): ROS core service
+ - [spawner](https://github.com/MOV-AI/containers-spawner-base): Flow orchestrator of ROS and MOV.AI nodes
+ - [haproxy](https://github.com/MOV-AI/containers-haproxy): Web proxy
+ - [simulator](https://github.com/MOV-AI/containers-ign-simulator): Ignition Fortress container with graphical capabilities enabled
+ - [ros-tools](https://github.com/MOV-AI/containers-ros-tools): RVIZ container with graphical capabilities enabled
 
 > Some directories in the containers are mounted, which means that their contents are synchronized between your computer (host) and the container.
 
