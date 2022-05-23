@@ -91,10 +91,8 @@ services:
       options:
         mode: "non-blocking"
         max-buffer-size: "4m"
-    networks:
-      - private
-    ports:
-      - "6379:6379"
+    network_mode: "host"
+    command: --port 6379
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/6379"]
       start_period: 3s
@@ -116,10 +114,8 @@ services:
       options:
         mode: "non-blocking"
         max-buffer-size: "4m"
-    networks:
-      - private
-    ports:
-      - "6380:6379"
+    network_mode: "host"
+    command: --port 6380
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/6380"]
       start_period: 3s
@@ -139,8 +135,7 @@ services:
       options:
         mode: "non-blocking"
         max-buffer-size: "4m"
-    networks:
-      - private
+    network_mode: "host"
     depends_on:
       <<: *movai-common-depend
     environment:
@@ -161,8 +156,7 @@ services:
   ros-master:
     image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-master-noetic:v1.0.0
     privileged: true
-    networks:
-      - private
+    network_mode: "host"
     depends_on:
       backend:
         condition: service_healthy
@@ -184,8 +178,7 @@ services:
     <<: *movai-common
     image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-ign-noetic:v3.0.5
     privileged: true
-    networks:
-      - private
+    network_mode: "host"
     depends_on:
       <<: *movai-common-depend
       backend:
@@ -269,8 +262,7 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - $XAUTH:$XAUTH
       - ./rviz/:/headless/.rviz/:rw
-    networks:
-      - private
+    network_mode: "host"
     privileged: true
     tty: true
     entrypoint: /bin/bash
@@ -287,16 +279,12 @@ services:
       options:
         mode: "non-blocking"
         max-buffer-size: "4m"
-    networks:
-      - private
-      - proxy
+    network_mode: "host"
+    command: --port "${STUDIO_HTTP_PORT:-8080}:80" "${STUDIO_HTTPS_PORT:-8443}:443"
     volumes:
       - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
       - ./haproxy/503-movai.http:/etc/503-movai.http:ro
       - ./haproxy/proxy.pem:/etc/ssl/private/proxy.pem:ro
-    ports:
-      - "${STUDIO_HTTP_PORT:-8080}:80"
-      - "${STUDIO_HTTPS_PORT:-8443}:443"
     environment:
       - SPAWNER_PORTS="bind :11411\\n\\tbind :9090"
     restart: unless-stopped
@@ -304,9 +292,3 @@ services:
 volumes:
   redis-master-flow-volume:
   redis-local-flow-volume:
-
-networks:
-  proxy:
-    name: flow-proxy
-  private:
-    name: flow-private
