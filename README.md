@@ -7,6 +7,7 @@
   <a href="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnGitRelease.yml"><img alt="Official Release" src="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnGitRelease.yml/badge.svg"></a>
   <a href="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnMergeMain.yml"><img alt="Pre Release" src="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnMergeMain.yml/badge.svg"></a>
   <a href="https://github.com/MOV-AI/movai-flow/actions/workflows/TestOnPR.yml"><img alt="PR Checks" src="https://github.com/MOV-AI/movai-flow/actions/workflows/TestOnPR.yml/badge.svg"></a>
+  <a href="https://sonarcloud.io/summary/new_code?id=MOV-AI_movai-flow"><img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=MOV-AI_movai-flow&metric=alert_status"></a>
   <a href="https://twitter.com/MovAIRobots"><img alt="Twitter" src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"></a>
 
 </p>
@@ -265,3 +266,6 @@ The best way to do it is to:
 To stop and delete containers, delete volumes with database data and downloaded images, run:
 
     docker-compose down --volumes --rmi all
+
+## MOV.AI Developer Tools
+A python package build to facilitate development when using MOV.AI. The tool can be used to, but not limited to, expose the ros topics to the host as well as export/import MOV.AI metadata. Please follow [this link](https://github.com/MOV-AI/movai-developer-tools) for more detailed documentation.
