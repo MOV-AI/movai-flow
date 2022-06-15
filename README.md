@@ -143,7 +143,7 @@ MOV.AI Flow™ initiates a set of services running as a *docker-compose* cluster
  - [backend](https://github.com/MOV-AI/backend): Web service application
  - [ros-master](https://github.com/MOV-AI/containers-ros-master): ROS core service
  - [spawner](https://github.com/MOV-AI/containers-spawner-base): Flow orchestrator of ROS and MOV.AI nodes
- - [haproxy](https://github.com/MOV-AI/containers-haproxy): Web proxy
+ - [haproxy](https://github.com/docker-library/haproxy): Web proxy
  - [simulator](https://github.com/MOV-AI/containers-ign-simulator): Ignition Fortress container with graphical capabilities enabled
  - [ros-tools](https://github.com/MOV-AI/containers-ros-tools): RVIZ container with graphical capabilities enabled
 
