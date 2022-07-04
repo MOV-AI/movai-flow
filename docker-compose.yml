@@ -186,6 +186,7 @@ services:
     <<: *movai-common
     image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-ign-noetic:v3.0.5
     privileged: true
+    user: "0:0"
     networks:
       - private
     depends_on:
@@ -206,6 +207,7 @@ services:
         max-buffer-size: "4m"
     volumes:
       - /dev:/dev
+      - /var/run/docker.sock:/var/run/docker.sock
       - /sys/devices:/sys/devices
       - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
       - /run/movai:/var/run/movai
