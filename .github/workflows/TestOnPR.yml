@@ -1,4 +1,4 @@
-name: "CI - On main/dev/release branches"
+name: "PR Checks"
 on:
   pull_request:
     branches:
@@ -50,7 +50,7 @@ jobs:
         sudo chown 1000:1000 ./{logs,shared,userspace,models_database} -R
 
     - name: run docker-compose cluster
-      uses: isbang/compose-action@v1.0.0
+      uses: isbang/compose-action@v1.1.0
       with:
         compose-file: './docker-compose.yml'
         down-flags: '--volumes'
@@ -66,7 +66,7 @@ jobs:
           if [ $status_code == 200 ]; then
             break
           fi
-          echo "Waiting for MOVAI Flow availability (ret:$status_code)"
+          echo "Waiting for MOV.AI Flow™ availability (ret:$status_code)"
           sleep 10
         done
         [ $status_code == 200 ] && exit 0
@@ -142,3 +142,9 @@ jobs:
           -H "Content-Type: multipart/form-data" \
           --data-binary "@$FILE_LOCATION" \
           "https://$NEXUS_ENDPOINT/repository/$NEXUS_REPO/"
+
+    - name: Store artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: packages
+        path: artifacts/*

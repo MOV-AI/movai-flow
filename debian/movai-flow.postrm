@@ -5,20 +5,47 @@ CONF_BASE=/etc/$SERVICE_NAME
 APP_PATH=/usr/share/$SERVICE_NAME
 DOCKER_BIN=$(which docker || echo /usr/bin/docker)
 
+Output() {
+  # Prepare base message
+  Message="MOV.AI Flow™ postrm: $1"
+
+  # Output the message even if a blank message (make output nice)
+  echo "$Message"
+
+  # Return if blank.
+  if [ "$1" = "" ]; then
+    return
+  fi
+
+  # Output to log
+  if which journalctl > /dev/null 2>&1
+  then
+    echo MESSAGE="$Message" | logger --journald
+  else
+    echo "$Message" | logger
+  fi
+}
+
 # Remove the package (including its configuration files)
 if [ "$1" = "purge" ]; then
     test -d ${CONF_BASE} && rm -r ${CONF_BASE} || true
+
+    Output "remove all created folders"
+    find /home -type d -name "MovaiFlow" -exec rm -rf {} \; 2>/dev/null
+
     # remove only what are volumes created for movai-flow
     volumes=$($DOCKER_BIN volume ls -q | grep $SERVICE_NAME)
     if [ -n "$volumes" ]
     then
-        $DOCKER_BIN volume rm $volumes
+        Output "removing docker volumes"
+        $DOCKER_BIN volume rm $volumes 2>/dev/null
     fi
-    
+
     images=$($DOCKER_BIN images | awk '$1 ~ "mov.ai" { print $3 }')
     if [ -n "$images" ]
     then
-        $DOCKER_BIN rmi $images
+        Output "removing docker images"
+        $DOCKER_BIN rmi $images 2>/dev/null
     fi
     test -d ${APP_PATH} && rm -r ${APP_PATH} || true
 fi

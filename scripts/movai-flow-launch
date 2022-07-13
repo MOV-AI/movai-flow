@@ -5,11 +5,12 @@ APP_PATH=${APP_PATH:-/usr/share/$SERVICE_NAME}
 CONFIG_PATH=${CONFIG_PATH:-/etc/$SERVICE_NAME}
 DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
 DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
+DOCKER_COMPOSE_UP_OPTIONS=${DOCKER_COMPOSE_UP_OPTIONS:---no-recreate}
 APP_URL="http://localhost:8080/api/v1/apps/mov-fe-app-ide-ce/"
 
 Output() {
   # Prepare base message
-  Message="MOV.AI Flow $SCRIPTNAME: $1"
+  Message="MOV.AI Flow™ $SCRIPTNAME: $1"
 
   # Output the message even if a blank message (make output nice)
   echo "$Message"
@@ -28,17 +29,11 @@ Output() {
   fi
 }
 
-StopServices() {
-  Output "Stopping services..."
-  Output "Terminal will close on completion, wait or press CTRL+C on failure"
-  $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF stop
-}
-
 FilterRunningService() {
-  $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF ps --services --filter "status=running" | grep "$1"
+  $DOCKER_COMPOSE_BIN -f "$DOCKER_COMPOSE_CONF" ps --services --filter "status=running" | grep "$1"
 }
 
-Output "This terminal window will verify all MOVAI Flow services are running \
+Output "This terminal window will verify all MOV.AI Flow™ services are running \
 and then launch the web application"
 Output "(U) [^_^] (U)"
 
@@ -52,10 +47,10 @@ fi
 pushd "$APP_PATH" || exit
 
 Output "Downloading images"
-$DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF pull
+$DOCKER_COMPOSE_BIN -f "$DOCKER_COMPOSE_CONF" pull
 
 Output "Starting services"
-$DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF up -d
+$DOCKER_COMPOSE_BIN -f "$DOCKER_COMPOSE_CONF" up -d "$DOCKER_COMPOSE_UP_OPTIONS"
 
 while [[ -z $(FilterRunningService spawner) ]]; do
   Output "waiting for spawner"

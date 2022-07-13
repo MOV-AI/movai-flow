@@ -1,4 +1,4 @@
-name: "Deploy - On branch main/release Push"
+name: "Pre Release"
 on:
   push:
     branches:
@@ -42,8 +42,8 @@ jobs:
 
     - name: Pack debian
       run: |
-        git config --global user.name '${{ secrets.RAISE_BOT_COMMIT_USER }}'
-        git config --global user.email '${{ secrets.RAISE_BOT_COMMIT_MAIL }}'
+        git config --global user.name ${{ secrets.RAISE_BOT_COMMIT_USER }}
+        git config --global user.email ${{ secrets.RAISE_BOT_COMMIT_MAIL }}
 
         apt-get update
         apt-get install -y devscripts equivs git-buildpackage
@@ -65,10 +65,11 @@ jobs:
         cp ../*.deb artifacts
 
     - name: Raise App version
-      run: |
-        # commit of debian/changelog previously done
-        git pull
-        git push --force-with-lease
+      uses: CasperWA/push-protected@v2
+      with:
+        token: ${{ secrets.RAISE_BOT_COMMIT_PASSWORD }}
+        branch: ${{ github.ref_name }}
+        unprotect_reviews: true
 
     - name: Publish to Nexus ppa-testing
       run: |

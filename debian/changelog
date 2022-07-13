@@ -1,4 +1,4 @@
-movai-flow (1.2.0-0) UNRELEASED; urgency=medium
+movai-flow (1.2.0-6) UNRELEASED; urgency=medium
 
   [ Alex Fernandes ]
   *
@@ -53,4 +53,19 @@ movai-flow (1.2.0-0) UNRELEASED; urgency=medium
   * fix health check
   * fix web authentication
 
- -- Alex Fernandes <afe@bffa3bc3c99e>  Thu, 21 Apr 2022 23:37:06 +0000
+  [ root ]
+  * UNRELEASED
+
+  [ Mithun Kinarullathil ]
+  * Pre-release 1.2.0-2 (#112)
+
+  [ Alex Fernandes ]
+  * hotfix: uses action to push version raise
+
+  [ root ]
+  * UNRELEASED
+  * UNRELEASED
+  * UNRELEASED
+  * UNRELEASED
+
+ -- root <root@e06b3b7ad8ab>  Wed, 11 May 2022 14:35:41 +0000
