@@ -172,10 +172,8 @@ services:
       options:
         mode: "non-blocking"
         max-buffer-size: "4m"
-    ports:
-      - "${STUDIO_ROS_MASTER_PORT:-11311}:11311"
     healthcheck:
-      test: ["CMD", "echo", ">", "/dev/tcp/localhost/11311"]
+      test: ["CMD", "rostopic", "list", "|", "grep", "-w", "'/rosout'", ">>", "/dev/null"]
       start_period: 3s
       interval: 10s
       timeout: 2s
