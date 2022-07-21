@@ -68,8 +68,8 @@ x-movai-common:
     IGN_PARTITION: ${IGN_PARTITION:?missing IGN_PARTITION ENV var}
     IGNITION_VERSION: fortress
     APT_AUTOINSTALL: "once"
-    APT_KEYS_URL_LIST: "https://artifacts.cloud.mov.ai/repository/movai-applications/gpg"
-    APT_REPOS_LIST: "deb [arch=all] https://artifacts.cloud.mov.ai/repository/ppa-testing testing main"
+    APT_KEYS_URL_LIST: "https://artifacts.aws.cloud.mov.ai/repository/movai-applications/gpg"
+    APT_REPOS_LIST: "deb [arch=all] https://artifacts.aws.cloud.mov.ai/repository/ppa-public main main"
   volumes:
     - ./userspace:/opt/mov.ai/user
     - ./shared:/opt/mov.ai/shared
@@ -85,6 +85,7 @@ x-movai-common:
 services:
   redis-master:
     image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/redis2:v1.0.6
+    build: git@github.com:MOV-AI/containers-redis2.git#v1.0.6
     container_name: redis-master-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -110,6 +111,7 @@ services:
 
   redis-local:
     image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/redis2:v1.0.6
+    build: git@github.com:MOV-AI/containers-redis2.git#v1.0.6
     container_name: redis-local-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -132,7 +134,10 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/backend-noetic:1.0.0.23
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/backend-noetic:1.0.0.24
+    # build:
+    #   context: git@github.com:MOV-AI/backend.git#1.0.0.24
+    #   dockerfile: docker/noetic/Dockerfile
     container_name: backend-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -159,7 +164,10 @@ services:
     restart: unless-stopped
 
   ros-master:
-    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/ros-master-noetic:v1.0.0
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/ros-master-noetic:v1.0.1
+    build:
+      context: git@github.com:MOV-AI/containers-ros-master.git#v1.0.1
+      dockerfile: noetic/Dockerfile
     privileged: true
     networks:
       - private
@@ -184,7 +192,10 @@ services:
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/spawner-ign-noetic:v3.0.5
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/spawner-ign-noetic:v3.0.6
+    build:
+      context: git@github.com:MOV-AI/containers-spawner-base.git#v3.0.6
+      dockerfile: docker/noetic/Dockerfile
     privileged: true
     networks:
       - private
@@ -221,6 +232,9 @@ services:
 
   simulator:
     image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/ignition-gazebo:v1.0.4
+    build:
+      context: git@github.com:MOV-AI/containers-ign-simulator.git#v1.0.4
+      dockerfile: gazebo/Dockerfile
     container_name: simulator-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
