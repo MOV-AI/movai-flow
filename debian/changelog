@@ -1,4 +1,4 @@
-movai-flow (1.2.0-6) UNRELEASED; urgency=medium
+movai-flow (1.2.0-7) UNRELEASED; urgency=medium
 
   [ Alex Fernandes ]
   *
@@ -67,5 +67,6 @@ movai-flow (1.2.0-6) UNRELEASED; urgency=medium
   * UNRELEASED
   * UNRELEASED
   * UNRELEASED
+  * UNRELEASED
 
- -- root <root@e06b3b7ad8ab>  Wed, 11 May 2022 14:35:41 +0000
+ -- root <root@da780be7dfca>  Thu, 21 Jul 2022 12:33:16 +0000
