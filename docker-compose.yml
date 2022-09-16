@@ -301,6 +301,26 @@ services:
       - SPAWNER_PORTS="bind :11411\\n\\tbind :9090"
     restart: unless-stopped
 
+  lsp:
+    image: lsp-dev-env:latest
+    container_name: lsp-$MOVAI_DEVICE_NAME
+    logging:
+      driver: "journald"
+      options:
+        mode: "non-blocking"
+        max-buffer-size: "4m"
+    networks:
+      - private
+    ports:
+      - "80:3333"
+    healthcheck:
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/3333"]
+      start_period: 5s
+      interval: 10s
+      timeout: 2s
+      retries: 3
+    restart: unless-stopped
+
 volumes:
   redis-master-flow-volume:
   redis-local-flow-volume:
