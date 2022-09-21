@@ -82,7 +82,7 @@ jobs:
     name: "Pack Checks"
     runs-on: ubuntu-20.04
     container:
-      image: registry.cloud.mov.ai/devops/ros-buildtools-noetic:main
+      image: registry.cloud.mov.ai/qa/ros-buildtools-noetic:v1.0.14
       options: --user root
       credentials:
         username: ${{secrets.PORTUS_APP_USER}}
