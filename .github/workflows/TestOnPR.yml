@@ -111,6 +111,7 @@ jobs:
 
     - name: Pack debian
       run: |
+        git config --global --add safe.directory $(pwd)
         git config --global user.name '${{ secrets.RAISE_BOT_COMMIT_USER }}'
         git config --global user.email '${{ secrets.RAISE_BOT_COMMIT_MAIL }}'
 
