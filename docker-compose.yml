@@ -312,13 +312,15 @@ services:
     networks:
       - private
     ports:
-      - "80:3333"
+      - "3333:3333"
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/3333"]
       start_period: 5s
       interval: 10s
       timeout: 2s
       retries: 3
+    command: [ "yarn", "start:ext", "-sp", "lsp/languageServer", "-p", "3333" ]
+
     restart: unless-stopped
 
 volumes:
