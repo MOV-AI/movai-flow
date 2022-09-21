@@ -173,7 +173,7 @@ services:
         mode: "non-blocking"
         max-buffer-size: "4m"
     healthcheck:
-      test: ["CMD", "rostopic", "list", "|", "grep", "-w", "'/rosout'", ">>", "/dev/null"]
+      test: ["CMD-SHELL", ". /opt/ros/noetic/setup.sh && /opt/ros/noetic/bin/rostopic list | grep -w '/rosout' >> /dev/null"]
       start_period: 3s
       interval: 10s
       timeout: 2s
