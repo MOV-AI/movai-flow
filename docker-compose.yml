@@ -302,7 +302,7 @@ services:
     restart: unless-stopped
 
   lsp:
-    image: lsp-dev-env:latest
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/lsp:v0.0.1
     container_name: lsp-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
