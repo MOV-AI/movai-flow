@@ -2,11 +2,12 @@
 SCRIPTNAME=SIMULATOR
 SERVICE_NAME=movai-flow
 APP_PATH=${APP_PATH:-/usr/share/$SERVICE_NAME}
-CONFIG_PATH=${CONFIG_PATH:-/etc/$SERVICE_NAME}
-SERVICE_CONF=$APP_PATH/docker-compose.yml
-SERVICE_NVIDIA_CONF=$APP_PATH/docker-compose-nvidia.yml
+CONFIG_PATH=${CONFIG_PATH:-/$APP_PATH/config}
+DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
+DOCKER_COMPOSE_CONF_MHOST=$APP_PATH/docker-compose-host.yml
+DOCKER_COMPOSE_NVIDIA_CONF=$APP_PATH/docker-compose-nvidia.yml
+DOCKER_COMPOSE_NVIDIA_CONF_MHOST=$APP_PATH/docker-compose-nvidia-host.yml
 DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
-
 
 Output() {
   # Prepare base message
@@ -23,7 +24,7 @@ Output() {
   # Output to log
   if which journalctl > /dev/null 2>&1
   then
-    echo MESSAGE="$Message" | logger --journald
+    echo MESSAGE="$Message" | head -n 1 | logger --journald
   else
     echo "$Message" | logger
   fi
@@ -39,8 +40,10 @@ if [ ! -e "${user_documents_path}/MovaiFlow" ]; then
   Output "User and models folder ${user_documents_path}/MovaiFlow"
 fi
 
-Output "This terminal window will verify all MOV.AI Flow™ services are running and then launch the Ignition Simulator GUI application"
-Output "(U) [^_^] (U)"
+Output "This terminal window will verify all MOV.AI Flow™ services are running and then launch the Ignition Simulator GUI application
+
+(U) [^_^] (U)
+"
 
 if [ -f "$CONFIG_PATH/config.env" ]; then
   Output "Sourcing configuration"
@@ -49,11 +52,19 @@ else
   Output "No configuration found"
 fi
 
+if [ "$NETWORK_MODE" = "host" ]; then
+  compose_conf="$DOCKER_COMPOSE_CONF_MHOST"
+  compose_conf_nvidia="$DOCKER_COMPOSE_NVIDIA_CONF_MHOST"
+else
+  compose_conf="$DOCKER_COMPOSE_CONF"
+  compose_conf_nvidia="$DOCKER_COMPOSE_NVIDIA_CONF"
+fi
+
 xhost +local:docker
 if [ "$HAVE_NVIDIA" = "1" ]; then
   Output "Launching simulator for Nvidia GPU"
-  exec $DOCKER_COMPOSE_BIN -f "$SERVICE_NVIDIA_CONF" up simulator
+  exec $DOCKER_COMPOSE_BIN -f "$compose_conf_nvidia" up simulator
 else
   Output "Launching simulator for integrated GPU"
-  exec $DOCKER_COMPOSE_BIN -f "$SERVICE_CONF" up simulator
+  exec $DOCKER_COMPOSE_BIN -f "$compose_conf" up simulator
 fi

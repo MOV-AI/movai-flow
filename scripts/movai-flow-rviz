@@ -2,9 +2,11 @@
 SCRIPTNAME=RVIZ
 SERVICE_NAME=movai-flow
 APP_PATH=${APP_PATH:-/usr/share/$SERVICE_NAME}
-CONFIG_PATH=${CONFIG_PATH:-/etc/$SERVICE_NAME}
-SERVICE_CONF=$APP_PATH/docker-compose.yml
-SERVICE_NVIDIA_CONF=$APP_PATH/docker-compose-nvidia.yml
+CONFIG_PATH=${CONFIG_PATH:-/$APP_PATH/config}
+DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
+DOCKER_COMPOSE_CONF_MHOST=$APP_PATH/docker-compose-host.yml
+DOCKER_COMPOSE_NVIDIA_CONF=$APP_PATH/docker-compose-nvidia.yml
+DOCKER_COMPOSE_NVIDIA_CONF_MHOST=$APP_PATH/docker-compose-nvidia-host.yml
 DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
 
 Output() {
@@ -22,18 +24,20 @@ Output() {
   # Output to log
   if which journalctl > /dev/null 2>&1
   then
-    echo MESSAGE="$Message" | logger --journald
+    echo MESSAGE="$Message" | head -n 1 | logger --journald
   else
     echo "$Message" | logger
   fi
 }
 
 FilterRunningService() {
-  $DOCKER_COMPOSE_BIN -f $SERVICE_CONF ps --services --filter "status=running" | grep "$1"
+  $DOCKER_COMPOSE_BIN -f "$compose_conf" ps --services --filter "status=running" | grep "$1"
 }
 
-Output "This terminal window will verify all MOV.AI Flow™ services are running and then launch the RVIZ application"
-Output "(U) [^_^] (U)"
+Output "This terminal window will verify all MOV.AI Flow™ services are running and then launch the RVIZ application
+
+(U) [^_^] (U)
+"
 
 if [ -f "$CONFIG_PATH/config.env" ]; then
   Output "Sourcing configuration"
@@ -42,9 +46,17 @@ else
   Output "No configuration found"
 fi
 
+if [ "$NETWORK_MODE" = "host" ]; then
+  compose_conf="$DOCKER_COMPOSE_CONF_MHOST"
+  compose_conf_nvidia="$DOCKER_COMPOSE_NVIDIA_CONF_MHOST"
+else
+  compose_conf="$DOCKER_COMPOSE_CONF"
+  compose_conf_nvidia="$DOCKER_COMPOSE_NVIDIA_CONF"
+fi
+
 xhost +local:docker
 Output "Launching ros-master"
-$DOCKER_COMPOSE_BIN -f "$SERVICE_CONF" up -d ros-master
+$DOCKER_COMPOSE_BIN -f "$compose_conf" up -d ros-master
 
 while [[ -z $(FilterRunningService ros-master) ]]; do
   Output "waiting for ros-master"
@@ -53,8 +65,8 @@ done
 
 if [ "$HAVE_NVIDIA" = "1" ]; then
   Output "Launching RViz for Nvidia GPU"
-  exec $DOCKER_COMPOSE_BIN -f "$SERVICE_NVIDIA_CONF" up ros-tools
+  exec $DOCKER_COMPOSE_BIN -f "$compose_conf_nvidia" up ros-tools
 else
   Output "Launching RViz for integrated GPU"
-  exec $DOCKER_COMPOSE_BIN -f "$SERVICE_CONF" up ros-tools
+  exec $DOCKER_COMPOSE_BIN -f "$compose_conf" up ros-tools
 fi

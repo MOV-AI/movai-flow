@@ -1,5 +1,5 @@
 #!/bin/bash
-SCRIPTNAME=Stopper
+SCRIPTNAME=Reset
 SERVICE_NAME=movai-flow
 APP_PATH=${APP_PATH:-/usr/share/$SERVICE_NAME}
 CONFIG_PATH=${CONFIG_PATH:-/$APP_PATH/config}
@@ -31,7 +31,7 @@ Output() {
 }
 
 StopServices() {
-  Output "Stopping services...
+  Output "Stopping containers and removing containers, networks, volumes, and images...
 
   (U) [^_^] (U)
 
@@ -43,7 +43,9 @@ StopServices() {
     compose_conf="$DOCKER_COMPOSE_CONF"
   fi
 
-  $DOCKER_COMPOSE_BIN -f "$compose_conf" stop
+  sed -i -e "/^NETWORK_MODE=/s/=.*/=/" "$CONFIG_PATH/config.env"
+
+  $DOCKER_COMPOSE_BIN -f "$compose_conf" down -v --remove-orphans -t 300
 }
 
 if [ -f "$CONFIG_PATH/config.env" ]; then

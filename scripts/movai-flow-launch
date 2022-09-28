@@ -2,11 +2,13 @@
 SCRIPTNAME=Launcher
 SERVICE_NAME=movai-flow
 APP_PATH=${APP_PATH:-/usr/share/$SERVICE_NAME}
-CONFIG_PATH=${CONFIG_PATH:-/etc/$SERVICE_NAME}
+CONFIG_PATH=${CONFIG_PATH:-/$APP_PATH/config}
+
 DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
+DOCKER_COMPOSE_CONF_MHOST=$APP_PATH/docker-compose-host.yml
+
 DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
 DOCKER_COMPOSE_UP_OPTIONS=${DOCKER_COMPOSE_UP_OPTIONS:---no-recreate}
-APP_URL="http://localhost:8080/api/v1/apps/mov-fe-app-ide-ce/"
 
 Output() {
   # Prepare base message
@@ -23,44 +25,75 @@ Output() {
   # Output to log
   if which journalctl > /dev/null 2>&1
   then
-    echo MESSAGE="$Message" | logger --journald
+    echo MESSAGE="$Message" | head -n 1 | logger --journald
   else
     echo "$Message" | logger
   fi
 }
 
 FilterRunningService() {
-  $DOCKER_COMPOSE_BIN -f "$DOCKER_COMPOSE_CONF" ps --services --filter "status=running" | grep "$1"
+  $DOCKER_COMPOSE_BIN -f "$compose_conf" ps --services --filter "status=running" | grep "$1"
 }
 
-Output "This terminal window will verify all MOV.AI Flow™ services are running \
-and then launch the web application"
-Output "(U) [^_^] (U)"
+Output "This terminal window will verify all MOV.AI Flow™ services are running
+and then launch the web application
 
-if [ -f $CONFIG_PATH/config.env ]; then
-  Output "Sourcing fleet configuration"
-  . $CONFIG_PATH/config.env
+(U) [^_^] (U)
+
+"
+
+if [ -f "$CONFIG_PATH/config.env" ]; then
+  . "$CONFIG_PATH/config.env"
 else
-  Output "No fleet configuration found"
+  Output "No configuration found"
+fi
+
+if [ "$NETWORK_MODE" = "" ]; then
+  Output "
+
+  MOV.AI Flow™ can either run in an isolated docker network or use the host's networking interfaces
+   - isolated network is recommended when working with a single host
+   - host network is recommended when working with multiple hosts (RPi, sensors, ...) which will need to access MOV.AI Flow™ containers
+
+  If you don't know what this is all about just press ENTER
+
+  See doc: https://docs.docker.com/network/host/.
+  "
+  while true; do
+    read -p "Do you want to run MOV.AI Flow™ in isolated network [Y/n]?" yn
+      case ${yn:-Y} in
+        [Yy]* ) NETWORK_MODE="bridge"; break;;
+        [Nn]* ) NETWORK_MODE="host"; break;;
+      esac
+  done
+  sed -i -e "/^NETWORK_MODE=/s/=.*/=$NETWORK_MODE/" "$CONFIG_PATH/config.env"
+fi
+
+if [ "$NETWORK_MODE" = "host" ]; then
+  compose_conf="$DOCKER_COMPOSE_CONF_MHOST"
+  APP_URL="http://localhost:5004/api/v1/apps/mov-fe-app-ide-ce/"
+else
+  compose_conf="$DOCKER_COMPOSE_CONF"
+  APP_URL="http://localhost:8080/api/v1/apps/mov-fe-app-ide-ce/"
 fi
 
 pushd "$APP_PATH" || exit
 
 Output "Downloading images"
-$DOCKER_COMPOSE_BIN -f "$DOCKER_COMPOSE_CONF" pull
+$DOCKER_COMPOSE_BIN -f "$compose_conf" pull
 
 Output "Starting services"
-$DOCKER_COMPOSE_BIN -f "$DOCKER_COMPOSE_CONF" up -d "$DOCKER_COMPOSE_UP_OPTIONS"
+$DOCKER_COMPOSE_BIN -f "$compose_conf" up -d "$DOCKER_COMPOSE_UP_OPTIONS"
 
 while [[ -z $(FilterRunningService spawner) ]]; do
   Output "waiting for spawner"
   sleep 5
 done
 
-while [[ -z $( $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF exec -u movai spawner bash -c 'pgrep -f "/usr/bin/python3 -m flow_initiator"') ]]
+while [[ -z $( $DOCKER_COMPOSE_BIN -f "$compose_conf" exec -u movai spawner bash -c 'pgrep -f "/usr/bin/python3 -m flow_initiator"') ]]
 do
-    sleep 10
-    Output "loading ..."
+  sleep 10
+  Output "loading ..."
 done
 
 # Symlink userspace and models_database to ~/Documents/MovaiFlow
