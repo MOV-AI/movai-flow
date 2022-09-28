@@ -11,7 +11,7 @@ jobs:
 
   Lint-Project:
     timeout-minutes: 30
-    name: "Sanity checks"
+    name: "Linting checks"
     runs-on: ubuntu-20.04
     steps:
     - name: Checkout
@@ -48,7 +48,7 @@ jobs:
 
   Test-Project:
     timeout-minutes: 30
-    name: "Sanity checks"
+    name: "Cluster sanity checks"
     runs-on: ubuntu-20.04
     needs: [ Lint-Project ]
     steps:
@@ -94,7 +94,7 @@ jobs:
 
   Test-Project-HostMode:
     timeout-minutes: 30
-    name: "Sanity checks"
+    name: "Host Mode Cluster checks"
     runs-on: ubuntu-20.04
     needs: [ Lint-Project ]
     steps:
