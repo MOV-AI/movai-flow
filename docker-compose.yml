@@ -301,6 +301,24 @@ services:
       - SPAWNER_PORTS="bind :11411\\n\\tbind :9090"
     restart: unless-stopped
 
+  logs:
+    container_name: logs-$MOVAI_DEVICE_NAME
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 9999:8080
+    networks:
+      - proxy
+    environment:
+      DOZZLE_NO_ANALYTICS: "true"
+      DOZZLE_FILTER: "name=robot1"
+  monitoring:
+    container_name: monitoring-$MOVAI_DEVICE_NAME
+    image: ${MOVAI_REGISTRY:-registry.cloud.mov.ai}/qa/monitoring:2.2.2022012
+    networks:
+      - private
+
 volumes:
   redis-master-flow-volume:
   redis-local-flow-volume:
