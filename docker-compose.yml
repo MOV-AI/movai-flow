@@ -146,12 +146,12 @@ services:
     environment:
       <<: *movai-common-env
       APT_INSTALL_LIST: "$STUDIO_APP_PACKAGES"
-      HTTP_PORT: ${STUDIO_WEB_PORT}
+      HTTP_PORT: ${STUDIO_HTTP_PORT}
       DEFAULT_USERNAME: movai
       DEFAULT_PASSWORD: movai
       JWT_SECRET_KEY: ${JWT_SECRET_KEY:?missing JWT_SECRET_KEY ENV var}
     healthcheck:
-      test: ["CMD", "echo", ">", "/dev/tcp/localhost/${STUDIO_WEB_PORT}"]
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/${STUDIO_HTTP_PORT}"]
       start_period: 5s
       interval: 10s
       timeout: 2s

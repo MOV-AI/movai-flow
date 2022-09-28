@@ -123,7 +123,7 @@ jobs:
 
     - name: test cluster frontend in host mode
       run: |
-        export base_url="http://localhost:5004"
+        export base_url="http://localhost:8080"
         export token_url="$base_url/token-auth/"
         export authenticated_url="$base_url/api/v1/User/movai/?"
 

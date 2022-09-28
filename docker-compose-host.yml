@@ -53,7 +53,7 @@ x-movai-common:
     MOVAI_GENERAL_VERBOSITY_LEVEL: 10  # DEBUG
     MOVAI_HEALTHNODE_VERBOSITY_LEVEL: 0
     MOVAI_USERSPACE: /opt/mov.ai/user
-    MOVAI_MANAGER_URI: http://localhost:5004
+    MOVAI_MANAGER_URI: http://localhost:$STUDIO_HTTP_PORT
     DEVICE_NAME: ${MOVAI_DEVICE_NAME:-flow}
     FLEET_NAME: ${FLEET_NAME:?missing FLEET_NAME ENV var}
     FLEET_TOKEN: ${FLEET_TOKEN:?missing FLEET_TOKEN ENV var}
@@ -63,7 +63,7 @@ x-movai-common:
     REDIS_MASTER_HOST: localhost
     ROS_MASTER_URI: http://localhost:11311/
     PUBLIC_IP: ${PUBLIC_IP:-127.0.0.1}
-    LOG_HTTP_HOST: http://localhost:5004
+    LOG_HTTP_HOST: http://localhost:$STUDIO_HTTP_PORT
     IGNITION_MOVAI: "true"
     IGN_PARTITION: ${IGN_PARTITION:?missing IGN_PARTITION ENV var}
     IGNITION_VERSION: fortress
@@ -156,12 +156,12 @@ services:
     environment:
       <<: *movai-common-env
       APT_INSTALL_LIST: "$STUDIO_APP_PACKAGES"
-      HTTP_PORT: ${STUDIO_WEB_PORT}
+      HTTP_PORT: ${STUDIO_HTTP_PORT}
       DEFAULT_USERNAME: movai
       DEFAULT_PASSWORD: movai
       JWT_SECRET_KEY: ${JWT_SECRET_KEY:?missing JWT_SECRET_KEY ENV var}
     healthcheck:
-      test: ["CMD", "echo", ">", "/dev/tcp/localhost/${STUDIO_WEB_PORT}"]
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/${STUDIO_HTTP_PORT}"]
       start_period: 5s
       interval: 10s
       timeout: 2s

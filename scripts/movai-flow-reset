@@ -31,7 +31,7 @@ Output() {
 }
 
 StopServices() {
-  Output "Stopping containers and removing containers, networks, volumes, and images...
+  Output "Stopping containers and removing containers, networks, volumes, but not images.
 
   (U) [^_^] (U)
 

@@ -11,3 +11,5 @@ debian/files
 debian/movai-flow.debhelper.log
 debian/movai-flow.substvars
 debian/.debhelper/generated/movai-flow/installed-by-dh_install
+*.code-workspace
+config/config.env
