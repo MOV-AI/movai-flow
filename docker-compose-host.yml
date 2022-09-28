@@ -191,7 +191,7 @@ services:
       retries: 3
     restart: unless-stopped
     extra_hosts:
-        <<: *movai-common-extra-hosts
+      <<: *movai-common-extra-hosts
 
   spawner:
     <<: *movai-common
