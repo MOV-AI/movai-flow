@@ -118,7 +118,7 @@ jobs:
     - name: run docker-compose cluster in host mode
       uses: isbang/compose-action@v1.2.0
       with:
-        compose-file: './docker-compose.yml'
+        compose-file: './docker-compose-host.yml'
         down-flags: '--volumes'
 
     - name: test cluster frontend in host mode
