@@ -61,7 +61,7 @@ x-movai-common:
     REDIS_LOCAL_HOST: localhost
     REDIS_MASTER_PORT: 6379
     REDIS_MASTER_HOST: localhost
-    ROS_MASTER_URI: http://localhost:22322/
+    ROS_MASTER_URI: http://localhost:11311/
     PUBLIC_IP: ${PUBLIC_IP:-127.0.0.1}
     LOG_HTTP_HOST: http://localhost:5004
     IGNITION_MOVAI: "true"

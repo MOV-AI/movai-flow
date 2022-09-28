@@ -76,8 +76,7 @@ fi
 if [ $HaveFreePorts -gt 0 ]; then
   Output "Needed ports are available"
 else
-  Output "Error: Needed ports are not available"
-  exit 1
+  Output "Warning: Needed ports are not available you might face networking issues when starting MOV.AI Flow™"
 fi
 
 if [ "$1" == "configure" ]; then
@@ -92,7 +91,7 @@ if [ "$1" == "configure" ]; then
       Output "Created $SERVICE_NAME fleet token"
     fi
 
-    Output "Setting Nvidia config"
+    Output "Setting NVIDIA config"
     if ! grep -q HAVE_NVIDIA $CONFIG_PATH/config.env ; then
       echo "HAVE_NVIDIA=$HaveNvidia" >> $CONFIG_PATH/config.env
     else

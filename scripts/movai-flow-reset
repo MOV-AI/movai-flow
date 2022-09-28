@@ -45,7 +45,7 @@ StopServices() {
 
   sed -i -e "/^NETWORK_MODE=/s/=.*/=/" "$CONFIG_PATH/config.env"
 
-  $DOCKER_COMPOSE_BIN -f "$compose_conf" down -v --remove-orphans -t 300
+  $DOCKER_COMPOSE_BIN -f "$compose_conf" down -v --remove-orphans
 }
 
 if [ -f "$CONFIG_PATH/config.env" ]; then

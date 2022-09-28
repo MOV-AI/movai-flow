@@ -60,8 +60,32 @@ else
   compose_conf_nvidia="$DOCKER_COMPOSE_NVIDIA_CONF"
 fi
 
+# Check NVIDIA
+Architecture="$(uname -m)"
+if [ "$Architecture" = "x86_64" ]; then
+  # Is there a Nvidia card present (possible HW enhanced graphical rendering)
+  [ "$(echo /sys/module/nvidia/drivers/pci:nvidia/*:*:*.*)" != "/sys/module/nvidia/drivers/pci:nvidia/*:*:*.*" ] && HaveNvidia=1
+  # Is there NVIDIA Container Toolkit to build and run GPU accelerated Docker containers
+  [ "$(dpkg -l | grep ^ii | grep -iw nvidia-container-toolkit)" != "" ] && HaveDockerNvidia=1
+fi
+if [ $HaveNvidia -gt 0 ]; then
+    Output "  NVIDIA GPU card found"
+else
+    Output "  NVIDIA GPU card not found"
+fi
+if [ $HaveDockerNvidia -gt 0 ]; then
+    Output "  NVIDIA Container Toolkit found"
+else
+    Output "  NVIDIA Container Toolkit not found"
+    if [ $HaveNvidia -gt 0 ]; then
+      echo -e "\033[1;33mWARNING: NVIDIA GPU found but no NVIDIA Container Toolkit\e[0m"
+      echo "Follow instructions on getting started with the NVIDIA Container Toolkit"
+      echo -e "\thttps://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker"
+    fi
+fi
+
 xhost +local:docker
-if [ "$HAVE_NVIDIA" = "1" ]; then
+if [ $HaveNvidia -gt 0 ]; then
   Output "Launching simulator for Nvidia GPU"
   exec $DOCKER_COMPOSE_BIN -f "$compose_conf_nvidia" up simulator
 else
