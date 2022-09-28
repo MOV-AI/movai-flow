@@ -84,7 +84,7 @@ x-movai-common:
 
 services:
   redis-master:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.6
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.10
     container_name: redis-master-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -109,7 +109,7 @@ services:
     restart: unless-stopped
 
   redis-local:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.6
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.10
     container_name: redis-local-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -159,7 +159,7 @@ services:
     restart: unless-stopped
 
   ros-master:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-master-noetic:v1.0.0
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-master-noetic:v1.0.2
     privileged: true
     networks:
       - private
@@ -182,7 +182,7 @@ services:
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-ign-noetic:v3.0.5
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-ign-noetic:v3.0.9
     privileged: true
     networks:
       - private
@@ -218,7 +218,7 @@ services:
     restart: unless-stopped
 
   simulator:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ignition-gazebo:v1.0.4
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ignition-gazebo:v1.0.5
     container_name: simulator-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -252,7 +252,7 @@ services:
     command: ign gui -s $STUDIO_SIMU_GUI
 
   ros-tools:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-tools-ce:v1.0.0
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-tools-ce:v1.0.4
     container_name: ros-tools-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -280,7 +280,7 @@ services:
         exec /usr/bin/rviz
 
   haproxy:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/haproxy:2.4.15
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/haproxy:v1.0.7
     container_name: haproxy-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
