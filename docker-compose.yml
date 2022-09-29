@@ -57,9 +57,9 @@ x-movai-common:
     DEVICE_NAME: ${MOVAI_DEVICE_NAME:-flow}
     FLEET_NAME: ${FLEET_NAME:?missing FLEET_NAME ENV var}
     FLEET_TOKEN: ${FLEET_TOKEN:?missing FLEET_TOKEN ENV var}
-    REDIS_LOCAL_PORT: 6379
+    REDIS_LOCAL_PORT: $REDIS_LOCAL_PORT
     REDIS_LOCAL_HOST: redis-local
-    REDIS_MASTER_PORT: 6379
+    REDIS_MASTER_PORT: $REDIS_MASTER_PORT
     REDIS_MASTER_HOST: redis-master
     ROS_MASTER_URI: http://ros-master:11311/
     PUBLIC_IP: ${PUBLIC_IP:-127.0.0.1}
@@ -84,7 +84,7 @@ x-movai-common:
 
 services:
   redis-master:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.10
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.11
     container_name: redis-master-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -94,7 +94,7 @@ services:
     networks:
       - private
     ports:
-      - "6379:6379"
+      - "$REDIS_MASTER_PORT:$REDIS_MASTER_PORT"
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/6379"]
       start_period: 3s
@@ -106,10 +106,11 @@ services:
     environment:
       <<: *movai-common-env
       APT_INSTALL_LIST: $STUDIO_DB_PACKAGES
+      REDIS_PORT: $REDIS_MASTER_PORT
     restart: unless-stopped
 
   redis-local:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.10
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.11
     container_name: redis-local-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -119,7 +120,7 @@ services:
     networks:
       - private
     ports:
-      - "6380:6379"
+      - "$REDIS_LOCAL_PORT:$REDIS_LOCAL_PORT"
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/6380"]
       start_period: 3s
@@ -129,6 +130,8 @@ services:
     volumes:
       - redis-local-flow-volume:/data
     restart: unless-stopped
+    environment:
+      - REDIS_PORT=$REDIS_LOCAL_PORT
 
   backend:
     <<: *movai-common
