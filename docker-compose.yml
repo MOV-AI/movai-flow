@@ -122,7 +122,7 @@ services:
     ports:
       - "$REDIS_LOCAL_PORT:$REDIS_LOCAL_PORT"
     healthcheck:
-      test: ["CMD", "echo", ">", "/dev/tcp/localhost/6380"]
+      test: ["CMD", "echo", ">", "/dev/tcp/localhost/${REDIS_LOCAL_PORT}"]
       start_period: 3s
       interval: 10s
       timeout: 2s
