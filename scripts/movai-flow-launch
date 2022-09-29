@@ -95,6 +95,19 @@ else
   compose_conf="$DOCKER_COMPOSE_CONF"
 fi
 
+# warn in case of container recreation
+if [ -n "$(docker volume ls --filter "label=com.docker.compose.project=movai-flow" -q)" ]; then
+  if ! [[ "$DOCKER_COMPOSE_UP_OPTIONS" =~ .*"no-recreate".* ]]; then
+    while true; do
+      read -p "Containers need to be recreated, MOV.AI Flow™ might suffer data loss. Continue [y/N]?" yn
+        case ${yn:-N} in
+          [Yy]* ) break;;
+          [Nn]* ) Output "Aborted"; exit 0;;
+        esac
+    done
+  fi
+fi
+
 pushd "$APP_PATH" || exit
 
 Output "Downloading images"
