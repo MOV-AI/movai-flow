@@ -78,9 +78,20 @@ if [ "$NETWORK_MODE" = "" ]; then
   fi
 fi
 
+# check if haproxy was ever created
+HaveProxy=0
+[ -n "$(docker ps -a --filter "label=com.docker.compose.project=movai-flow" -f "label=com.docker.compose.service=haproxy" -q)" ] && HaveProxy=1
+
 if [ "$NETWORK_MODE" = "host" ]; then
+  if [ $HaveProxy -gt 0 ];then
+    DOCKER_COMPOSE_UP_OPTIONS="--remove-orphans"
+  fi
   compose_conf="$DOCKER_COMPOSE_CONF_MHOST"
+
 else
+  if [ $HaveProxy -eq 0 ];then
+    DOCKER_COMPOSE_UP_OPTIONS="--remove-orphans"
+  fi
   compose_conf="$DOCKER_COMPOSE_CONF"
 fi
 
@@ -89,8 +100,8 @@ pushd "$APP_PATH" || exit
 Output "Downloading images"
 $DOCKER_COMPOSE_BIN -f "$compose_conf" pull
 
-Output "Starting services (with $NETWORK_MODE network mode)"
-$DOCKER_COMPOSE_BIN -f "$compose_conf" up -d "$DOCKER_COMPOSE_UP_OPTIONS"
+Output "Starting services (network: $NETWORK_MODE, opts=$DOCKER_COMPOSE_UP_OPTIONS)"
+$DOCKER_COMPOSE_BIN -f "$compose_conf" up -d $DOCKER_COMPOSE_UP_OPTIONS
 
 while [[ -z $(FilterRunningService spawner) ]]; do
   Output "waiting for spawner"
