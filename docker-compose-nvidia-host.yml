@@ -12,7 +12,7 @@ version: "3.9"
 services:
   simulator:
     extends:
-      file: docker-compose.yml
+      file: docker-compose-host.yml
       service: simulator
     environment:
       NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
@@ -25,7 +25,7 @@ services:
               capabilities: ["gpu"]
   ros-tools:
     extends:
-      file: docker-compose.yml
+      file: docker-compose-host.yml
       service: ros-tools
     environment:
       NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
@@ -36,7 +36,3 @@ services:
           devices:
             - driver: nvidia
               capabilities: ["gpu"]
-networks:
-  private:
-    external:
-      name: flow_private
