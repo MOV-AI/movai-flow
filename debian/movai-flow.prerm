@@ -5,13 +5,14 @@
 SERVICE_NAME=movai-flow
 APP_PATH=/usr/share/$SERVICE_NAME
 DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
-DOCKER_COMPOSE_ENV=$APP_PATH/.env
+DOCKER_COMPOSE_CONF_MHOST=$APP_PATH/docker-compose-host.yml
 DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
 
 # Remove the package (but not its configuration files)
 if [ "$1" = "remove" ]; then
     pushd $APP_PATH || echo ""
     $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF down || true
+    $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF_MHOST down || true
     popd || echo ""
 
     find /home -type l -wholename "*MovaiFlow/models_database" -delete

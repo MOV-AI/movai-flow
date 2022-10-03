@@ -1,6 +1,14 @@
 #!/bin/bash
 # post install script
 
+SERVICE_NAME=movai-flow
+APP_PATH=/usr/share/$SERVICE_NAME
+CONFIG_PATH=/etc/$SERVICE_NAME
+DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
+DOCKER_COMPOSE_CONF_MHOST=$APP_PATH/docker-compose-host.yml
+DOCKER_COMPOSE_ENV=$APP_PATH/.env
+DOCKER_COMPOSE_BIN=$(which docker-compose)
+
 # Function to output to log and console.
 #
 # Usage:
@@ -8,14 +16,6 @@
 #   $2 =  Optional "0" or "1" flag.   "1" adds "(extracted from Preferences.xml)" message
 #
 #   Note: Blank lines (Null text strings "") are not written to the system log.  There is no need to waste that space.
-
-SERVICE_NAME=movai-flow
-SERVICE_PORTS="8080" #8083
-APP_PATH=/usr/share/$SERVICE_NAME
-CONFIG_PATH=/etc/$SERVICE_NAME
-DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
-DOCKER_COMPOSE_ENV=$APP_PATH/.env
-DOCKER_COMPOSE_BIN=$(which docker-compose)
 
 Output() {
   # Prepare base message
@@ -76,8 +76,7 @@ fi
 if [ $HaveFreePorts -gt 0 ]; then
   Output "Needed ports are available"
 else
-  Output "Error: Needed ports are not available"
-  exit 1
+  Output "Warning: Needed ports are not available you might face networking issues when starting MOV.AI Flow™"
 fi
 
 if [ "$1" == "configure" ]; then
@@ -92,17 +91,23 @@ if [ "$1" == "configure" ]; then
       Output "Created $SERVICE_NAME fleet token"
     fi
 
-    Output "Setting Nvidia config"
+    Output "Setting NVIDIA config"
     if ! grep -q HAVE_NVIDIA $CONFIG_PATH/config.env ; then
       echo "HAVE_NVIDIA=$HaveNvidia" >> $CONFIG_PATH/config.env
     else
       sed -i -e "/^HAVE_NVIDIA=/s/=.*/=\'$HaveNvidia\'/" $CONFIG_PATH/config.env
     fi
 
-    mkdir -p $APP_PATH/{logs,shared,userspace,models_database}
-    sudo chown 1000:1000 $APP_PATH/{logs,shared,userspace,models_database} -R
+    Output "Setting empty network config"
+    echo "NETWORK_MODE=" > $CONFIG_PATH/config.env
+
+    mkdir -p $APP_PATH/{logs,shared,userspace,models_database,config}
+    chown 1000:1000 $APP_PATH/{logs,shared,userspace,models_database,config} -R
+
+    cp  $CONFIG_PATH/config.env $APP_PATH/config/
 
 elif [ "$1" == "abort-remove" ]; then
     Output "Stopping cluster of $SERVICE_NAME"
     $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF --env-file $DOCKER_COMPOSE_ENV down || true
+    $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF_MHOST --env-file $DOCKER_COMPOSE_ENV down || true
 fi
