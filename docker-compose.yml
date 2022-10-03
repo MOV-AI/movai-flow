@@ -322,7 +322,7 @@ services:
       interval: 10s
       timeout: 2s
       retries: 3
-    command: [ "yarn", "start:ext", "-sp", "lsp/languageServer", "-p", "3333" ]
+    command: ["yarn", "start:ext", "-sp", "lsp/languageServer", "-p", "3333"]
 
     restart: unless-stopped
 
