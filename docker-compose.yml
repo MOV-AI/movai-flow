@@ -282,6 +282,36 @@ services:
       - |
         exec /usr/bin/rviz
 
+  gitserver:
+    image: gogs/gogs:latest
+    restart: always
+    ports:
+      - "30022:22"
+      - "30080:3000"
+    links:
+      - gitdb
+    environment:
+      - "RUN_CROND=true"
+    networks:
+      - private
+      - proxy
+    volumes:
+      - "gogs-data:/data"
+    depends_on:
+      - gitdb
+
+  gitdb:
+    image: postgres:9.5
+    restart: always
+    environment:
+      - "POSTGRES_USER=${GIT_POSTGRES_USER}"
+      - "POSTGRES_PASSWORD=${GIT_POSTGRES_PASSWORD}"
+      - "POSTGRES_DB=gogs"
+    volumes:
+      - "gitdb-data:/var/lib/postgresql/data"
+    networks:
+      - private
+
   haproxy:
     image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/haproxy:v1.0.7
     container_name: haproxy-$MOVAI_DEVICE_NAME
@@ -307,6 +337,10 @@ services:
 volumes:
   redis-master-flow-volume:
   redis-local-flow-volume:
+  gitdb-data:
+    driver: local
+  gogs-data:
+    driver: local
 
 networks:
   proxy:
