@@ -231,7 +231,7 @@ services:
       <<: *movai-common-extra-hosts
 
   simulator:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ignition-gazebo:v1.0.5
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ignition-gazebo:v1.0.4
     container_name: simulator-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
