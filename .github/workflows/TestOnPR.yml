@@ -9,9 +9,9 @@ on:
       - 'debian/changelog'
 jobs:
 
-  Test-Project:
+  Lint-Project:
     timeout-minutes: 30
-    name: "Sanity checks"
+    name: "Linting checks"
     runs-on: ubuntu-20.04
     steps:
     - name: Checkout
@@ -24,12 +24,19 @@ jobs:
     - name: Yamllint
       uses: karancode/yamllint-github-action@master
       with:
-        yamllint_file_or_dir: docker-compose.yml docker-compose-nvidia.yml
+        yamllint_file_or_dir: docker-compose.yml docker-compose-nvidia.yml docker-compose-host.yml docker-compose-nvidia-host.yml
         yamllint_strict: false
         yamllint_comment: true
         yamllint_config_filepath: .yamllint-config.yml
       env:
         GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: run docker-compose lint
+      run: |
+        docker-compose -f docker-compose.yml config
+        docker-compose -f docker-compose-host.yml config
+        docker-compose -f docker-compose-nvidia.yml config
+        docker-compose -f docker-compose-nvidia-host.yml config
 
     # - name: Validate json
     #   uses: anyone-developer/anyone-validate-json@main
@@ -39,10 +46,18 @@ jobs:
     #     ignore-directories: '.git'
     #     read-path: 'robots'
 
-    - name: run docker-compose lint
+  Test-Project:
+    timeout-minutes: 30
+    name: "Cluster sanity checks"
+    runs-on: ubuntu-20.04
+    needs: [ Lint-Project ]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: install requirements
       run: |
-        docker-compose -f docker-compose.yml config
-        docker-compose -f docker-compose-nvidia.yml config
+        python3 -m pip install docker-compose
 
     - name: prepare docker-compose cluster
       run: |
@@ -57,7 +72,10 @@ jobs:
 
     - name: test cluster frontend
       run: |
-        export token_url=http://localhost:8080/token-auth/
+        export base_url="http://localhost:8080"
+        export token_url="$base_url/token-auth/"
+        export authenticated_url="$base_url/api/v1/User/movai/?"
+
         # retry for 1 minute
         count=10
         set +e
@@ -69,20 +87,74 @@ jobs:
           echo "Waiting for MOV.AI Flow™ availability (ret:$status_code)"
           sleep 10
         done
-        [ $status_code == 200 ] && exit 0
+        [ $status_code == 200 ] || exit -1
 
-        export url=http://localhost:8080/api/v1/apps/mov-fe-app-ide-ce/
-        #export url=https://localhost:8443/api/v1/apps/mov-fe-app-ide-ce/
-        json=$( status_code=$(curl -k -s --cookie-jar cookies --header 'Content-Type: application/json' -X POST --data '{"username":"movai","password":"movai","remember":true}' -w "%{http_code}" $token_url)' )
-        token=$( jq -r ".access_token" <<<"$json" )
-        curl "$url" -k -X POST -H "X-Cookie:token=$token"
+        err_status_code=$(curl "$authenticated_url" -k -s -o /dev/null -w "%{http_code}")
+        [ $err_status_code == 401 ] || exit -1
+
+        json_token=$(curl -k -s --cookie-jar cookies --header 'Content-Type: application/json' -X POST --data '{"username":"movai","password":"movai","remember":true}' $token_url)
+        token=$( jq -r ".access_token" <<<"$json_token" )
+        ok_status_code=$(curl "$authenticated_url" -k -s -o /dev/null -H "Authorization: Bearer $token" -w "%{http_code}")
+        [ $ok_status_code == 200 ] || exit -1
+
+  Test-Project-HostMode:
+    timeout-minutes: 30
+    name: "Host Mode Cluster checks"
+    runs-on: ubuntu-20.04
+    needs: [ Lint-Project ]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: install requirements
+      run: |
+        python3 -m pip install docker-compose
+
+    - name: prepare docker-compose cluster
+      run: |
+        mkdir -p ./{logs,shared,userspace,models_database} || true
+        sudo chown 1000:1000 ./{logs,shared,userspace,models_database} -R
+
+    - name: run docker-compose cluster in host mode
+      uses: isbang/compose-action@v1.2.0
+      with:
+        compose-file: './docker-compose-host.yml'
+        down-flags: '--volumes'
+
+    - name: test cluster frontend in host mode
+      run: |
+        export base_url="http://localhost:8080"
+        export token_url="$base_url/token-auth/"
+        export authenticated_url="$base_url/api/v1/User/movai/?"
+
+        # retry for 1 minute
+        count=10
+        set +e
+        for i in $(seq $count); do
+          status_code=$(curl -k -s -o /dev/null --cookie-jar cookies --header 'Content-Type: application/json' -X POST --data '{"username":"movai","password":"movai","remember":true}' -w "%{http_code}" $token_url)
+          if [ $status_code == 200 ]; then
+            break
+          fi
+          echo "Waiting for MOV.AI Flow™ availability (ret:$status_code)"
+          sleep 10
+        done
+        [ $status_code == 200 ] || exit -1
+
+        err_status_code=$(curl "$authenticated_url" -k -s -o /dev/null -w "%{http_code}")
+        [ $err_status_code == 401 ] || exit -1
+
+        json_token=$(curl -k -s --cookie-jar cookies --header 'Content-Type: application/json' -X POST --data '{"username":"movai","password":"movai","remember":true}' $token_url)
+        token=$( jq -r ".access_token" <<<"$json_token" )
+        ok_status_code=$(curl "$authenticated_url" -k -s -o /dev/null -H "Authorization: Bearer $token" -w "%{http_code}")
+        [ $ok_status_code == 200 ] || exit -1
 
   Pack-Project:
     timeout-minutes: 30
     name: "Pack Checks"
     runs-on: ubuntu-20.04
+    needs: [ Lint-Project ]
     container:
-      image: registry.cloud.mov.ai/devops/ros-buildtools-noetic:main
+      image: registry.cloud.mov.ai/qa/ros-buildtools-noetic:v1.0.14
       options: --user root
       credentials:
         username: ${{secrets.PORTUS_APP_USER}}
@@ -111,6 +183,7 @@ jobs:
 
     - name: Pack debian
       run: |
+        git config --global --add safe.directory $(pwd)
         git config --global user.name '${{ secrets.RAISE_BOT_COMMIT_USER }}'
         git config --global user.email '${{ secrets.RAISE_BOT_COMMIT_MAIL }}'
 
