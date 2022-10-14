@@ -56,10 +56,13 @@ if [ "$NETWORK_MODE" = "" ]; then
   MOV.AI Flow™ can either run in an isolated docker network or use the host's networking interfaces
    - isolated network is recommended when working with a single host
    - host network is recommended when working with multiple hosts (RPi, sensors, ...) which will need to access MOV.AI Flow™ containers
+     When selecting host network, the host's networking interface to be used as ROS_IP will be asked.
 
   If you don't know what this is all about just press ENTER
 
-  See doc: https://docs.docker.com/network/host/.
+  ---
+  See docker doc: https://docs.docker.com/network/host/.
+  See ROS doc: http://wiki.ros.org/ROS/EnvironmentVariables#ROS_IP.2FROS_HOSTNAME.
   "
   while true; do
     read -p "Do you want to run MOV.AI Flow™ in isolated network [Y/n]?" yn
@@ -68,6 +71,21 @@ if [ "$NETWORK_MODE" = "" ]; then
         [Nn]* ) NETWORK_MODE="host"; break;;
       esac
   done
+
+  if [ $NETWORK_MODE = "host" ]; then
+    DETECTED_IP=$(hostname -I | cut -d " " -f 1)
+    while true; do
+      read -p "Please confirm the host IP to be used [$DETECTED_IP]?" ip_input
+      if [[ "${ip_input:-$DETECTED_IP}" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        export MOVAI_FLOW_ROS_IP=${ip_input:-$DETECTED_IP}
+        Output "Using $MOVAI_FLOW_ROS_IP"
+        break;
+      else
+        echo "Please enter a valid IP address"
+      fi
+    done
+
+  fi
 
   # Update config file
   if [ -f "$CONFIG_PATH/config.env" ]; then
