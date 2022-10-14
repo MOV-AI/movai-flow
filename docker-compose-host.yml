@@ -225,6 +225,7 @@ services:
       PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       APP_NAME: spawner
       APT_INSTALL_LIST: $STUDIO_SPAWNER_PACKAGES
+      ROS_IP: $ROS_IP
     restart: unless-stopped
     extra_hosts:
       <<: *movai-common-extra-hosts
