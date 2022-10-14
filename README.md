@@ -269,4 +269,3 @@ To stop and delete containers, delete volumes with database data and downloaded 
 
 ## MOV.AI Developer Tools
 A python package build to facilitate development when using MOV.AI. The tool can be used to, but not limited to, expose the ros topics to the host as well as export/import MOV.AI metadata. Please follow [this link](https://github.com/MOV-AI/movai-developer-tools) for more detailed documentation.
-
