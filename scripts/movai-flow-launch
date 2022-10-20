@@ -150,9 +150,13 @@ user_documents_path=$(xdg-user-dir DOCUMENTS)
 Output "Creating user and models folder"
 if [ ! -e "${user_documents_path}/MovaiFlow" ]; then
   mkdir -p "${user_documents_path}/MovaiFlow"
-  ln -sf "$APP_PATH/userspace" "${user_documents_path}/MovaiFlow"
-  ln -sf "$APP_PATH/models_database" "${user_documents_path}/MovaiFlow"
-  Output "User and models folder ${user_documents_path}/MovaiFlow"
+  Output "User and models folder created in ${user_documents_path}/MovaiFlow"
+fi
+if [ ! -e "${user_documents_path}/MovaiFlow/userspace" ]; then
+  ln -sf "$APP_PATH/userspace" "${user_documents_path}/MovaiFlow/userspace"
+fi
+if [ ! -e "${user_documents_path}/MovaiFlow/models_database" ]; then
+  ln -sf "$APP_PATH/models_database" "${user_documents_path}/MovaiFlow/models_database"
 fi
 
 Output "Starting web application"
