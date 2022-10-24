@@ -2,10 +2,14 @@
 SCRIPTNAME=Launcher
 SERVICE_NAME=movai-flow
 APP_PATH=${APP_PATH:-/usr/share/$SERVICE_NAME}
-CONFIG_PATH=${CONFIG_PATH:-/etc/$SERVICE_NAME}
+CONFIG_PATH=${CONFIG_PATH:-/$APP_PATH/config}
+
 DOCKER_COMPOSE_CONF=$APP_PATH/docker-compose.yml
+DOCKER_COMPOSE_CONF_MHOST=$APP_PATH/docker-compose-host.yml
+
 DOCKER_COMPOSE_BIN=$(which docker-compose || echo /usr/local/bin/docker-compose)
 DOCKER_COMPOSE_UP_OPTIONS=${DOCKER_COMPOSE_UP_OPTIONS:---no-recreate}
+
 APP_URL="http://localhost:8080/api/v1/apps/mov-fe-app-ide-ce/"
 
 Output() {
@@ -23,44 +27,122 @@ Output() {
   # Output to log
   if which journalctl > /dev/null 2>&1
   then
-    echo MESSAGE="$Message" | logger --journald
+    echo MESSAGE="$Message" | head -n 1 | logger --journald
   else
     echo "$Message" | logger
   fi
 }
 
 FilterRunningService() {
-  $DOCKER_COMPOSE_BIN -f "$DOCKER_COMPOSE_CONF" ps --services --filter "status=running" | grep "$1"
+  $DOCKER_COMPOSE_BIN -f "$compose_conf" ps --services --filter "status=running" | grep "$1"
 }
 
-Output "This terminal window will verify all MOV.AI Flow™ services are running \
-and then launch the web application"
-Output "(U) [^_^] (U)"
+Output "This terminal window will verify all MOV.AI Flow™ services are running
+and then launch the web application
 
-if [ -f $CONFIG_PATH/config.env ]; then
-  Output "Sourcing fleet configuration"
-  . $CONFIG_PATH/config.env
+(U) [^_^] (U)
+
+"
+
+if [ -f "$CONFIG_PATH/config.env" ]; then
+  . "$CONFIG_PATH/config.env"
 else
-  Output "No fleet configuration found"
+  Output "No configuration found"
+fi
+
+if [ "$NETWORK_MODE" = "" ]; then
+  Output "
+
+  MOV.AI Flow™ can either run in an isolated docker network or use the host's networking interfaces
+   - isolated network is recommended when working with a single host
+   - host network is recommended when working with multiple hosts (RPi, sensors, ...) which will need to access MOV.AI Flow™ containers
+     When selecting host network, the host's networking interface to be used as ROS_IP will be asked.
+
+  If you don't know what this is all about just press ENTER
+
+  ---
+  See docker doc: https://docs.docker.com/network/host/.
+  See ROS doc: http://wiki.ros.org/ROS/EnvironmentVariables#ROS_IP.2FROS_HOSTNAME.
+  "
+  while true; do
+    read -p "Do you want to run MOV.AI Flow™ in isolated network [Y/n]?" yn
+      case ${yn:-Y} in
+        [Yy]* ) NETWORK_MODE="bridge"; break;;
+        [Nn]* ) NETWORK_MODE="host"; break;;
+      esac
+  done
+
+  if [ $NETWORK_MODE = "host" ]; then
+    DETECTED_IP=$(hostname -I | cut -d " " -f 1)
+    while true; do
+      read -p "Please confirm the host IP to be used [$DETECTED_IP]?" ip_input
+      if [[ "${ip_input:-$DETECTED_IP}" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        export MOVAI_FLOW_ROS_IP=${ip_input:-$DETECTED_IP}
+        Output "Using $MOVAI_FLOW_ROS_IP"
+        break;
+      else
+        echo "Please enter a valid IP address"
+      fi
+    done
+
+  fi
+
+  # Update config file
+  if [ -f "$CONFIG_PATH/config.env" ]; then
+    sed -i -e "/^NETWORK_MODE=/s/=.*/=$NETWORK_MODE/" "$CONFIG_PATH/config.env"
+  else
+    mkdir -p "$CONFIG_PATH"
+    echo "NETWORK_MODE=$NETWORK_MODE" > "$CONFIG_PATH/config.env"
+  fi
+fi
+
+# check if haproxy was ever created
+HaveProxy=0
+[ -n "$(docker ps -a --filter "label=com.docker.compose.project=movai-flow" -f "label=com.docker.compose.service=haproxy" -q)" ] && HaveProxy=1
+
+if [ "$NETWORK_MODE" = "host" ]; then
+  if [ $HaveProxy -gt 0 ];then
+    DOCKER_COMPOSE_UP_OPTIONS="--remove-orphans"
+  fi
+  compose_conf="$DOCKER_COMPOSE_CONF_MHOST"
+
+else
+  if [ $HaveProxy -eq 0 ];then
+    DOCKER_COMPOSE_UP_OPTIONS="--remove-orphans"
+  fi
+  compose_conf="$DOCKER_COMPOSE_CONF"
+fi
+
+# warn in case of container recreation
+if [ -n "$(docker volume ls --filter "label=com.docker.compose.project=movai-flow" -q)" ]; then
+  if ! [[ "$DOCKER_COMPOSE_UP_OPTIONS" =~ .*"no-recreate".* ]]; then
+    while true; do
+      read -p "Containers need to be recreated, MOV.AI Flow™ might suffer data loss. Continue [y/N]?" yn
+        case ${yn:-N} in
+          [Yy]* ) break;;
+          [Nn]* ) Output "Aborted"; exit 0;;
+        esac
+    done
+  fi
 fi
 
 pushd "$APP_PATH" || exit
 
 Output "Downloading images"
-$DOCKER_COMPOSE_BIN -f "$DOCKER_COMPOSE_CONF" pull
+$DOCKER_COMPOSE_BIN -f "$compose_conf" pull
 
-Output "Starting services"
-$DOCKER_COMPOSE_BIN -f "$DOCKER_COMPOSE_CONF" up -d "$DOCKER_COMPOSE_UP_OPTIONS"
+Output "Starting services (network: $NETWORK_MODE, opts=$DOCKER_COMPOSE_UP_OPTIONS)"
+$DOCKER_COMPOSE_BIN -f "$compose_conf" up -d $DOCKER_COMPOSE_UP_OPTIONS
 
 while [[ -z $(FilterRunningService spawner) ]]; do
   Output "waiting for spawner"
   sleep 5
 done
 
-while [[ -z $( $DOCKER_COMPOSE_BIN -f $DOCKER_COMPOSE_CONF exec -u movai spawner bash -c 'pgrep -f "/usr/bin/python3 -m flow_initiator"') ]]
+while [[ -z $( $DOCKER_COMPOSE_BIN -f "$compose_conf" exec -u movai spawner bash -c 'pgrep -f "/usr/bin/python3 -m flow_initiator"') ]]
 do
-    sleep 10
-    Output "loading ..."
+  sleep 10
+  Output "loading ..."
 done
 
 # Symlink userspace and models_database to ~/Documents/MovaiFlow
@@ -68,9 +150,13 @@ user_documents_path=$(xdg-user-dir DOCUMENTS)
 Output "Creating user and models folder"
 if [ ! -e "${user_documents_path}/MovaiFlow" ]; then
   mkdir -p "${user_documents_path}/MovaiFlow"
-  ln -sf "$APP_PATH/userspace" "${user_documents_path}/MovaiFlow"
-  ln -sf "$APP_PATH/models_database" "${user_documents_path}/MovaiFlow"
-  Output "User and models folder ${user_documents_path}/MovaiFlow"
+  Output "User and models folder created in ${user_documents_path}/MovaiFlow"
+fi
+if [ ! -e "${user_documents_path}/MovaiFlow/userspace" ]; then
+  ln -sf "$APP_PATH/userspace" "${user_documents_path}/MovaiFlow/userspace"
+fi
+if [ ! -e "${user_documents_path}/MovaiFlow/models_database" ]; then
+  ln -sf "$APP_PATH/models_database" "${user_documents_path}/MovaiFlow/models_database"
 fi
 
 Output "Starting web application"

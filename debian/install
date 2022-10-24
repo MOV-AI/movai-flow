@@ -3,11 +3,14 @@ rviz usr/share/movai-flow
 models_database usr/share/movai-flow
 docker-compose.yml usr/share/movai-flow
 docker-compose-nvidia.yml usr/share/movai-flow
+docker-compose-host.yml usr/share/movai-flow
+docker-compose-nvidia-host.yml usr/share/movai-flow
 .env usr/share/movai-flow
 scripts/movai-flow-simulator usr/bin/
 scripts/movai-flow-rviz usr/bin/
 scripts/movai-flow-launch usr/bin/
 scripts/movai-flow-stop usr/bin/
+scripts/movai-flow-reset usr/bin/
 misc/movai-flow.desktop usr/share/applications
 misc/movai-flow-sim.desktop usr/share/applications
 misc/movai-flow-rviz.desktop usr/share/applications

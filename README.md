@@ -7,6 +7,7 @@
   <a href="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnGitRelease.yml"><img alt="Official Release" src="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnGitRelease.yml/badge.svg"></a>
   <a href="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnMergeMain.yml"><img alt="Pre Release" src="https://github.com/MOV-AI/movai-flow/actions/workflows/DeployOnMergeMain.yml/badge.svg"></a>
   <a href="https://github.com/MOV-AI/movai-flow/actions/workflows/TestOnPR.yml"><img alt="PR Checks" src="https://github.com/MOV-AI/movai-flow/actions/workflows/TestOnPR.yml/badge.svg"></a>
+  <a href="https://sonarcloud.io/summary/new_code?id=MOV-AI_movai-flow"><img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=MOV-AI_movai-flow&metric=alert_status"></a>
   <a href="https://twitter.com/MovAIRobots"><img alt="Twitter" src="https://img.shields.io/twitter/url/http/shields.io.svg?style=social"></a>
 
 </p>
@@ -137,14 +138,14 @@ Installing the MOV.AI Flow™ package will provide a few command line tools to c
 
 MOV.AI Flow™ initiates a set of services running as a *docker-compose* cluster, namely:
 
- - redis-master: master DB of the cluster
- - redis-local: local DB of the cluster
- - backend: web service application
- - ros-master: ROS core service
- - spawner: Flow orchestrator of ROS nodes
- - haproxy: web proxy
- - simulator: Ignition Fortress container with graphical capabilities enabled
- - ros-tools: rviz container with graphical capabilities enabled
+ - [redis-master](https://github.com/MOV-AI/containers-redis2): Master DB of the cluster
+ - [redis-local](https://github.com/MOV-AI/containers-redis2): Local DB of the cluster
+ - [backend](https://github.com/MOV-AI/backend): Web service application
+ - [ros-master](https://github.com/MOV-AI/containers-ros-master): ROS core service
+ - [spawner](https://github.com/MOV-AI/containers-spawner-base): Flow orchestrator of ROS and MOV.AI nodes
+ - [haproxy](https://github.com/docker-library/haproxy): Web proxy
+ - [simulator](https://github.com/MOV-AI/containers-ign-simulator): Ignition Fortress container with graphical capabilities enabled
+ - [ros-tools](https://github.com/MOV-AI/containers-ros-tools): RVIZ container with graphical capabilities enabled
 
 > Some directories in the containers are mounted, which means that their contents are synchronized between your computer (host) and the container.
 
@@ -265,3 +266,7 @@ The best way to do it is to:
 To stop and delete containers, delete volumes with database data and downloaded images, run:
 
     docker-compose down --volumes --rmi all
+
+## MOV.AI Developer Tools
+A python package build to facilitate development when using MOV.AI. The tool can be used to, but not limited to, expose the ros topics to the host as well as export/import MOV.AI metadata. Please follow [this link](https://github.com/MOV-AI/movai-developer-tools) for more detailed documentation.
+
