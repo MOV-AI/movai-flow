@@ -1,4 +1,4 @@
-movai-flow (1.3.0-0) UNRELEASED; urgency=medium
+movai-flow (1.3.0-1) UNRELEASED; urgency=medium
 
   [ Alex Fernandes ]
   * add host_mode feature
@@ -70,5 +70,6 @@ movai-flow (1.3.0-0) UNRELEASED; urgency=medium
   * UNRELEASED
   * UNRELEASED
   * UNRELEASED
+  * UNRELEASED
 
- -- root <root@da780be7dfca>  Thu, 21 Jul 2022 12:33:16 +0000
+ -- root <root@a20539233c41>  Mon, 24 Oct 2022 08:37:14 +0000
