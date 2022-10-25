@@ -115,6 +115,8 @@ sudo apt install ./movai-flow-1.2.0*.deb
 ```
 
 ## Usage
+You can find an overview of icons and CLI for launching the installed software. Follow our [readme page](https://flow.mov.ai/docs/launching-movai-1) for a detailed explanation.
+
 ### Desktop shortcuts
 Installing the Flow package will provide a few application shortcuts in the programming section:
 
