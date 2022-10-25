@@ -55,8 +55,9 @@ if [ "$NETWORK_MODE" = "" ]; then
 
   MOV.AI Flow™ can either run in an isolated docker network or use the host's networking interfaces
    - isolated network is recommended when working with a single host
-   - host network is recommended when working with multiple hosts (RPi, sensors, ...) which will need to access MOV.AI Flow™ containers
-     When selecting host network, the host's networking interface to be used as ROS_IP will be asked.
+   - host network is recommended when working with multiple hosts (RPi, sensors, ...),
+     which will need to access MOV.AI Flow™ containers. In the host mode we will use the host networking interface.
+     The script will auto-detect and promt to confirm. The value is set as the ROS_IP env variable.
 
   If you don't know what this is all about just press ENTER
 
