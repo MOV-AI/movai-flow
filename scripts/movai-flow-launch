@@ -62,6 +62,7 @@ if [ "$NETWORK_MODE" = "" ]; then
   If you don't know what this is all about just press ENTER
 
   ---
+  See https://flow.mov.ai/docs/running-modes-host-vs-isolated-network
   See docker doc: https://docs.docker.com/network/host/.
   See ROS doc: http://wiki.ros.org/ROS/EnvironmentVariables#ROS_IP.2FROS_HOSTNAME.
   "
