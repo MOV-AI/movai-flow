@@ -65,7 +65,7 @@ jobs:
         sudo chown 1000:1000 ./{logs,shared,userspace,models_database} -R
 
     - name: run docker-compose cluster
-      uses: isbang/compose-action@v1.2.0
+      uses: isbang/compose-action@v1.3.2
       with:
         compose-file: './docker-compose.yml'
         down-flags: '--volumes'
