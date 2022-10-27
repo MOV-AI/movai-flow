@@ -313,4 +313,3 @@ networks:
     name: ${NETWORK_PROXY}
   private:
     name: ${NETWORK_PRIVATE}
-
