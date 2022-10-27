@@ -120,6 +120,11 @@ Follow our [documentation](https://flow.mov.ai/docs/updating-movai-flow) page fo
 ---
 
 ## Usage
+You can find an overview of icons and CLI for launching the installed software. Follow our [readme page](https://flow.mov.ai/docs/launching-movai-1) for a detailed explanation.
+
+### Modes of operation: host vs isolated network
+MOV.AI Flow™ Can run between two modes at a given time. The host mode and the isolated mode. Please find the details of both in our [documentation website](https://flow.mov.ai/docs/running-modes-host-vs-isolated-network).
+
 ### Desktop shortcuts
 Installing the Flow package will provide a few application shortcuts in the programming section:
 
