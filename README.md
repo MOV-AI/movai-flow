@@ -114,6 +114,11 @@ curl -s https://api.github.com/repos/MOV-AI/movai-flow/releases/latest | grep "b
 sudo apt install ./movai-flow-1.2.0*.deb
 ```
 
+## Update
+Follow our [documentation](https://flow.mov.ai/docs/updating-movai-flow) page for steps and details on how to update MOV.AI Flow.
+
+---
+
 ## Usage
 You can find an overview of icons and CLI for launching the installed software. Follow our [readme page](https://flow.mov.ai/docs/launching-movai-1) for a detailed explanation.
 
