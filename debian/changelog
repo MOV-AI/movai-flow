@@ -1,5 +1,8 @@
 movai-flow (3.0.1-0) UNRELEASED; urgency=medium
 
+  [ mithun ]
+  * update docs and demos pacakges
+  
   [ Alex Fernandes ]
   * add host_mode feature
 
