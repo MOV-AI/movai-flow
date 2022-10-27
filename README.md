@@ -114,6 +114,11 @@ curl -s https://api.github.com/repos/MOV-AI/movai-flow/releases/latest | grep "b
 sudo apt install ./movai-flow-1.2.0*.deb
 ```
 
+## Update
+Follow our [documentation](https://flow.mov.ai/docs/updating-movai-flow) page for steps and details on how to update MOV.AI Flow.
+
+---
+
 ## Usage
 ### Desktop shortcuts
 Installing the Flow package will provide a few application shortcuts in the programming section:
