@@ -36,7 +36,9 @@ services:
           devices:
             - driver: nvidia
               capabilities: ["gpu"]
+
 networks:
+  proxy:
+    name: ${NETWORK_PROXY}
   private:
-    external:
-      name: flow_private
+    name: ${NETWORK_PRIVATE}

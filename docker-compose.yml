@@ -310,6 +310,7 @@ volumes:
 
 networks:
   proxy:
-    name: flow_proxy
+    name: ${NETWORK_PROXY}
   private:
-    name: flow_private
+    name: ${NETWORK_PRIVATE}
+
