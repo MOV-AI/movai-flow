@@ -107,11 +107,15 @@ sudo systemctl restart docker
 
 ```shell
 # Install curl
-sudo apt install curl
-# Download and install the latest released debian pacakge
-curl -s https://api.github.com/repos/MOV-AI/movai-flow/releases/latest | grep "browser_download_url.*deb" | cut -d : -f 2,3 | tr -d \" | xargs curl -LJO
-# Install, please make sure you have the correct file
-sudo apt install ./movai-flow-1.2.0*.deb
+sudo apt install curl gpg
+# Add gpg key
+curl -fsSL https://artifacts.aws.cloud.mov.ai/repository/movai-applications/gpg | sudo gpg --dearmor -o /usr/share/keyrings/movai-archive-keyring.gpg
+# Add source
+echo "deb [arch=all signed-by=/usr/share/keyrings/movai-archive-keyring.gpg] https://artifacts.aws.cloud.mov.ai/repository/ppa-public main main" | sudo tee /etc/apt/sources.list.d/movai.list > /dev/null
+# Update
+sudo apt update
+# Install
+sudo apt install movai-flow
 ```
 
 ## Update
