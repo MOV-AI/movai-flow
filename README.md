@@ -95,24 +95,25 @@ sudo systemctl restart docker
 
 ## Installation
 #### Option A
-- Download the debian file from the **Assets** section of the [latest releases page](https://github.com/MOV-AI/movai-flow/releases/latest)
-- Click on the downloaded file in your browser or double click on the `movai-flow*.deb` file in your Downloads directory using a file explorer
-- Enter your user password if there is a promt.
-- Click the Install option. The Ubuntu Software Package Manager starts installing the downloaded app.
-
-#### Option B
-- Open a terminal
-- Download the latest debian file
-- Install it. Enter your user password if there is a promt.
 
 ```shell
 # Install curl
-sudo apt install curl
-# Download and install the latest released debian pacakge
-curl -s https://api.github.com/repos/MOV-AI/movai-flow/releases/latest | grep "browser_download_url.*deb" | cut -d : -f 2,3 | tr -d \" | xargs curl -LJO
-# Install, please make sure you have the correct file
-sudo apt install ./movai-flow-1.2.0*.deb
+sudo apt install curl gpg
+# Add gpg key
+curl -fsSL https://artifacts.aws.cloud.mov.ai/repository/movai-applications/gpg | sudo gpg --dearmor -o /usr/share/keyrings/movai-archive-keyring.gpg
+# Add source
+echo "deb [arch=all signed-by=/usr/share/keyrings/movai-archive-keyring.gpg] https://artifacts.aws.cloud.mov.ai/repository/ppa-public main main" | sudo tee /etc/apt/sources.list.d/movai.list > /dev/null
+# Update
+sudo apt update
+# Install
+sudo apt install movai-flow
 ```
+
+#### Option B
+- Download the debian file from the **Assets** section of the [latest releases page](https://github.com/MOV-AI/movai-flow/releases/latest)
+- Click on the downloaded file in your browser or double click on the `movai-flow*.deb` file in your Downloads directory using a file explorer.
+- Enter your user password if there is a prompt.
+- Click the Install option. The Ubuntu Software Package Manager starts installing the downloaded app.
 
 ## Update
 Follow our [documentation](https://flow.mov.ai/docs/updating-movai-flow) page for steps and details on how to update MOV.AI Flow.
