@@ -36,87 +36,8 @@ An IDE that introduces visualization and structure to ROS. You can develop faste
 
 ---
 # Installation
-## Supported Systems and specs
-|      | Minimum Specs               | Recommended Specs |
-| ---- | --------------------------- | ----------------- |
-| OS   | Ubuntu 20.04 - x64          |                   |
-| Disk | 10 GB                       | 20 GB             |
-| RAM  | 4 GB                        | 8 GB              |
-| GPU  | NVIDIA GPU (For Simulation) |                   |
 
-
-## Install and configure requirements
-Install the requirements by either following the respective links or copy paste the below commands into your terminal if you have the supported system mentioned above:
-
-- docker > 20.10.8
-  - [Install docker](https://docs.docker.com/engine/install/ubuntu/)
-- docker-compose > 1.29.2
-  - [Install docker-compose](https://docs.docker.com/compose/install/)
-- Manage Docker as a non-root user
-  - [Docker post install steps](https://docs.docker.com/engine/install/linux-postinstall)
-
-```shell
-sudo apt update && sudo apt upgrade
-sudo apt install curl
-# docker-ce installation.
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -sc) stable"
-sudo apt -y install docker-ce docker-ce-cli
-# docker compose.
-sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-# docker sudo group.
-sudo groupadd docker
-sudo gpasswd -a $USER docker
-# Restart system to apply the settings.
-read -p "PRESS Enter to RESTART YOUR SYSTEM."
-sudo reboot
-```
-
-## Install NVIDIA toolkit (optional but recommended for simulation)
-
-- Do you have NVIDIA GPU? Install Docker NVIDIA's toolkit for HW acceleration
-  - [Nvidia container toolkit installation](https://docs.nvidia.com/ai-enterprise/deployment-guide/dg-docker.html#enabling-the-docker-repository-and-installing-the-nvidia-container-toolkit)
-
-```shell
-#Add the package repositories:
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
-curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
-curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
-
-# Download information from all configured sources about the latest versions of the packages and install the nvidia-container-toolkit package:
-sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
-
-#Restart the Docker service:
-sudo systemctl restart docker
-```
-
-## Install MOV.AI Flow™
-### Option A (Using apt source)
-#### Configure source and gpg key
-
-```shell
-# Install curl.
-sudo apt install curl gpg
-# Add gpg key.
-curl -fsSL https://artifacts.aws.cloud.mov.ai/repository/movai-applications/gpg | sudo gpg --dearmor -o /usr/share/keyrings/movai-archive-keyring.gpg
-# Add source.
-echo "deb [arch=all signed-by=/usr/share/keyrings/movai-archive-keyring.gpg] https://artifacts.aws.cloud.mov.ai/repository/ppa-public main main" | sudo tee /etc/apt/sources.list.d/movai.list > /dev/null
-# Update.
-sudo apt update
-# Install.
-sudo apt install movai-flow
-```
-
-### Option B (Using debian file)
-- Download the debian file from the **Assets** section of the [latest releases page](https://github.com/MOV-AI/movai-flow/releases/latest)
-- Open your favorite file browser and navigate to the Downloads folder.
-- Install the downloaded debian file using `apt` `sudo apt install ./movai-flow-<version>.deb`
-- Enter your user password if there is a prompt.
-
----
-# Updating MOV.AI Flow™
-Follow our [documentation](https://flow.mov.ai/docs/updating-movai-flow) page for steps and details on how to update MOV.AI Flow.
+Please follow our [installation procedure in the documentation](https://flow.mov.ai/docs/installation).
 
 ---
 
@@ -218,6 +139,8 @@ Follow our [documentation](https://flow.mov.ai/docs) to get detailed information
 
 Clone the repository or download the sources and follow the following instructions.
 
+`git clone `
+
 ## Initializing Environment
 Before starting MOV.AI Flow™ for the first time, You need to prepare your environment, i.e. create the necessary files, directories and initialize the database.
 
@@ -228,6 +151,11 @@ To do it, edit .env file and customize variables values:
 > Values present in the environment at runtime always override those defined inside the .env file. Similarly, values passed via command-line arguments take precedence as well.
 
 ## Running MOV.AI Flow™
+
+### Setting the essential env vars
+To use the scripts that are available in the `scripts/` directory we should first set the APP_PATH environment variable
+
+First `cd` in to your cloned repository
 
 Now you can start core services, by `cd`ing into the folder where `docker-compose.yml` is:
 
