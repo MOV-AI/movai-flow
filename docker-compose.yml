@@ -151,7 +151,7 @@ services:
       APT_INSTALL_LIST: "$STUDIO_APP_PACKAGES"
       HTTP_PORT: ${STUDIO_HTTP_PORT}
       DEFAULT_USERNAME: movai
-      DEFAULT_PASSWORD: movai
+      DEFAULT_PASSWORD: www.mov.ai
       JWT_SECRET_KEY: ${JWT_SECRET_KEY:?missing JWT_SECRET_KEY ENV var}
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/${STUDIO_HTTP_PORT}"]
