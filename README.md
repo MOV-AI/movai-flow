@@ -13,7 +13,7 @@
 </p>
 
 <p align="center">
-  <i>MOVAI Flow,</i> The IDE that introduces visualization and structure to ROS.
+  <i>MOV.AI Flow™,</i> The IDE that introduces visualization and structure to ROS.
 </p>
 
 
@@ -35,20 +35,17 @@ An IDE that introduces visualization and structure to ROS. You can develop faste
 | *Configuration Editor* | *Out-of-the-box Integration with the ROS Ecosystem*|
 
 ---
-## Let's get started :smile:
-### Supported Systems
-Ubuntu [20.04 - x64](https://ubuntu.com/download/desktop/thank-you?version=20.04.4&architecture=amd64)
+# Installation
+## Supported Systems and specs
+|      | Minimum Specs               | Recommended Specs |
+| ---- | --------------------------- | ----------------- |
+| OS   | Ubuntu 20.04 - x64          |                   |
+| Disk | 10 GB                       | 20 GB             |
+| RAM  | 4 GB                        | 8 GB              |
+| GPU  | NVIDIA GPU (For Simulation) |                   |
 
-### Minimum Specs
-- Disk 10 GB
-- RAM 4 GB
 
-### Recommended Specs
-- Disk 20 GB
-- RAM 8 GB
-- NVIDIA GPU (For Ignition simulator)
-
-### Install and configure requirements
+## Install and configure requirements
 Install the requirements by either following the respective links or copy paste the below commands into your terminal if you have the supported system mentioned above:
 
 - docker > 20.10.8
@@ -61,19 +58,22 @@ Install the requirements by either following the respective links or copy paste 
 ```shell
 sudo apt update && sudo apt upgrade
 sudo apt install curl
-# docker
+# docker-ce installation.
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -sc) stable"
 sudo apt -y install docker-ce docker-ce-cli
-# docker compose
+# docker compose.
 sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
-# docker sudo group
+# docker sudo group.
 sudo groupadd docker
 sudo gpasswd -a $USER docker
+# Restart system to apply the settings.
+read -p "PRESS Enter to RESTART YOUR SYSTEM."
+sudo reboot
 ```
 
-### Install NVIDIA toolkit (optional but recommended for simulation)
+## Install NVIDIA toolkit (optional but recommended for simulation)
 
 - Do you have NVIDIA GPU? Install Docker NVIDIA's toolkit for HW acceleration
   - [Nvidia container toolkit installation](https://docs.nvidia.com/ai-enterprise/deployment-guide/dg-docker.html#enabling-the-docker-repository-and-installing-the-nvidia-container-toolkit)
@@ -91,42 +91,42 @@ sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
 sudo systemctl restart docker
 ```
 
----
-
-## Installation
-#### Option A
+## Install MOV.AI Flow™
+### Option A (Using apt source)
+#### Configure source and gpg key
 
 ```shell
-# Install curl
+# Install curl.
 sudo apt install curl gpg
-# Add gpg key
+# Add gpg key.
 curl -fsSL https://artifacts.aws.cloud.mov.ai/repository/movai-applications/gpg | sudo gpg --dearmor -o /usr/share/keyrings/movai-archive-keyring.gpg
-# Add source
+# Add source.
 echo "deb [arch=all signed-by=/usr/share/keyrings/movai-archive-keyring.gpg] https://artifacts.aws.cloud.mov.ai/repository/ppa-public main main" | sudo tee /etc/apt/sources.list.d/movai.list > /dev/null
-# Update
+# Update.
 sudo apt update
-# Install
+# Install.
 sudo apt install movai-flow
 ```
 
-#### Option B
+### Option B (Using debian file)
 - Download the debian file from the **Assets** section of the [latest releases page](https://github.com/MOV-AI/movai-flow/releases/latest)
-- Click on the downloaded file in your browser or double click on the `movai-flow*.deb` file in your Downloads directory using a file explorer.
+- Open your favorite file browser and navigate to the Downloads folder.
+- Install the downloaded debian file using `apt` `sudo apt install ./movai-flow-<version>.deb`
 - Enter your user password if there is a prompt.
-- Click the Install option. The Ubuntu Software Package Manager starts installing the downloaded app.
 
-## Update
+---
+# Updating MOV.AI Flow™
 Follow our [documentation](https://flow.mov.ai/docs/updating-movai-flow) page for steps and details on how to update MOV.AI Flow.
 
 ---
 
-## Usage
+# Usage
 You can find an overview of icons and CLI for launching the installed software. Follow our [readme page](https://flow.mov.ai/docs/launching-movai-1) for a detailed explanation.
 
-### Modes of operation: host vs isolated network
+## Modes of operation: host vs isolated network
 MOV.AI Flow™ Can run between two modes at a given time. The host mode and the isolated mode. Please find the details of both in our [documentation website](https://flow.mov.ai/docs/running-modes-host-vs-isolated-network).
 
-### Desktop shortcuts
+## Desktop shortcuts
 Installing the Flow package will provide a few application shortcuts in the programming section:
 
 <p align="center">
@@ -137,7 +137,7 @@ Installing the Flow package will provide a few application shortcuts in the prog
 - MOV.AI Flow™ RViz: launches rviz connected to the flow
 - MOV.AI Flow™ Simulator: launches Ignition simulator connected to the flow
 
-### CLI
+## CLI
 Installing the MOV.AI Flow™ package will provide a few command line tools to control the cluster of containers running the flow:
 - `movai-flow-launch`: launch this script to launch the needed services and then open a browser connected to the flow
 - `movai-flow-stop`: stop all flow services
@@ -145,18 +145,24 @@ Installing the MOV.AI Flow™ package will provide a few command line tools to c
 - `movai-flow-simulator`: launch Ignition simulator connected to the flow
 
 
-## MOV.AI Flow™ components
+# MOV.AI Flow™ components (docker)
 
-MOV.AI Flow™ initiates a set of services running as a *docker-compose* cluster, namely:
+MOV.AI Flow™ initiates a set of docker containers orchestrated using *docker-compose*, namely:
 
- - [redis-master](https://github.com/MOV-AI/containers-redis2): Master DB of the cluster
- - [redis-local](https://github.com/MOV-AI/containers-redis2): Local DB of the cluster
  - [backend](https://github.com/MOV-AI/backend): Web service application
- - [ros-master](https://github.com/MOV-AI/containers-ros-master): ROS core service
- - [spawner](https://github.com/MOV-AI/containers-spawner-base): Flow orchestrator of ROS and MOV.AI nodes
- - [haproxy](https://github.com/docker-library/haproxy): Web proxy
- - [simulator](https://github.com/MOV-AI/containers-ign-simulator): Ignition Fortress container with graphical capabilities enabled
- - [ros-tools](https://github.com/MOV-AI/containers-ros-tools): RVIZ container with graphical capabilities enabled
+   - [backend source code](https://github.com/MOV-AI/backend): Source code for backend application.
+   - [frontend source code](https://github.com/MOV-AI/frontend-npm-ce-suite): Source code for our frontend application.
+ - [spawner](https://github.com/MOV-AI/containers-spawner-base): Flow orchestrator container of ROS and MOV.AI nodes.
+   - [flow initiator](https://github.com/MOV-AI/flow-initiator): Source code for our flow initiator.
+   - [movai ce demos](https://github.com/MOV-AI/movai_ce_demos): Source code for the demos.
+   - [movai ign sim packages](https://github.com/MOV-AI/movai_ign_sim_ce_pkgs): Source code for simulator driver package.
+   - [movai ports and messages](https://github.com/MOV-AI/movai_ports_and_messages_ce): Metadata list of supports protocols and messages.
+  - [redis-master](https://github.com/MOV-AI/containers-redis2): Master DB of the cluster.
+  - [redis-local](https://github.com/MOV-AI/containers-redis2): Local DB of the cluster.
+  - [simulator](https://github.com/MOV-AI/containers-ign-simulator): Ignition Fortress container with graphical capabilities enabled.
+  - [ros-master](https://github.com/MOV-AI/containers-ros-master): ROS core service.
+  - [ros-tools](https://github.com/MOV-AI/containers-ros-tools): RVIZ container with graphical capabilities enabled
+  - [haproxy](https://github.com/docker-library/haproxy): Web proxy.
 
 > Some directories in the containers are mounted, which means that their contents are synchronized between your computer (host) and the container.
 
@@ -165,7 +171,7 @@ MOV.AI Flow™ initiates a set of services running as a *docker-compose* cluster
 
 ---
 
-## Accessing the MOV.AI Flow™ IDE
+# Accessing the MOV.AI Flow™ IDE
 After starting MOV.AI Flow™, you can interact with it via a browser using the web interface
 
 Once the services have started up, you can log in to the web interface and try to run some tasks.
@@ -208,11 +214,11 @@ Follow our [documentation](https://flow.mov.ai/docs) to get detailed information
 
 ---
 
-## Running from source code
+# Running from source code
 
 Clone the repository or download the sources and follow the following instructions.
 
-### Initializing Environment
+## Initializing Environment
 Before starting MOV.AI Flow™ for the first time, You need to prepare your environment, i.e. create the necessary files, directories and initialize the database.
 
 To do it, edit .env file and customize variables values:
@@ -221,45 +227,45 @@ To do it, edit .env file and customize variables values:
 
 > Values present in the environment at runtime always override those defined inside the .env file. Similarly, values passed via command-line arguments take precedence as well.
 
-### Running MOV.AI Flow™
+## Running MOV.AI Flow™
 
 Now you can start core services, by `cd`ing into the folder where `docker-compose.yml` is:
 
     docker-compose up -d
 
-### Running ROS RViz
+## Running ROS RViz
 
 > The recommeded setup is to have an NVidia GPU,  but still an integrated Intel GPU can also work with lower performance
 
-#### With Nvidia GPU acceleration :
+### With Nvidia GPU acceleration :
 
     xhost +local:docker
     docker-compose -f docker-compose-nvidia.yml up ros-tools
 
-#### Without GPU acceleration :
+### Without GPU acceleration :
 
     xhost +local:docker
     docker-compose -f docker-compose.yml up ros-tools
 
-### Accessing the Simulator
+## Accessing the Simulator
 First of all be aware that the Simulator is based on the containerized [Ignition Fortress](https://ignitionrobotics.org/docs/fortress) application.
 
 > The recommeded setup is to have an NVidia GPU,  but still an integrated Intel GPU can also work with lower performance
 
 After starting MOV.AI Flow™, you can launch Ignition Fortress :
 
-#### With Nvidia GPU acceleration :
+### With Nvidia GPU acceleration :
 
     xhost +local:docker
     docker-compose -f docker-compose-nvidia.yml up simulator
 
-#### Without GPU acceleration :
+### Without GPU acceleration :
 
     xhost +local:docker
     docker-compose -f docker-compose.yml up simulator
 
 
-### Cleaning up the environment
+## Cleaning up the environment
 The docker-compose we prepare is a “Quick-start” one. It is not intended to be used in production and it has a number of caveats - one of them being that the best way to recover from any problem is to clean it up and restart from the scratch.
 
 The best way to do it is to:
@@ -273,11 +279,10 @@ The best way to do it is to:
  - re-start following the instructions from the very beginning in this guide
 
 
-### Cleaning up for good
+## Cleaning up for good
 To stop and delete containers, delete volumes with database data and downloaded images, run:
 
     docker-compose down --volumes --rmi all
 
-## MOV.AI Developer Tools
+# MOV.AI Developer Tools
 A python package build to facilitate development when using MOV.AI. The tool can be used to, but not limited to, expose the ros topics to the host as well as export/import MOV.AI metadata. Please follow [this link](https://github.com/MOV-AI/movai-developer-tools) for more detailed documentation.
-
