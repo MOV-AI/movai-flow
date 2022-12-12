@@ -68,8 +68,11 @@ x-movai-common:
     IGN_PARTITION: ${IGN_PARTITION:?missing IGN_PARTITION ENV var}
     IGNITION_VERSION: fortress
     APT_AUTOINSTALL: "once"
-    APT_KEYS_URL_LIST: "https://artifacts.aws.cloud.mov.ai/repository/movai-applications/gpg"
-    APT_REPOS_LIST: "deb [arch=all] https://artifacts.aws.cloud.mov.ai/repository/ppa-public main main"
+    # APT_KEYS_URL_LIST: "https://artifacts.aws.cloud.mov.ai/repository/movai-applications/gpg"
+    # APT_REPOS_LIST: "deb [arch=all] https://artifacts.aws.cloud.mov.ai/repository/ppa-public main main"
+    # For DEV purpose:
+    APT_KEYS_URL_LIST: "https://artifacts.cloud.mov.ai/repository/movai-applications/gpg"
+    APT_REPOS_LIST: "deb [arch=all] https://artifacts.cloud.mov.ai/repository/ppa-testing testing main"
   volumes:
     - ./userspace:/opt/mov.ai/user
     - ./shared:/opt/mov.ai/shared
@@ -135,7 +138,9 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:2.4.0.2
+    # image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:2.4.0.4
+    # For DEV purpose:
+    image: registry.cloud.mov.ai/qa/backend-noetic:2.4.0.4
     container_name: backend-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -185,7 +190,7 @@ services:
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-noetic:3.1.0-2
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-ign-noetic:v3.0.10
     privileged: true
     networks:
       - private
