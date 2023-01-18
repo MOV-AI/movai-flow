@@ -81,6 +81,7 @@ MOV.AI Flow™ initiates a set of docker containers orchestrated using *docker-c
   - [redis-master](https://github.com/MOV-AI/containers-redis2): Master DB of the cluster.
   - [redis-local](https://github.com/MOV-AI/containers-redis2): Local DB of the cluster.
   - [simulator](https://github.com/MOV-AI/containers-ign-simulator): Ignition Fortress container with graphical capabilities enabled.
+    - [movai-ign-plugin-world-launcher](https://github.com/MOV-AI/movai_ign_plugins): GUI Plugin to select and launch the worlds.
   - [ros-master](https://github.com/MOV-AI/containers-ros-master): ROS core service.
   - [ros-tools](https://github.com/MOV-AI/containers-ros-tools): RVIZ container with graphical capabilities enabled
   - [haproxy](https://github.com/docker-library/haproxy): Web proxy.
