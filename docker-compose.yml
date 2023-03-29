@@ -221,7 +221,7 @@ services:
     restart: unless-stopped
 
   simulator:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ignition-gazebo:v1.0.4
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ignition-gazebo:v1.0.5
     container_name: simulator-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -283,7 +283,7 @@ services:
         exec /usr/bin/rviz
 
   haproxy:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/haproxy:v1.0.7
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/haproxy:v1.0.10
     container_name: haproxy-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
