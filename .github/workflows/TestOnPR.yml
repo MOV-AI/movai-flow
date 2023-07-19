@@ -59,6 +59,8 @@ jobs:
 
     - name: install requirements
       run: |
+        python3 -m pip install pip --upgrade
+        python3 -m pip install pyopenssl --upgrade
         python3 -m pip install docker-compose
 
     - name: prepare docker-compose cluster
@@ -110,6 +112,8 @@ jobs:
 
     - name: install requirements
       run: |
+        python3 -m pip install pip --upgrade
+        python3 -m pip install pyopenssl --upgrade
         python3 -m pip install docker-compose
 
     - name: prepare docker-compose cluster
