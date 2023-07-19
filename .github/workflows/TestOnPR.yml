@@ -19,6 +19,8 @@ jobs:
 
     - name: install static-checks-requirements
       run: |
+        python3 -m pip install pip --upgrade
+        python3 -m pip install pyopenssl --upgrade
         python3 -m pip install docker-compose yamllint
 
     - name: Yamllint
