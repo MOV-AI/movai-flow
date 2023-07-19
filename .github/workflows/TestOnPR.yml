@@ -173,7 +173,7 @@ jobs:
       run: |
         PACKAGE_VERSION=$(dpkg-parsechangelog --show-field Version)
         PACKAGE_NAME=$(dpkg-parsechangelog --show-field Source)
-https://github.com/MOV-AI/movai-flow/actions/runs/5599581595/jobs/10240751205
+        
         echo ::set-output name=pkg_name::$PACKAGE_NAME
         echo ::set-output name=pkg_version::$PACKAGE_VERSION
 
