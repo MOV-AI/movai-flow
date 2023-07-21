@@ -135,7 +135,7 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:1.0.0.23
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:2.4.1.35
     container_name: backend-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -162,7 +162,7 @@ services:
     restart: unless-stopped
 
   ros-master:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-master-noetic:v1.0.2
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-master-noetic:v2.4.2
     privileged: true
     networks:
       - private
@@ -185,7 +185,7 @@ services:
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-ign-noetic:v3.0.10
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/flow-initiator-noetic:2.4.1.36 
     privileged: true
     networks:
       - private
@@ -221,7 +221,7 @@ services:
     restart: unless-stopped
 
   simulator:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ignition-gazebo:v1.0.5
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ignition-gazebo:v2.4.0-5
     container_name: simulator-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -255,7 +255,7 @@ services:
     command: ign gui -s $STUDIO_SIMU_GUI
 
   ros-tools:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-tools-ce:v1.0.4
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-tools-ce:v2.4.6
     container_name: ros-tools-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
