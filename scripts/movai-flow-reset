@@ -31,11 +31,21 @@ Output() {
 }
 
 StopServices() {
-  Output "Stopping containers and removing containers, networks, volumes, but not images.
+  if [ "$1" = "--images" ]; then
+    Output "Stopping containers and removing containers, networks, volumes, and images.
 
-  (U) [^_^] (U)
 
-  Terminal will close on completion, wait or press CTRL+C on failure"
+    (U) [^_^] (U)
+
+    Terminal will close on completion, wait or press CTRL+C on failure"
+  else
+    Output "Stopping containers and removing containers, networks, volumes, but not images.
+
+
+    (U) [^_^] (U)
+
+    Terminal will close on completion, wait or press CTRL+C on failure"
+  fi
 
   if [ "$NETWORK_MODE" = "host" ]; then
     compose_conf="$DOCKER_COMPOSE_CONF_MHOST"
@@ -45,7 +55,11 @@ StopServices() {
 
   sed -i -e "/^NETWORK_MODE=/s/=.*/=/" "$CONFIG_PATH/config.env"
 
-  $DOCKER_COMPOSE_BIN -f "$compose_conf" down -v --remove-orphans
+  if [ "$1" = "--images" ]; then
+    $DOCKER_COMPOSE_BIN -f "$compose_conf" down -v --remove-orphans --rmi all
+  else
+    $DOCKER_COMPOSE_BIN -f "$compose_conf" down -v --remove-orphans
+  fi
 }
 
 if [ -f "$CONFIG_PATH/config.env" ]; then
@@ -55,4 +69,4 @@ else
   Output "No configuration found"
 fi
 
-StopServices
+StopServices $1
