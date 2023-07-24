@@ -20,7 +20,7 @@
 # STUDIO_USER_USERNAME   - Username for the administrator account (if requested).
 #                          Default: movai
 # STUDIO_USER_PASSWORD   - Password for the administrator account (if requested).
-#                          Default: movai
+#                          Default: www.mov.ai
 #
 # STUDIO_SIMU_GUI        - Default Simulation GUI: WorldLauncher
 #
@@ -141,7 +141,7 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:1.0.0.23
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:2.4.1.35
     container_name: backend-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -156,7 +156,7 @@ services:
       APT_INSTALL_LIST: "$STUDIO_APP_PACKAGES"
       HTTP_PORT: ${STUDIO_HTTP_PORT}
       DEFAULT_USERNAME: movai
-      DEFAULT_PASSWORD: movai
+      DEFAULT_PASSWORD: www.mov.ai
       JWT_SECRET_KEY: ${JWT_SECRET_KEY:?missing JWT_SECRET_KEY ENV var}
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/${STUDIO_HTTP_PORT}"]
