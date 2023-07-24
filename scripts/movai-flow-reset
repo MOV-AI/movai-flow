@@ -31,7 +31,7 @@ Output() {
 }
 
 StopServices() {
-  if [ "$1" = "--images" ]; then
+  if [ "$1" = "--all" ]; then
     Output "Stopping containers and removing containers, networks, volumes, and images.
 
 
@@ -55,7 +55,7 @@ StopServices() {
 
   sed -i -e "/^NETWORK_MODE=/s/=.*/=/" "$CONFIG_PATH/config.env"
 
-  if [ "$1" = "--images" ]; then
+  if [ "$1" = "--all" ]; then
     $DOCKER_COMPOSE_BIN -f "$compose_conf" down -v --remove-orphans --rmi all
   else
     $DOCKER_COMPOSE_BIN -f "$compose_conf" down -v --remove-orphans
