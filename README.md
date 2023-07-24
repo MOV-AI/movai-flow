@@ -55,7 +55,7 @@ Installing the Flow package will provide a few application shortcuts in the prog
     <a><img alt="DesktopIcons" src="https://files.readme.io/bcc3fb7-three_icons.png"></a>
 </p>
 
-- MOV.AI Flow™: launches the needed services and then open a browser connected to the flow
+- MOV.AI Flow™: launches the needed services and then opens a browser connected to the flow
 - MOV.AI Flow™ RViz: launches rviz connected to the flow
 - MOV.AI Flow™ Simulator: launches Ignition simulator connected to the flow
 
@@ -98,7 +98,7 @@ MOV.AI Flow™ initiates a set of docker containers orchestrated using *docker-c
 After starting MOV.AI Flow™, you can interact with it via a browser using the web interface
 
 Once the services have started up, you can log in to the web interface and try to run some tasks.
-The webserver is available at: http://localhost:8080. The default account has both the username and the password: `movai`.
+The web server is available at http://localhost:8080. The default account has both the username and the password: `movai`.
 
 ## Executing ROS commands
 To get access to `rostopic` and `rosbag` commands, or to install/build more ros-packages, access the spawner container terminal by typing: `docker exec -it spawner-robot1 bash`
@@ -146,25 +146,25 @@ Clone the repository or download the sources and follow the following instructio
 ## Initializing Environment
 Before starting MOV.AI Flow™ for the first time, You need to prepare your environment, i.e. create the necessary files, directories and initialize the database.
 
-To do it, edit .env file and customize variables values:
+To do it, edit the .env file and customize variables values:
 
     gedit .env
 
-> Values present in the environment at runtime always override those defined inside the .env file. Similarly, values passed via command-line arguments take precedence as well.
+> Values in the environment at runtime always override those defined inside the .env file. Similarly, values passed via command-line arguments take precedence as well.
 
 ## Running MOV.AI Flow™
 
 ### Setting the essential environment vars
 To use the scripts that are available in the `scripts/` directory we should first set the APP_PATH environment variable
 
-First `cd` in to your cloned repository, then set the APP_PATH by running the below command:
+First `cd` into your cloned repository, then set the APP_PATH by running the below command:
 ```
 export APP_PATH=$(pwd)
 ```
 
 ## Starting the IDE
 
-It's is recommended to start the services using the scripts provided in the scripts directory rather than the docker-compose. The scripts provide pre and post steps that are required for the project. At the end the script uses the docker-compose to start the services.
+It is recommended to start the services using the scripts provided in the scripts directory rather than the docker-compose. The scripts provide pre and post-steps that are required for the project. In the end, the script uses the docker-compose to start the services.
 
 Now you can start core services, using the movai-flow-launch script
 
@@ -181,16 +181,16 @@ bash ./scripts/movai-flow-stop
 
 ## Running ROS RViz
 
-> The recommeded setup is to have an NVidia GPU,  but still an integrated Intel GPU can also work with lower performance.
+> The recommended setup is to have an NVidia GPU,  but still, an integrated Intel GPU can also work with lower performance.
 
 ```bash
 xhost +local:docker
 bash ./scripts/movai-flow-rviz
 ```
 ## Running the Simulator
-First of all be aware that the Simulator is based on the containerized [Ignition Fortress](https://ignitionrobotics.org/docs/fortress) application.
+First of all, be aware that the Simulator is based on the containerized [Ignition Fortress](https://ignitionrobotics.org/docs/fortress) application.
 
-> The recommeded setup is to have an NVidia GPU,  but still an integrated Intel GPU can also work with lower performance
+> The recommended setup is to have an NVidia GPU,  but still, an integrated Intel GPU can also work with lower performance
 
 After starting MOV.AI Flow™, you can launch Ignition Fortress :
 
@@ -200,7 +200,7 @@ bash ./scripts/movai-flow-simulator
 ```
 
 ## Cleaning up the environment
-One of the best way to clean up all the containers and go to the initial setting is to call the reset script.
+The docker-compose we prepare is a “Quick-start” one. It is not intended to be used in production and it has a number of caveats - one of them being that the best way to recover from any problem is to clean it up and restart from scratch using the reset script.
 
 ```bash
 bash ./scripts/movai-flow-reset
@@ -210,9 +210,5 @@ bash ./scripts/movai-flow-reset
 To remove the downloaded images as well, run:
 
 ```bash
-bash ./scripts/movai-flow-reset --images
+bash ./scripts/movai-flow-reset --all
 ```
-
-<!-- TODO -->
-<!-- # MOV.AI Developer Tools
-## Under development -->
