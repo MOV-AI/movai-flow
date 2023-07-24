@@ -12,7 +12,7 @@ jobs:
   Deploy-App-Internal-Release:
     runs-on: ubuntu-20.04
     container:
-      image: registry.cloud.mov.ai/qa/ros-buildtools-noetic:v2.0.3
+      image: registry.cloud.mov.ai/qa/ros-buildtools-noetic:v2.0.7
       options: --user root
       credentials:
         username: ${{secrets.PORTUS_APP_USER}}
