@@ -21,6 +21,7 @@
 # Overview
 An IDE that introduces visualization and structure to ROS. You can develop faster, understand ROS projects in an instant, and debug easily.
 
+
 <p align="center">
     <a><img alt="Teaser2" src="https://media.giphy.com/media/O8EalLOaPKzDv8bp22/giphy.gif"></a>
 </p>
