@@ -185,7 +185,7 @@ services:
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-ign-noetic:v3.0.10
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/flow-initiator-noetic:2.4.1.36
     privileged: true
     networks:
       - private
@@ -194,7 +194,7 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: pgrep -f "/usr/bin/python3 -m flow_initiator"
+      test: pgrep -f "/usr/bin/python3 /usr/local/bin/flow_initiator"
       start_period: 10s
       interval: 10s
       timeout: 3s
