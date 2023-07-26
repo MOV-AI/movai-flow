@@ -267,7 +267,7 @@ services:
       <<: *movai-common-extra-hosts
 
   ros-tools:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-tools-ce:v1.0.4
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-tools-ce:v2.4.6
     container_name: ros-tools-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
