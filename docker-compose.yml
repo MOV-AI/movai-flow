@@ -162,7 +162,7 @@ services:
     restart: unless-stopped
 
   ros-master:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-master-noetic:v1.0.2
+    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-master-noetic:v2.4.2
     privileged: true
     networks:
       - private
