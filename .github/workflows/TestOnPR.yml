@@ -89,6 +89,7 @@ jobs:
         count=10
         set +e
         for i in $(seq $count); do
+          echo curl -k -s -o /dev/null --header 'Content-Type: application/json' -X POST --data '{"username":"$username","password":"$password","remember":true,"domain":"internal"}' -w "%{http_code}" $token_url
           status_code=$(curl -k -s -o /dev/null --header 'Content-Type: application/json' -X POST --data '{"username":"$username","password":"$password","remember":true,"domain":"internal"}' -w "%{http_code}" $token_url)
           if [ $status_code == 200 ]; then
             break
