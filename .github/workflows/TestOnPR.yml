@@ -83,6 +83,8 @@ jobs:
         export token_url="$base_url/token-auth/"
         export authenticated_url="$base_url/api/v2/User/effective-permissions"
 
+        echo "Username is: $username"
+
         # retry for 1 minute
         count=10
         set +e
