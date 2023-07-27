@@ -87,8 +87,8 @@ jobs:
         count=10
         set +e
         for i in $(seq $count); do
-          echo curl -k -s -o /dev/null --header 'Content-Type: application/json' -X POST --data '{"username":'"$username"',"password":'"$password"',"remember":true,"domain":"internal"}' -w "%{http_code}" $token_url
-          status_code=$(curl -k -s -o /dev/null --header 'Content-Type: application/json' -X POST --data '{"username":'"$username"',"password":'"$password"',"remember":true,"domain":"internal"}' -w "%{http_code}" $token_url)
+          echo curl -k -s -o /dev/null --header 'Content-Type: application/json' -X POST --data '{"username":"'$username'","password":"'$password'","remember":true,"domain":"internal"}' -w "%{http_code}" $token_url
+          status_code=$(curl -k -s -o /dev/null --header 'Content-Type: application/json' -X POST --data '{"username":"'$username'","password":"'$password'","remember":true,"domain":"internal"}' -w "%{http_code}" $token_url)
           if [ $status_code == 200 ]; then
             break
           fi
@@ -100,7 +100,7 @@ jobs:
         err_status_code=$(curl "$authenticated_url" -k -s -o /dev/null -w "%{http_code}")
         [ $err_status_code == 401 ] || exit -1
 
-        json_token=$(curl -k -s --header 'Content-Type: application/json' -X POST --data '{"username":'"$username"',"password":'"$password"',"remember":true,"domain":"internal"}' $token_url)
+        json_token=$(curl -k -s --header 'Content-Type: application/json' -X POST --data '{"username":"'$username'","password":"'$password'","remember":true,"domain":"internal"}' $token_url)
         token=$( jq -r ".access_token" <<<"$json_token" )
         ok_status_code=$(curl "$authenticated_url" -k -s -o /dev/null -H "Authorization: Bearer $token" -w "%{http_code}")
         [ $ok_status_code == 200 ] || exit -1
@@ -141,7 +141,7 @@ jobs:
         count=10
         set +e
         for i in $(seq $count); do
-          status_code=$(curl -k -s -o /dev/null --header 'Content-Type: application/json' -X POST --data '{"username":'"$username"',"password":'"$password"',"remember":true,"domain":"internal"}' -w "%{http_code}" $token_url)
+          status_code=$(curl -k -s -o /dev/null --header 'Content-Type: application/json' -X POST --data '{"username":"'$username'","password":"'$password'","remember":true,"domain":"internal"}' -w "%{http_code}" $token_url)
           if [ $status_code == 200 ]; then
             break
           fi
@@ -153,7 +153,7 @@ jobs:
         err_status_code=$(curl "$authenticated_url" -k -s -o /dev/null -w "%{http_code}")
         [ $err_status_code == 401 ] || exit -1
 
-        json_token=$(curl -k -s --header 'Content-Type: application/json' -X POST --data '{"username":'"$username"',"password":'"$password"',"remember":true,"domain":"internal"}' $token_url)
+        json_token=$(curl -k -s --header 'Content-Type: application/json' -X POST --data '{"username":"'$username'","password":"'$password'","remember":true,"domain":"internal"}' $token_url)
         token=$( jq -r ".access_token" <<<"$json_token" )
         ok_status_code=$(curl "$authenticated_url" -k -s -o /dev/null -H "Authorization: Bearer $token" -w "%{http_code}")
         [ $ok_status_code == 200 ] || exit -1
