@@ -81,7 +81,7 @@ jobs:
         export authenticated_url="$base_url/api/v1/User/movai/?"
 
         # retry for 1 minute
-        count=10
+        count=20
         set +e
         for i in $(seq $count); do
           status_code=$(curl -k -s -o /dev/null --header 'Content-Type: application/json' -X POST --data '{"username":"movai","password":"www.mov.ai","remember":true,"domain":"internal"}' -w "%{http_code}" $token_url)
@@ -134,7 +134,7 @@ jobs:
         export authenticated_url="$base_url/api/v1/User/movai/?"
 
         # retry for 1 minute
-        count=10
+        count=20
         set +e
         for i in $(seq $count); do
           status_code=$(curl -k -s -o /dev/null --header 'Content-Type: application/json' -X POST --data '{"username":"movai","password":"www.mov.ai","remember":true,"domain":"internal"}' -w "%{http_code}" $token_url)
