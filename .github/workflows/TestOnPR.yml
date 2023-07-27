@@ -78,10 +78,10 @@ jobs:
       run: |
         export base_url="http://localhost:8080"
         export token_url="$base_url/token-auth/"
-        export authenticated_url="$base_url/api/v1/User/movai/?"
+        export authenticated_url="$base_url/api/v2/User/effective-permissions"
 
         # retry for 1 minute
-        count=20
+        count=10
         set +e
         for i in $(seq $count); do
           status_code=$(curl -k -s -o /dev/null --header 'Content-Type: application/json' -X POST --data '{"username":"movai","password":"www.mov.ai","remember":true,"domain":"internal"}' -w "%{http_code}" $token_url)
@@ -131,10 +131,10 @@ jobs:
       run: |
         export base_url="http://localhost:8080"
         export token_url="$base_url/token-auth/"
-        export authenticated_url="$base_url/api/v1/User/movai/?"
+        export authenticated_url="$base_url/api/v2/User/effective-permissions"
 
         # retry for 1 minute
-        count=20
+        count=10
         set +e
         for i in $(seq $count); do
           status_code=$(curl -k -s -o /dev/null --header 'Content-Type: application/json' -X POST --data '{"username":"movai","password":"www.mov.ai","remember":true,"domain":"internal"}' -w "%{http_code}" $token_url)
