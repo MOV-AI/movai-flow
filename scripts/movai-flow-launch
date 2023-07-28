@@ -141,7 +141,7 @@ while [[ -z $(FilterRunningService spawner) ]]; do
   sleep 5
 done
 
-while [[ -z $( $DOCKER_COMPOSE_BIN -f "$compose_conf" exec -u movai spawner bash -c 'pgrep -f "/usr/bin/python3 -m flow_initiator"') ]]
+while [[ -z $( $DOCKER_COMPOSE_BIN -f "$compose_conf" exec -u movai spawner bash -c 'pgrep -f "/usr/bin/python3 /usr/local/bin/flow_initiator"') ]]
 do
   sleep 10
   Output "loading ..."
