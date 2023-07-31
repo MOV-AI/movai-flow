@@ -255,7 +255,7 @@ services:
     command: ign gui -s $STUDIO_SIMU_GUI
 
   ros-tools:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-tools-ce:v2.4.6 # v2.4.7
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/ros-tools-ce:v2.4.7
     container_name: ros-tools-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
