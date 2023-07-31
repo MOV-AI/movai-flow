@@ -169,7 +169,7 @@ services:
       <<: *movai-common-extra-hosts
 
   ros-master:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-master-noetic:v2.4.2
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/ros-master-noetic:v2.4.3
     privileged: true
     network_mode: host
     depends_on:
