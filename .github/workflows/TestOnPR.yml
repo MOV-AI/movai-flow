@@ -160,7 +160,7 @@ jobs:
     runs-on: ubuntu-20.04
     needs: [ Lint-Project ]
     container:
-      image: registry.cloud.mov.ai/qa/ros-buildtools-noetic:v2.0.3
+      image: registry.cloud.mov.ai/qa/ros-buildtools-noetic:v2.0.7
       options: --user root
       credentials:
         username: ${{secrets.PORTUS_APP_USER}}
@@ -173,7 +173,7 @@ jobs:
       run: |
         PACKAGE_VERSION=$(dpkg-parsechangelog --show-field Version)
         PACKAGE_NAME=$(dpkg-parsechangelog --show-field Source)
-        
+
         echo ::set-output name=pkg_name::$PACKAGE_NAME
         echo ::set-output name=pkg_version::$PACKAGE_VERSION
 
