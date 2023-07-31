@@ -141,7 +141,7 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:2.4.1.35
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/backend-noetic:2.4.1.37
     container_name: backend-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
