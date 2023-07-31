@@ -84,7 +84,7 @@ x-movai-common:
 
 services:
   redis-master:
-    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/redis2:v1.0.12 # v1.0.12
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/redis2:v1.0.12
     container_name: redis-master-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -110,7 +110,7 @@ services:
     restart: unless-stopped
 
   redis-local:
-    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/redis2:v1.0.12 # v1.0.12
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/redis2:v1.0.12
     container_name: redis-local-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -221,7 +221,7 @@ services:
     restart: unless-stopped
 
   simulator:
-    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/ignition-gazebo:v2.4.2 # v2.4.2
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/ignition-gazebo:v2.4.2
     container_name: simulator-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -283,7 +283,7 @@ services:
         exec /usr/bin/rviz
 
   haproxy:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/haproxy:v1.0.10  # v2.4.16
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/haproxy:v2.4.16
     container_name: haproxy-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
