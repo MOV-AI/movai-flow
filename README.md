@@ -99,7 +99,7 @@ MOV.AI Flow™ initiates a set of docker containers orchestrated using *docker-c
 After starting MOV.AI Flow™, you can interact with it via a browser using the web interface
 
 Once the services have started up, you can log in to the web interface and try to run some tasks.
-The web server is available at http://localhost:8080. The default account has both the username and the password: `movai`.
+The web server is available at http://localhost:8080. The default account has both the username (`movai`) and the password (`www.mov.ai`).
 
 ## Executing ROS commands
 To get access to `rostopic` and `rosbag` commands, or to install/build more ros-packages, access the spawner container terminal by typing: `docker exec -it spawner-robot1 bash`
