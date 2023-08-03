@@ -162,4 +162,4 @@ if [ ! -e "${user_documents_path}/MovaiFlow/models_database" ]; then
 fi
 
 Output "Starting web application"
-x-www-browser --app="$APP_URL" "$APP_URL" > /dev/null 2>&1
+xdg-open --app="$APP_URL" "$APP_URL" > /dev/null 2>&1
