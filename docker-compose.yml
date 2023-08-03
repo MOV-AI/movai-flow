@@ -20,7 +20,7 @@
 # STUDIO_USER_USERNAME   - Username for the administrator account (if requested).
 #                          Default: movai
 # STUDIO_USER_PASSWORD   - Password for the administrator account (if requested).
-#                          Default: movai
+#                          Default: www.mov.ai
 #
 # STUDIO_SIMU_GUI        - Default Simulation GUI: WorldLauncher
 #
@@ -84,7 +84,7 @@ x-movai-common:
 
 services:
   redis-master:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.11
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/redis2:v1.0.12
     container_name: redis-master-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -110,7 +110,7 @@ services:
     restart: unless-stopped
 
   redis-local:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/redis2:v1.0.11
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/redis2:v1.0.12
     container_name: redis-local-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -135,7 +135,7 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/backend-noetic:1.0.0.23
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/backend-noetic:2.4.1.37
     container_name: backend-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -151,7 +151,7 @@ services:
       APT_INSTALL_LIST: "$STUDIO_APP_PACKAGES"
       HTTP_PORT: ${STUDIO_HTTP_PORT}
       DEFAULT_USERNAME: movai
-      DEFAULT_PASSWORD: movai
+      DEFAULT_PASSWORD: www.mov.ai
       JWT_SECRET_KEY: ${JWT_SECRET_KEY:?missing JWT_SECRET_KEY ENV var}
     healthcheck:
       test: ["CMD", "echo", ">", "/dev/tcp/localhost/${STUDIO_HTTP_PORT}"]
@@ -162,7 +162,7 @@ services:
     restart: unless-stopped
 
   ros-master:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-master-noetic:v1.0.2
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/ros-master-noetic:v2.4.3
     privileged: true
     networks:
       - private
@@ -185,7 +185,7 @@ services:
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/spawner-ign-noetic:v3.0.10
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/flow-initiator-noetic:2.4.1.39
     privileged: true
     networks:
       - private
@@ -194,7 +194,7 @@ services:
       backend:
         condition: service_healthy
     healthcheck:
-      test: pgrep -f "/usr/bin/python3 -m flow_initiator"
+      test: pgrep -f "/usr/bin/python3 /usr/local/bin/flow_initiator"
       start_period: 10s
       interval: 10s
       timeout: 3s
@@ -221,7 +221,7 @@ services:
     restart: unless-stopped
 
   simulator:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ignition-gazebo:v1.0.4
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/ignition-gazebo:v2.4.2
     container_name: simulator-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -255,7 +255,7 @@ services:
     command: ign gui -s $STUDIO_SIMU_GUI
 
   ros-tools:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/ros-tools-ce:v1.0.4
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/ros-tools-ce:v2.4.7
     container_name: ros-tools-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -283,7 +283,7 @@ services:
         exec /usr/bin/rviz
 
   haproxy:
-    image: ${MOVAI_REGISTRY:-pubregistry.aws.cloud.mov.ai}/ce/haproxy:v1.0.7
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/haproxy:v2.4.16
     container_name: haproxy-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
