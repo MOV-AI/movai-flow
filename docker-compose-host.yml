@@ -141,7 +141,7 @@ services:
 
   backend:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/backend-noetic:2.4.1.37
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/backend-noetic:2.4.1.47
     container_name: backend-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -193,7 +193,7 @@ services:
 
   spawner:
     <<: *movai-common
-    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/flow-initiator-noetic:2.4.1.39
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/flow-initiator-noetic:2.4.1.55
     privileged: true
     network_mode: host
     depends_on:
@@ -231,7 +231,7 @@ services:
       <<: *movai-common-extra-hosts
 
   simulator:
-    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/ignition-gazebo:v2.4.2
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/ignition-gazebo:v2.4.9
     container_name: simulator-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
@@ -267,7 +267,7 @@ services:
       <<: *movai-common-extra-hosts
 
   ros-tools:
-    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/ros-tools-ce:v2.4.7
+    image: ${MOVAI_REGISTRY:-ghcr.io/mov-ai}/ce/ros-tools-ce:v2.4.11
     container_name: ros-tools-$MOVAI_DEVICE_NAME
     logging:
       driver: "journald"
