@@ -83,7 +83,7 @@ jobs:
           "https://$NEXUS_ENDPOINT/repository/$NEXUS_REPO/"
 
     - name: Create Github Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         prerelease: true
         name: "Release of ${{ steps.vars-after-raise.outputs.pkg_version  }}"
