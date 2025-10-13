@@ -1,4 +1,4 @@
-movai-flow (3.0.1-6) UNRELEASED; urgency=medium
+movai-flow (3.0.1-7) UNRELEASED; urgency=medium
 
   [ mithun ]
   * update docs and demos pacakges
@@ -80,5 +80,6 @@ movai-flow (3.0.1-6) UNRELEASED; urgency=medium
   * UNRELEASED
   * UNRELEASED
   * UNRELEASED
+  * UNRELEASED
 
- -- root <root@c9a6a9922344>  Wed, 18 Jan 2023 14:48:22 +0000
+ -- root <root@e6bf25061830>  Tue, 25 Jul 2023 11:31:39 +0000
